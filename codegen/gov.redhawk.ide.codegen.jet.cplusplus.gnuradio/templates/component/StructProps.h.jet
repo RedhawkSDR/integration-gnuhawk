@@ -1,0 +1,247 @@
+<%
+/*
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * distributed with this source distribution.
+ * 
+ * This file is part of GNUHAWK.
+ * 
+ * GNUHAWK is free software: you can redistribute it and/or modify is under the 
+ * terms of the GNU General Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later 
+ * version.
+ * 
+ * GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+%>
+<%@ jet package="gov.redhawk.ide.codegen.jet.cplusplus.gnuradio.template.component"
+imports="gov.redhawk.ide.codegen.cplusplus.CppHelper
+gov.redhawk.ide.codegen.jet.TemplateParameter
+gov.redhawk.ide.codegen.jet.cplusplus.CppProperties
+gov.redhawk.ide.codegen.jet.cplusplus.CppProperties.Property
+gov.redhawk.ide.codegen.jet.cplusplus.CppProperties.SimpleProperty
+gov.redhawk.ide.codegen.jet.cplusplus.CppProperties.StructProperty
+gov.redhawk.ide.codegen.jet.cplusplus.CppProperties.StructSequenceProperty
+java.util.ArrayList
+java.util.List
+org.eclipse.core.runtime.CoreException
+mil.jpeojtrs.sca.spd.Implementation
+mil.jpeojtrs.sca.spd.SoftPkg"
+class="StructPropsGRHTemplate"
+skeleton="../generator.skeleton2"
+%>
+<%
+    TemplateParameter templ = (TemplateParameter) argument;
+    Implementation impl = templ.getImpl();
+    SoftPkg softPkg = (SoftPkg) impl.eContainer();
+    
+    List<Property> properties = CppProperties.getProperties(softPkg);
+    List<StructProperty> structs = new ArrayList<StructProperty>();
+    for (Property prop : properties) {
+      if (prop.getType().equalsIgnoreCase("struct")) {
+        structs.add((StructProperty)prop);
+      } else if (prop.getType().equalsIgnoreCase("structSequence")) {
+        structs.add(((StructSequenceProperty)prop).getStructProperty());
+      }
+    }
+%>
+/*
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * distributed with this source distribution.
+ * 
+ * This file is part of GNUHAWK.
+ * 
+ * GNUHAWK is free software: you can redistribute it and/or modify is under the 
+ * terms of the GNU General Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later 
+ * version.
+ * 
+ * GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+#ifndef STRUCTPROPS_H
+#define STRUCTPROPS_H
+
+/*******************************************************************************************
+
+    AUTO-GENERATED CODE. DO NOT MODIFY
+
+*******************************************************************************************/
+
+#include <ossie/CorbaUtils.h>
+#include <gnuhawk/gr_properties.h>
+
+<%for (StructProperty struct : structs ) {
+	List<SimpleProperty> fields = struct.getFields();%>
+struct <%=struct.getCppType()%> {
+	<%=struct.getCppType()%> ()
+	{
+<%	for (SimpleProperty field : fields ) {
+		if (field.hasValue()) {%>
+		<%=field.getCppName()%> = <%=field.getCppValue()%>;
+<%		}
+	}%>
+	};
+
+    std::string getId() {
+        return std::string("<%=CppHelper.escapeString(struct.getId())%>");
+    };
+	
+<%	for (SimpleProperty field : fields ) {%>
+	<%=field.getCppType()%> <%=field.getCppName()%>;
+<%	}%>
+};
+
+inline bool operator>>= (const CORBA::Any& a, <%=struct.getCppType()%>& s) {
+	CF::Properties* temp;
+	if (!(a >>= temp)) return false;
+	CF::Properties& props = *temp;
+	for (unsigned int idx = 0; idx < props.length(); idx++) {
+<%
+	for (SimpleProperty field : fields ) {
+%>
+		if (!strcmp("<%=CppHelper.escapeString(field.getId())%>", props[idx].id)) {
+<%
+		String insert = "s." + field.getCppName();
+		String tempName = "temp_" + field.getCppName();
+		if (field.getType().equals("char")) {
+			insert = "CORBA::Any::to_char(" + tempName + ")";%>
+		CORBA::Char <%=tempName%>;
+<%  	} else if (field.getType().equals("octet")) {
+			insert = "CORBA::Any::to_octet(" + insert + ")";
+		}%>
+			if (!(props[idx].value >>= <%=insert%>)) return false;
+<%		if (field.getType().equals("char")) {%>
+			s.<%=field.getCppName()%> = <%=tempName%>;	
+<%		}
+%>
+		}
+<%
+	}
+%>
+	}
+	return true;
+};
+
+inline void operator<<= (CORBA::Any& a, const <%=struct.getCppType()%>& s) {
+	CF::Properties props;
+	props.length(<%=fields.size()%>);
+<%
+	int index = 0;
+	for (SimpleProperty field : fields ) {
+		String extract = "s." + field.getCppName();
+		if (field.getType().equals("char") || field.getType().equals("octet")) {
+			extract = "CORBA::Any::from_" + field.getType() + "(" + extract + ")";
+		}%>
+	props[<%=index%>].id = CORBA::string_dup("<%=CppHelper.escapeString(field.getId())%>");
+	props[<%=index++%>].value <<= <%=extract%>;
+<%	}%>
+	a <<= props;
+};
+
+inline bool operator== (<%=struct.getCppType()%>& s1, const <%=struct.getCppType()%>& s2) {
+<%
+	index = 0;
+	for (SimpleProperty field : fields ) {
+		String extract = "s." + field.getCppName();
+		if (field.getType().equals("char") || field.getType().equals("octet")) {
+			extract = "CORBA::Any::from_" + field.getType() + "(" + extract + ")";
+		}
+%>
+    if (s1.<%=field.getCppName()%>!=s2.<%=field.getCppName()%>)
+        return false;
+<%
+	}%>
+    return true;
+};
+
+inline bool operator!= (<%=struct.getCppType()%>& s1, const <%=struct.getCppType()%>& s2) {
+    return !(s1==s2);
+};
+
+template<> inline short StructProperty<<%=struct.getCppType()%>>::compare (const CORBA::Any& a) {
+    if (super::isNil_) {
+        if (a.type()->kind() == (CORBA::tk_null)) {
+            return 0;
+        }
+        return 1;
+    }
+
+    <%=struct.getCppType()%> tmp;
+    if (fromAny(a, tmp)) {
+        if (tmp != this->value_) {
+            return 1;
+        }
+
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+typedef GR_StructProperty<<%=struct.getCppType()%>> <%=struct.getCppType()%>_GR_StructProperty;
+
+template <>
+inline PropertyInterface* GR_PropertyWrapperFactory::Create<<%=struct.getCppType()%>> (<%=struct.getCppType()%>& value)
+{
+    return new <%=struct.getCppType()%>_GR_StructProperty(value);
+}
+
+<%
+	}
+	for (CppProperties.Property prop : properties) {
+		if (prop instanceof CppProperties.StructSequenceProperty) { 
+%>
+inline bool operator== (<%=prop.getCppType()%>& s1, const <%=prop.getCppType()%>& s2) {
+    if (s1.size() != s2.size()) {
+        return false;
+    }
+    for (unsigned int i=0; i<s1.size(); i++) {
+        if (s1[i] != s2[i]) {
+            return false;
+        }
+    }
+    return true;
+};
+
+inline bool operator!= (<%=prop.getCppType()%>& s1, const <%=prop.getCppType()%>& s2) {
+    return !(s1==s2);
+};
+
+template<> inline short StructSequenceProperty<<%=((CppProperties.StructSequenceProperty) prop).getStructProperty().getCppType()%>>::compare (const CORBA::Any& a) {
+    if (super::isNil_) {
+        if (a.type()->kind() == (CORBA::tk_null)) {
+            return 0;
+        }
+        return 1;
+    }
+
+    <%=prop.getCppType()%> tmp;
+    if (fromAny(a, tmp)) {
+        if (tmp != this->value_) {
+            return 1;
+        }
+
+        return 0;
+    } else {
+        return 1;
+    }
+}
+<%
+	}
+%>
+<%}%>
+
+#endif

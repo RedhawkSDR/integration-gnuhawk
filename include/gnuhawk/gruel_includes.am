@@ -1,0 +1,17 @@
+nobase_pkginclude_HEADERS += gnuradio/gruel/api.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/attributes.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/high_res_timer.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/msg_accepter.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/msg_accepter_msgq.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/msg_passing.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/msg_queue.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/pmt.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/pmt_int.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/pmt_pool.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/pmt_sugar.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/pmt_unv_int.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/realtime.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/sys_pri.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/thread_body_wrapper.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/thread_group.h
+nobase_pkginclude_HEADERS += gnuradio/gruel/thread.h

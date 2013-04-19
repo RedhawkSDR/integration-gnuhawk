@@ -1,0 +1,9 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pager_api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pager_flex_deinterleave.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pager_flex_frame.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pager_flex_parse.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pager_flex_sync.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pageri_bch3221.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pageri_flex_modes.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pageri_util.h
+nobase_pkginclude_HEADERS += gnuradio/gr-pager/pager_slicer_fb.h

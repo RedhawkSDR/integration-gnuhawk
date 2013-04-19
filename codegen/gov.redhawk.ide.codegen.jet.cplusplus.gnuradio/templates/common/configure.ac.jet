@@ -1,0 +1,163 @@
+<%
+/*
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * distributed with this source distribution.
+ * 
+ * This file is part of GNUHAWK.
+ * 
+ * GNUHAWK is free software: you can redistribute it and/or modify is under the 
+ * terms of the GNU General Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later 
+ * version.
+ * 
+ * GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program.  If not, see http://www.gnu.org/licenses/.
+ */
+%>
+<% // REDHAWK HEADER %>
+<%@ jet package="gov.redhawk.ide.codegen.jet.cplusplus.gnuradio.template"
+imports="gov.redhawk.ide.codegen.jet.TemplateParameter
+gov.redhawk.ide.codegen.ImplementationSettings
+gov.redhawk.model.sca.util.ModelUtil
+gov.redhawk.ide.sdr.ui.SdrUiPlugin
+gov.redhawk.ide.sdr.ComponentsContainer
+java.util.regex.Matcher
+java.util.regex.Pattern
+java.util.List
+java.util.HashMap
+java.util.Map
+mil.jpeojtrs.sca.scd.Interface
+mil.jpeojtrs.sca.spd.Implementation
+mil.jpeojtrs.sca.spd.Dependency
+mil.jpeojtrs.sca.spd.SoftPkgRef
+mil.jpeojtrs.sca.spd.SoftPkg
+org.eclipse.emf.common.util.EList
+org.eclipse.core.resources.IResource"
+class="ConfigureAcTemplate"
+skeleton="../generator.skeleton" 
+%>
+<% 
+    TemplateParameter templ = (TemplateParameter) argument;
+    ImplementationSettings implSettings = templ.getImplSettings();
+    IResource resource = ModelUtil.getResource(implSettings);
+    Implementation impl = templ.getImpl();
+    SoftPkg softpkg = (SoftPkg) impl.eContainer();
+    
+    // Determine softpkg version, set to 1.0.0 if none exists 
+    String version = "1.0.0";
+    String softpkgVersion = null;
+    if (softpkg != null) {
+        softpkgVersion = softpkg.getVersion();
+    }  
+    if (softpkgVersion != null && !softpkgVersion.equals("")) {
+        version = softpkgVersion;
+    }
+    
+    EList<Dependency>deps = impl.getDependency();
+    String additionalPkg = "";
+	ComponentsContainer installedStuff = SdrUiPlugin.getDefault().getTargetSdrRoot().getComponentsContainer();
+    for (Dependency dep : deps) {
+    	SoftPkgRef spr = dep.getSoftPkgRef();
+    	if (spr == null) {
+    		continue;
+    	}
+    	String filename = spr.getLocalFile().getName();
+    	for (SoftPkg item : installedStuff.getComponents()) {
+    		String tmpout = item.eResource().getURI().toString();
+    		String[] split_tmp = tmpout.split("\\?");
+    		if (split_tmp.length != 2)
+    			continue;
+    		String softpkg_file = split_tmp[0].substring(4); // remove "sca:"
+   			if (softpkg_file.equals(filename)) {
+				additionalPkg += "${SDRROOT}/dom" + filename.substring(0,filename.lastIndexOf("/")) + "/" + item.getImplementation().get(0).getCode().getLocalFile().getName() + "/pkgconfig:";
+   			}
+    	}
+    }
+    
+    // Determine what interfaces we require
+    Map<String, String> ifaceNameAndVer = new HashMap<String, String>();
+    List<Interface> interfaces = softpkg.getDescriptor().getComponent().getInterfaces().getInterface();
+    Pattern idlPattern = Pattern.compile("^IDL:(\\w+)/");
+    for (Interface iface : interfaces) {
+        Matcher match = idlPattern.matcher(iface.getRepid());
+        if (match.find()) {
+            String interfaceNamespace = match.group(1);
+            if ("BULKIO".equals(interfaceNamespace)) {
+                ifaceNameAndVer.put("bulkio", " >= 1.8");
+            } else if ("REDHAWK".equals(interfaceNamespace)) {
+                ifaceNameAndVer.put("redhawk", " >= 1.2.0");
+            } else if (! "CF".equals(interfaceNamespace)) {
+                ifaceNameAndVer.put(interfaceNamespace.toLowerCase(), "");
+            }
+        }
+    }
+%>
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file 
+# distributed with this source distribution.
+# 
+# This file is part of GNUHAWK.
+# 
+# GNUHAWK is free software: you can redistribute it and/or modify is under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later 
+# version.
+# 
+# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with 
+# this program.  If not, see http://www.gnu.org/licenses/.
+#
+AC_INIT(<%=resource.getProject().getName()%>, <%=version%>)
+AM_INIT_AUTOMAKE(nostdinc)
+
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_INSTALL
+
+AC_CORBA_ORB
+OSSIE_CHECK_OSSIE
+OSSIE_SDRROOT_AS_PREFIX
+
+# Dependencies
+export PKG_CONFIG_PATH="${SDRROOT}/dom/deps/gnuhawk/lib64/pkgconfig:${SDRROOT}/dom/deps/gnuhawk/lib/pkgconfig:<%=additionalPkg%>$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig"
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0 gnuhawk >= 1.8.3 ])
+<%
+    boolean first = true;
+    for (String interfaceNamespace : ifaceNameAndVer.keySet()) {
+	    if (interfaceNamespace.equals("extendedevent")) {
+	    	continue;
+	    }
+	    if (first) {
+	        first = false;
+%>
+PKG_CHECK_MODULES([INTERFACEDEPS], [<%=interfaceNamespace%>Interfaces<%=ifaceNameAndVer.get(interfaceNamespace)%><%
+        } else {
+%> <%=interfaceNamespace%>Interfaces<%=ifaceNameAndVer.get(interfaceNamespace)%><%
+        }
+    }
+    if (!first) {
+%>])
+<%
+    }
+%>
+OSSIE_ENABLE_LOG4CXX
+AX_BOOST_BASE([1.41])
+AX_BOOST_THREAD
+<%
+    if (ifaceNameAndVer.containsKey("bulkio")) {
+%>
+CHECK_VECTOR_IMPL
+<%
+    }
+%>
+
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT

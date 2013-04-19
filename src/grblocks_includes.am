@@ -1,0 +1,17 @@
+INCLUDES += -I../include/gnuhawk/gnuradio/hier
+INCLUDES += -I../include/gnuhawk/gnuradio/io
+INCLUDES += -I../include/gnuhawk/gnuradio/runtime
+INCLUDES += -I../include/gnuhawk/gnuradio/viterbi
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-atsc
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-audio
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-audio/alsa
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-digital
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-fcd
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-fft
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-filter
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-howto-write-a-block
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-noaa
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-pager
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-trellis
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-vocoder
+INCLUDES += -I../include/gnuhawk/gnuradio/gr-wavelet

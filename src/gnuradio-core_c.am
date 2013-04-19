@@ -1,0 +1,12 @@
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/float_dotprod_generic.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/gr_sincos.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/short_dotprod_generic.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/sse_debug.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/general/malloc16.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/reed-solomon/decode_rs.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/reed-solomon/encode_rs.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/reed-solomon/exercise.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/reed-solomon/init_rs.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/viterbi/metrics.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/viterbi/tab.c
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/viterbi/viterbi.c

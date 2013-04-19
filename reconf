@@ -1,0 +1,314 @@
+#!/bin/sh
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file 
+# distributed with this source distribution.
+# 
+# This file is part of GNUHAWK.
+# 
+# GNUHAWK is free software: you can redistribute it and/or modify is under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later 
+# version.
+# 
+# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with 
+# this program.  If not, see http://www.gnu.org/licenses/.
+#
+ 
+
+# Checks command line args
+if [[ ${#1} -ne 0 ]] && [ "$1" != "--with-components" ]
+then
+    echo "reconf: error: unrecognized option: $1"
+    echo "to reconf components use: --with-components"
+    exit 1
+fi
+
+rm -f config.cache
+
+# Setup the libtool stuff
+if [ -e /usr/local/share/aclocal/libtool.m4 ]; then
+    /bin/cp /usr/local/share/aclocal/libtool.m4 aclocal.d/acinclude.m4
+elif [ -e /usr/share/aclocal/libtool.m4 ]; then
+    /bin/cp /usr/share/aclocal/libtool.m4 acinclude.m4
+fi
+libtoolize --force --automake
+
+if [ -d ${OSSIEHOME}/share/aclocal ]; then
+    OSSIE_AC_INCLUDE=${OSSIEHOME}/share/aclocal
+else
+    echo "Error: Cannot find the OSSIE aclocal files. This is not expected!"
+fi
+# Search in expected locations for the OSSIE acincludes
+
+if [ -n ${OSSIE_AC_INCLUDE} ]; then
+    aclocal -I ${OSSIE_AC_INCLUDE}/ossie
+else
+    aclocal
+fi
+
+autoconf
+automake --foreign --add-missing
+
+if [ ! -d ./include/gnuhawk ]
+then
+    mkdir ./include/gnuhawk
+fi
+if [ ! -d ./include/gnuhawk/gnuradio ]
+then
+    mkdir ./include/gnuhawk/gnuradio
+fi
+
+# gnuradio-core filter include files
+topdir=`pwd`
+(PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH};cd gnuradio/gnuradio-core/src/lib/filter;python generate_all.py;)
+if [ ! -d ./include/gnuhawk/gnuradio/filter ]
+then
+    mkdir ./include/gnuhawk/gnuradio/filter
+fi
+cp ./gnuradio/gnuradio-core/src/lib/filter/*.h ./include/gnuhawk/gnuradio/filter
+
+# gnuradio-core general include files
+if [ ! -d ./include/gnuhawk/gnuradio/general ]
+then
+    mkdir ./include/gnuhawk/gnuradio/general
+fi
+cp ./gnuradio/gnuradio-core/src/lib/general/*.h ./include/gnuhawk/gnuradio/general
+
+# gnuradio-core gengen include files
+topdir=`pwd`
+(PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH};cd gnuradio/gnuradio-core/src/lib/gengen;python generate_all.py;)
+if [ ! -d ./include/gnuhawk/gnuradio/gengen ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gengen
+fi
+cp ./gnuradio/gnuradio-core/src/lib/gengen/*.h ./include/gnuhawk/gnuradio/gengen
+
+# gnuradio-core hier include files
+if [ ! -d ./include/gnuhawk/gnuradio/hier ]
+then
+    mkdir ./include/gnuhawk/gnuradio/hier
+fi
+cp ./gnuradio/gnuradio-core/src/lib/hier/*.h ./include/gnuhawk/gnuradio/hier
+
+# gnuradio-core io include files
+if [ ! -d ./include/gnuhawk/gnuradio/io ]
+then
+    mkdir ./include/gnuhawk/gnuradio/io
+fi
+cp ./gnuradio/gnuradio-core/src/lib/io/*.h ./include/gnuhawk/gnuradio/io
+
+# gnuradio-core reed-solomon include files
+if [ ! -d ./include/gnuhawk/gnuradio/reed-solomon ]
+then
+    mkdir ./include/gnuhawk/gnuradio/reed-solomon
+fi
+cp ./gnuradio/gnuradio-core/src/lib/reed-solomon/*.h ./include/gnuhawk/gnuradio/reed-solomon
+
+# gnuradio-core runtime include files
+if [ ! -d ./include/gnuhawk/gnuradio/runtime ]
+then
+    mkdir ./include/gnuhawk/gnuradio/runtime
+fi
+cp ./gnuradio/gnuradio-core/src/lib/runtime/*.h ./include/gnuhawk/gnuradio/runtime
+
+# gnuradio-core viterbi include files
+if [ ! -d ./include/gnuhawk/gnuradio/viterbi ]
+then
+    mkdir ./include/gnuhawk/gnuradio/viterbi
+fi
+cp ./gnuradio/gnuradio-core/src/lib/viterbi/*.h ./include/gnuhawk/gnuradio/viterbi
+
+# gruel include files
+(cd gnuradio/gruel/src/lib/pmt;python generate_unv.py;)
+if [ ! -d ./include/gnuhawk/gnuradio/gruel ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gruel
+fi
+cp ./gnuradio/gruel/src/include/gruel/*.h ./include/gnuhawk/gnuradio/gruel
+cp ./gnuradio/gruel/src/lib/pmt/*.h ./include/gnuhawk/gnuradio/gruel
+
+# gr-atsc include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-atsc ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-atsc
+fi
+cp ./gnuradio/gr-atsc/src/lib/*.h ./include/gnuhawk/gnuradio/gr-atsc
+
+# gr-audio include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-audio ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-audio
+fi
+if [ ! -d ./include/gnuhawk/gnuradio/gr-audio/alsa ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-audio/alsa
+fi
+cp ./gnuradio/gr-audio/include/*.h ./include/gnuhawk/gnuradio/gr-audio
+cp ./gnuradio/gr-audio/lib/*.h ./include/gnuhawk/gnuradio/gr-audio
+cp ./gnuradio/gr-audio/lib/alsa/*.h ./include/gnuhawk/gnuradio/gr-audio/alsa
+cp ./gnuradio/gr-audio/lib/oss/*.h ./include/gnuhawk/gnuradio/gr-audio
+
+# gr-digital include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-digital ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-digital
+fi
+cp ./gnuradio/gr-digital/include/*.h ./include/gnuhawk/gnuradio/gr-digital
+
+# gr-fcd include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-fcd ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-fcd
+fi
+cp ./gnuradio/gr-fcd/include/fcd/*.h ./include/gnuhawk/gnuradio/gr-fcd
+cp ./gnuradio/gr-fcd/lib/*.h ./include/gnuhawk/gnuradio/gr-fcd
+cp ./gnuradio/gr-fcd/lib/fcd/*.h ./include/gnuhawk/gnuradio/gr-fcd
+cp ./gnuradio/gr-fcd/lib/hid/*.h ./include/gnuhawk/gnuradio/gr-fcd
+
+# gr-fft include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-fft ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-fft
+fi
+if [ ! -d ./include/gnuhawk/gnuradio/gr-fft/fft ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-fft/fft
+fi
+cp ./gnuradio/gr-fft/include/fft/*.h ./include/gnuhawk/gnuradio/gr-fft/fft
+
+# gr-filter include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-filter ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-filter
+fi
+if [ ! -d ./include/gnuhawk/gnuradio/gr-filter/filter ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-filter/filter
+fi
+cp ./gnuradio/gr-filter/include/filter/*.h ./include/gnuhawk/gnuradio/gr-filter/filter
+cp ./gnuradio/gr-filter/lib/*.h ./include/gnuhawk/gnuradio/gr-filter/
+
+# gr-howto-write-a-block include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-howto-write-a-block ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-howto-write-a-block
+fi
+cp ./gnuradio/gr-howto-write-a-block/include/*.h ./include/gnuhawk/gnuradio/gr-howto-write-a-block
+
+# gr-noaa include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-noaa ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-noaa
+fi
+cp ./gnuradio/gr-noaa/lib/*.h ./include/gnuhawk/gnuradio/gr-noaa
+
+# gr-pager include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-pager ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-pager
+fi
+cp ./gnuradio/gr-pager/lib/*.h ./include/gnuhawk/gnuradio/gr-pager
+
+# gr-trellis include files
+topdir=`pwd`
+(PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH};cd gnuradio/gr-trellis/src/lib;python generate_all.py;)
+if [ ! -d ./include/gnuhawk/gnuradio/gr-trellis ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-trellis
+fi
+cp ./gnuradio/gr-trellis/src/lib/*.h ./include/gnuhawk/gnuradio/gr-trellis
+
+# gr-vocoder include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-vocoder ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-vocoder
+fi
+if [ ! -d ./include/gnuhawk/gnuradio/gr-vocoder/codec2 ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-vocoder/codec2
+fi
+if [ ! -d ./include/gnuhawk/gnuradio/gr-vocoder/g7xx ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-vocoder/g7xx
+fi
+if [ ! -d ./include/gnuhawk/gnuradio/gr-vocoder/gsm ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-vocoder/gsm
+fi
+cp ./gnuradio/gr-vocoder/include/*.h ./include/gnuhawk/gnuradio/gr-vocoder
+cp ./gnuradio/gr-vocoder/lib/codec2/*.h ./include/gnuhawk/gnuradio/gr-vocoder/codec2
+cp ./gnuradio/gr-vocoder/lib/g7xx/*.h ./include/gnuhawk/gnuradio/gr-vocoder/g7xx
+cp ./gnuradio/gr-vocoder/lib/gsm/*.h ./include/gnuhawk/gnuradio/gr-vocoder/gsm
+
+# gr-wavelet include files
+if [ ! -d ./include/gnuhawk/gnuradio/gr-wavelet ]
+then
+    mkdir ./include/gnuhawk/gnuradio/gr-wavelet
+fi
+cp ./gnuradio/gr-wavelet/lib/*.h ./include/gnuhawk/gnuradio/gr-wavelet
+cp ./gnuradio/gr-wavelet/include/wavelet/*.h ./include/gnuhawk/gnuradio/gr-wavelet
+
+# reconf for each component
+if [ "$1" == "--with-components" ];
+then
+    for i in components/*
+    do
+        # Only reconf component dirs
+        if [ "$i" != "components/components_with_complex_props" ] &&
+           [ "$i" != "components/components_for_testing" ] &&
+           [[ -d $i ]]
+        then
+            # Make sure reconf script is there
+            if [[ -f "$i/cpp/reconf" ]]
+            then 
+                cd $i/cpp
+                echo "./configure
+# Make sure configure succeeds
+if [[ \$? != 0 ]];
+then
+    exit 1
+fi" > configure.gnu
+                ./reconf
+                # Make sure each reconf succeeds
+                if [[ $? != 0 ]];
+                then
+                    exit 1
+                fi
+                cd ../../../
+            else
+                echo "NOTE: Folder $i/cpp does not contain a reconf script."
+            fi
+        fi
+    done
+
+    for i in qa/components/*
+    do
+        if [[ -d $i ]]
+        then
+            # Make sure reconf script is there
+            if [[ -f "$i/cpp/reconf" ]]
+            then
+                cd $i/cpp
+                echo "./configure
+# Make sure configure succeeds
+if [[ \$? != 0 ]];
+then
+    exit 1
+fi" > configure.gnu
+                ./reconf
+                # Make sure each reconf succeeds
+                if [[ $? != 0 ]];
+                then
+                    exit 1
+                fi
+                cd ../../../../
+            else
+                echo "NOTE: Folder $i/cpp does not contain a reconf script."
+            fi
+        fi
+    done
+fi

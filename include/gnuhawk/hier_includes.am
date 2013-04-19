@@ -1,0 +1,1 @@
+nobase_pkginclude_HEADERS += gnuradio/hier/gr_channel_model.h

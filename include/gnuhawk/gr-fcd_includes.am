@@ -1,0 +1,5 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-fcd/fcd_api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fcd/fcd.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fcd/fcdhidcmd.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fcd/fcd_source_c.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fcd/fcd_source_c_impl.h

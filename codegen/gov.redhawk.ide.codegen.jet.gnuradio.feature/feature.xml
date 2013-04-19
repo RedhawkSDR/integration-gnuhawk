@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="gov.redhawk.ide.codegen.jet.gnuradio.feature"
+      label="GNU Radio Code Generator Feature"
+      version="1.0.0.qualifier"
+      provider-name="US GOV">
+
+   <description>
+      GNU Radio code generator feature plug-in for Eclipse
+   </description>
+
+   <copyright>
+      Generates SCA component code to integrate GNU Radio primitives
+into a REDHAWK SCA component.
+   </copyright>
+
+   <plugin
+         id="gov.redhawk.ide.codegen.jet.cplusplus.gnuradio"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

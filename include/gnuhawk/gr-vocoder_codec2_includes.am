@@ -1,0 +1,17 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/codec2.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/codec2_internal.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/comp.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/defines.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/dump.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/fft.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/globals.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/interp.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/_kiss_fft_guts.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/kiss_fft.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/lpc.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/lsp.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/nlp.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/phase.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/postfilter.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/quantise.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/codec2/sine.h

@@ -1,0 +1,12 @@
+#Wed Feb 13 12:40:13 EST 2013
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.exe.debug.1111882520/OSSIEHOME/delimiter=\:
+environment/project/cdt.managedbuild.config.gnu.exe.debug.1111882520/OSSIEHOME/operation=replace
+environment/project/cdt.managedbuild.config.gnu.exe.debug.1111882520/OSSIEHOME/value=${OssieHome}
+environment/project/cdt.managedbuild.config.gnu.exe.debug.1111882520/append=true
+environment/project/cdt.managedbuild.config.gnu.exe.debug.1111882520/appendContributed=true
+environment/project/cdt.managedbuild.config.gnu.exe.release.1755401835/OSSIEHOME/delimiter=\:
+environment/project/cdt.managedbuild.config.gnu.exe.release.1755401835/OSSIEHOME/operation=replace
+environment/project/cdt.managedbuild.config.gnu.exe.release.1755401835/OSSIEHOME/value=${OssieHome}
+environment/project/cdt.managedbuild.config.gnu.exe.release.1755401835/append=true
+environment/project/cdt.managedbuild.config.gnu.exe.release.1755401835/appendContributed=true

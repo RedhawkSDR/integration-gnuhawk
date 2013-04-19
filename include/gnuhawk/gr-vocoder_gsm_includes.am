@@ -1,0 +1,5 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/gsm/config.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/gsm/gsm.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/gsm/private.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/gsm/proto.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/gsm/unproto.h

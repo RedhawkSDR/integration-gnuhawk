@@ -1,0 +1,6 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-audio/audio_oss_sink.h
+nobase_pkginclude_HEADERS += gnuradio/gr-audio/audio_oss_source.h
+nobase_pkginclude_HEADERS += gnuradio/gr-audio/gr_audio_api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-audio/gr_audio_registry.h
+nobase_pkginclude_HEADERS += gnuradio/gr-audio/gr_audio_sink.h
+nobase_pkginclude_HEADERS += gnuradio/gr-audio/gr_audio_source.h

@@ -1,0 +1,5 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-noaa/noaa_api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-noaa/noaa_hrpt_decoder.h
+nobase_pkginclude_HEADERS += gnuradio/gr-noaa/noaa_hrpt_deframer.h
+nobase_pkginclude_HEADERS += gnuradio/gr-noaa/noaa_hrpt.h
+nobase_pkginclude_HEADERS += gnuradio/gr-noaa/noaa_hrpt_pll_cf.h

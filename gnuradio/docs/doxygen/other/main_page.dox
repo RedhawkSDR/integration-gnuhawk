@@ -1,0 +1,51 @@
+/*! \mainpage
+
+\image html gnuradio-logo.png
+
+Welcome to GNU Radio!
+
+For details about GNU Radio and using it, please see the <a
+href="http://gnuradio.org" target="_blank"><b>main project page</b></a>.
+
+Other information about the project and discussion about GNU Radio,
+software radio, and communication theory in general can be found at
+the <a href="http://gnuradio.squarespace.com" target="_blank"><b>GNU Radio blog</b></a>.
+
+
+\section build Building GNU Radio
+
+See the \ref build_guide page for details about the project's
+dependencies and build process.
+
+
+\section blocks GNU Radio Blocks
+
+GNU Radio uses discrete signal processing blocks that are connected
+together to perform your signal processing application. This manual
+contain a list of all GNU Radio <a href="modules.html"><b>C++ Blocks</b></a>.
+
+Please note that at this time, we haven't found an acceptable way to
+provide unified documentation for the C++ parts of the system and the
+parts written in Python (mostly hierarchical blocks).  Until this gets
+worked out, please bear with us, or better yet, solve it for us!
+
+
+\section toc Manual Contents
+More details on packages in GNU Radio:
+\li \ref page_audio
+\li \ref page_digital
+\li \ref page_qtgui
+\li \ref page_uhd
+\li \ref page_vocoder
+\li \ref page_pfb
+
+\section volk_main Using Volk in GNU Radio
+
+The \ref volk_guide page provides an overview of how to incorporate
+and use Volk in GNU Radio blocks.
+
+Many blocks have already been converted to use Volk in their calls, so
+they can also serve as examples. See the gr_complex_to_xxx.h file for
+examples of various blocks that make use of Volk.
+
+*/

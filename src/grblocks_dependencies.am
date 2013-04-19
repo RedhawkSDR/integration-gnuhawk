@@ -1,0 +1,45 @@
+include gnuradio-core_cc.am
+include gnuradio-core_c.am
+include gr-vocoder_c.am
+libgnuhawk_la_SOURCES += ../gnuradio/gruel/src/lib/pmt/pmt_unv.cc 
+libgnuhawk_la_SOURCES += ../gnuradio/gruel/src/lib/pmt/pmt_io.cc 
+libgnuhawk_la_SOURCES += ../gnuradio/gruel/src/lib/msg/msg_accepter.cc 
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_basic_trellis_encoder.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_data_interleaver.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_equalizer.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_equalizer_lms.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_equalizer_lms2.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_equalizer_nop.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_fs_checker.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_fs_checker_naive.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_pnXXX.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_randomizer.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_reed_solomon.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_sssr.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_trellis_encoder.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_viterbi_gen.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/create_atsci_equalizer.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/create_atsci_fs_checker.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/plinfo.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-audio/lib/gr_audio_registry.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-pager/lib/pageri_bch3221.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-pager/lib/pageri_flex_modes.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-pager/lib/pageri_util.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-trellis/src/lib/base.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-trellis/src/lib/calc_metric.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-trellis/src/lib/core_algorithms.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-trellis/src/lib/fsm.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-trellis/src/lib/interleaver.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-trellis/src/lib/quicksort_index.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-digital/lib/digital_impl_mpsk_snr_est.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-digital/lib/digital_constellation.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-fft/lib/goertzel.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-fft/lib/fft.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/fft_filter.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/firdes.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/fir_filter.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/fir_filter_with_buffer.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/mmse_fir_interpolator_cc.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/mmse_fir_interpolator_ff.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-filter/lib/polyphase_filterbank.cc
+INCLUDES += -I../include/gnuhawk/gnuradio/reed-solomon

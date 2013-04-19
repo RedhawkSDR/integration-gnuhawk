@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<plugin>
+   <extension
+         point="gov.redhawk.ide.codegen.codegenTemplate">
+      <template
+            class="gov.redhawk.ide.codegen.jet.cplusplus.gnuradio.GNURadioTemplate"
+            codegenId="gov.redhawk.ide.codegen.jet.cplusplus.CplusplusGenerator"
+            hasSettings="false"
+            id="gov.redhawk.ide.codegen.jet.cplusplus.GNURadioTemplate"
+            name="Templates  - GNURadio"
+            notDefaultable="false"
+            selectable="true"
+            usesPortTemplates="false">
+         <description>
+            This template will generate a native REDHAWK wrapper for a GNURadio block via the GNUHAWK compatability library
+         </description>
+         <property
+               default_value="TRUE"
+               deprecated="false"
+               key="pattern_gr_block"
+               name="GR Block"
+               required="true">
+         </property>
+         <property
+               default_value="FALSE"
+               deprecated="false"
+               key="pattern_gr_sync_block"
+               name="GR Sync Block"
+               required="true">
+         </property>
+         <property
+               default_value="FALSE"
+               deprecated="false"
+               key="pattern_gr_sync_decimator"
+               name="GR Sync Decimator"
+               required="true">
+         </property>
+         <property
+               default_value="FALSE"
+               deprecated="false"
+               key="pattern_gr_sync_interpolator"
+               name="GR Sync Interpolator"
+               required="true">
+         </property>
+         <componenttype
+               type="resource">
+         </componenttype>
+      </template>
+   </extension>
+
+</plugin>

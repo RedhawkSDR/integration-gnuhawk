@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="sampling_freq" mode="readwrite" type="double">
+    <value>10000.0</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="waveform" mode="readwrite" type="long">
+    <value>101</value>
+    <enumerations>
+      <enumeration label="CONST_WAVE" value="100"/>
+      <enumeration label="SIN_WAVE" value="101"/>
+      <enumeration label="COS_WAVE" value="102"/>
+      <enumeration label="SQR_WAVE" value="103"/>
+      <enumeration label="TRI_WAVE" value="104"/>
+      <enumeration label="SAW_WAVE" value="105"/>
+    </enumerations>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="frequency" mode="readwrite" type="double">
+    <value>10.0</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="amplitude" mode="readwrite" type="double">
+    <value>100.0</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="offset" mode="readwrite" type="float">
+    <value>0.0</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="transfer_size" mode="readwrite" type="long">
+    <value>8192</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>

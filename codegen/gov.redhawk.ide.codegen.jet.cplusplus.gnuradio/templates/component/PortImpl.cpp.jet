@@ -1,0 +1,207 @@
+<%
+/*
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * distributed with this source distribution.
+ * 
+ * This file is part of GNUHAWK.
+ * 
+ * GNUHAWK is free software: you can redistribute it and/or modify is under the 
+ * terms of the GNU General Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later 
+ * version.
+ * 
+ * GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program.  If not, see http://www.gnu.org/licenses/.
+ */
+%>
+<%@ jet package="gov.redhawk.ide.codegen.jet.cplusplus.gnuradio.template.component"
+imports="gov.redhawk.ide.RedhawkIdeActivator
+gov.redhawk.ide.codegen.CodegenUtil
+gov.redhawk.ide.codegen.ImplementationSettings
+gov.redhawk.ide.codegen.IPortTemplateDesc
+gov.redhawk.ide.codegen.IScaPortCodegenTemplate
+gov.redhawk.ide.codegen.PortRepToGeneratorMap
+gov.redhawk.ide.codegen.jet.TemplateParameter
+gov.redhawk.ide.codegen.jet.cplusplus.ports.PropertyChangeEventPortTemplate
+gov.redhawk.ide.codegen.jet.cplusplus.gnuradio.PortTemplate
+gov.redhawk.model.sca.util.ModelUtil
+java.util.Arrays
+java.util.HashMap
+java.util.HashSet
+java.util.List
+java.util.Date
+mil.jpeojtrs.sca.scd.Provides
+mil.jpeojtrs.sca.scd.Uses
+mil.jpeojtrs.sca.spd.Implementation
+mil.jpeojtrs.sca.spd.SoftPkg
+org.eclipse.core.runtime.CoreException
+org.eclipse.core.runtime.IPath
+org.eclipse.core.runtime.Platform
+org.eclipse.core.runtime.IProduct
+org.eclipse.emf.common.util.EList"
+class="PortImplCppTemplate"
+
+skeleton="../generator.skeleton2" 
+%><%
+    TemplateParameter templ = (TemplateParameter) argument;
+    ImplementationSettings implSettings = templ.getImplSettings();
+    Implementation impl = templ.getImpl();
+    SoftPkg softPkg = (SoftPkg) impl.eContainer();
+    String PREFIX = gov.redhawk.ide.codegen.util.CodegenFileHelper.getPreferredFilePrefix(softPkg, implSettings);
+    EList<Uses> uses = softPkg.getDescriptor().getComponent().getComponentFeatures().getPorts().getUses();
+    EList<Provides> provides = softPkg.getDescriptor().getComponent().getComponentFeatures().getPorts().getProvides();
+    HashSet<String> usesReps = new HashSet<String>();
+    HashSet<String> providesReps = new HashSet<String>();
+    List<IPath> search_paths = Arrays.asList(RedhawkIdeActivator.getDefault().getDefaultIdlIncludePath());
+    TemplateParameter portTempl = new TemplateParameter(impl, implSettings, search_paths);
+    HashMap<String, IScaPortCodegenTemplate> portMap = new HashMap<String, IScaPortCodegenTemplate>();
+    boolean includePropertyChange = false;
+    Date date = new Date(System.currentTimeMillis());
+    for (PortRepToGeneratorMap p : implSettings.getPortGenerators()) {
+        try {
+            IPortTemplateDesc template = CodegenUtil.getPortTemplate(p.getGenerator(), null);
+            if (template != null) {
+                portMap.put(p.getRepId(), template.getTemplate());
+            }
+        } catch (CoreException e) {
+            // TODO What to do here! Throw the exception and not generate anything?
+        }
+    }
+    for (Uses entry : uses) {
+        if (PropertyChangeEventPortTemplate.EVENTCHANNEL_REPID.equals(entry.getRepID()) 
+                && PropertyChangeEventPortTemplate.EVENTCHANNEL_NAME.equals(entry.getUsesName())) {
+            includePropertyChange = true;
+            continue;
+        }
+        usesReps.add(entry.getRepID());
+    }
+    for (Provides entry : provides) {
+        providesReps.add(entry.getRepID());
+    }
+%>
+/*
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * distributed with this source distribution.
+ * 
+ * This file is part of GNUHAWK.
+ * 
+ * GNUHAWK is free software: you can redistribute it and/or modify is under the 
+ * terms of the GNU General Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later 
+ * version.
+ * 
+ * GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/*******************************************************************************************
+
+    AUTO-GENERATED CODE. DO NOT MODIFY
+
+ 	Source: <%=ModelUtil.getSpdFileName(softPkg)%>
+<%
+	String[] output;
+	IProduct product = Platform.getProduct();
+	if (product != null) {
+		output = product.getProperty("aboutText").split("\n");
+%>
+ 	<%=output[0]%>
+ 	<%=output[1]%>
+ 	<%=output[2]%>
+<%
+	}
+%>
+
+*******************************************************************************************/
+
+#include "<%=PREFIX%>.h"
+
+<% if ( provides.size() > 0 ) { %>
+
+bool CompareSRI(BULKIO::StreamSRI &SRI_1, BULKIO::StreamSRI &SRI_2){
+    if (SRI_1.hversion != SRI_2.hversion)
+      return false;
+    if (SRI_1.xstart != SRI_2.xstart)
+      return false;
+    if (SRI_1.xdelta != SRI_2.xdelta)
+      return false;
+    if (SRI_1.xunits != SRI_2.xunits)
+      return false;
+    if (SRI_1.subsize != SRI_2.subsize)
+      return false;
+    if (SRI_1.ystart != SRI_2.ystart)
+      return false;
+    if (SRI_1.ydelta != SRI_2.ydelta)
+      return false;
+    if (SRI_1.yunits != SRI_2.yunits)
+      return false;
+    if (SRI_1.mode != SRI_2.mode)
+      return false;
+    if (strcmp(SRI_1.streamID, SRI_2.streamID) != 0)
+      return false;
+    if (SRI_1.keywords.length() != SRI_2.keywords.length())
+      return false;
+    std::string action = "eq";
+    for (unsigned int i=0; i<SRI_1.keywords.length(); i++) {
+      if (strcmp(SRI_1.keywords[i].id, SRI_2.keywords[i].id)) {
+	return false;
+      }
+
+      if (!ossie::compare_anys(SRI_1.keywords[i].value, SRI_2.keywords[i].value, action)) {
+	return false;
+      }
+    }
+    return true;
+}
+
+<% } %>
+
+<%
+    if (includePropertyChange) {
+%>
+<%=new PropertyChangeEventPortTemplate().generateClassImplementation(null, false, softPkg, implSettings, portTempl, CodegenUtil.CPP)%>
+<%
+    }
+    for (String intName : usesReps) {
+        IScaPortCodegenTemplate gen = portMap.get(intName);
+        portTempl.setPortRepId(intName);
+        portTempl.setGenSupport(false);
+        portTempl.setGenClassDef(false);
+        portTempl.setGenClassImpl(true);
+        if (gen != null) {
+%>
+<%=gen.generateClassImplementation(intName, false, softPkg, implSettings, portTempl, CodegenUtil.CPP)%>
+<%
+        } else {
+%>
+<%=new PortTemplate().generateClassImplementation(intName, false, softPkg, implSettings, portTempl, CodegenUtil.CPP)%>
+<%
+        }
+    }
+    for (String intName : providesReps) {
+        IScaPortCodegenTemplate gen = portMap.get(intName);
+        portTempl.setPortRepId(intName);
+        portTempl.setGenSupport(false);
+        portTempl.setGenClassDef(false);
+        portTempl.setGenClassImpl(true);
+        if (gen != null) {
+%>
+<%=gen.generateClassImplementation(intName, true, softPkg, implSettings, portTempl, CodegenUtil.CPP)%>
+<%
+        } else {
+%>
+<%=new PortTemplate().generateClassImplementation(intName, true, softPkg, implSettings, portTempl, CodegenUtil.CPP)%>
+<%
+        }
+    }
+%>

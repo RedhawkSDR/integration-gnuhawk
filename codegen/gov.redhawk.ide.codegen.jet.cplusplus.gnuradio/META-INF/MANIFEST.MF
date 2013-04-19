@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Code generator for GNUHAWK
+Bundle-SymbolicName: gov.redhawk.ide.codegen.jet.cplusplus.gnuradio;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: gov.redhawk.ide.codegen.jet.cplusplus.gnuradio.GNURadioJetTemplatePlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ gov.redhawk.ide.codegen.cplusplus;bundle-version="6.0.0",
+ gov.redhawk.ide.codegen;bundle-version="9.0.0",
+ gov.redhawk.ide.codegen.jet;bundle-version="3.1.0",
+ gov.redhawk.ide.codegen.jet.cplusplus;bundle-version="9.1.0",
+ gov.redhawk.sca.model;bundle-version="15.0.0",
+ gov.redhawk.ide.idl;bundle-version="4.1.0",
+ gov.redhawk.ide;bundle-version="6.0.0",
+ gov.redhawk.ide.sdr.ui;bundle-version="3.2.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

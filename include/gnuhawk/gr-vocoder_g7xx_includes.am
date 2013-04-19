@@ -1,0 +1,1 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/g7xx/g72x.h

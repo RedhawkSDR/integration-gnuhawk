@@ -1,0 +1,17 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_alaw_decode_bs.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_alaw_encode_sb.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_codec2_decode_ps.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_codec2_encode_sp.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_cvsd_decode_bs.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_cvsd_encode_sb.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_g721_decode_bs.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_g721_encode_sb.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_g723_24_decode_bs.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_g723_24_encode_sb.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_g723_40_decode_bs.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_g723_40_encode_sb.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_gsm_fr_decode_ps.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_gsm_fr_encode_sp.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_ulaw_decode_bs.h
+nobase_pkginclude_HEADERS += gnuradio/gr-vocoder/vocoder_ulaw_encode_sb.h

@@ -1,0 +1,11 @@
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/ccomplex_dotprod_3dnowext.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/ccomplex_dotprod_3dnow.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/ccomplex_dotprod_sse.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/complex_dotprod_3dnowext.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/complex_dotprod_3dnow.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/complex_dotprod_sse.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/fcomplex_dotprod_3dnow.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/fcomplex_dotprod_sse.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/float_dotprod_3dnow.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/float_dotprod_sse.S
+libgnuhawk_la_SOURCES += ../gnuradio/gnuradio-core/src/lib/filter/short_dotprod_mmx.S

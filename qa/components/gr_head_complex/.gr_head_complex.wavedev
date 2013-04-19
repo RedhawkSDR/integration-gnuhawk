@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<codegen:WaveDevSettings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:codegen="http://www.redhawk.gov/model/codegen">
+  <implSettings key="cpp">
+    <value outputDir="cpp" template="gov.redhawk.ide.codegen.jet.cplusplus.PullPortDataTemplate" generatorId="gov.redhawk.ide.codegen.jet.cplusplus.CplusplusGenerator" primary="true">
+      <generatedFileCRCs crc="1746641546" file="reconf"/>
+      <generatedFileCRCs crc="801895276" file="port_impl.cpp"/>
+      <generatedFileCRCs crc="4078990743" file="../gr_head_complex.spec"/>
+      <generatedFileCRCs crc="39581891" file="gr_head_complex.cpp"/>
+      <generatedFileCRCs crc="2755139271" file="gr_head_complex.h"/>
+      <generatedFileCRCs crc="864280150" file="build.sh"/>
+      <generatedFileCRCs crc="3558087422" file="configure.ac"/>
+      <generatedFileCRCs crc="1542545782" file="port_impl.h"/>
+      <generatedFileCRCs crc="3736759534" file="gr_head_complex_base.cpp"/>
+      <generatedFileCRCs crc="1478293882" file="main.cpp"/>
+      <generatedFileCRCs crc="4037455673" file="struct_props.h"/>
+      <generatedFileCRCs crc="799689219" file="gr_head_complex_base.h"/>
+      <generatedFileCRCs crc="2228123531" file="Makefile.am"/>
+    </value>
+  </implSettings>
+</codegen:WaveDevSettings>

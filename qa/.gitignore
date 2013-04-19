@@ -1,0 +1,10 @@
+gr_unittest.pyc
+gnuradio/gr/__init__.pyc
+gnuradio/gr/qa_add_and_friends.pyc
+gnuradio/gr/sinks.pyc
+gnuradio/gr/sources.pyc
+gnuradio/gr/top_block.pyc
+gnuradio/gr_unittest.py
+*.pyc
+*.o
+

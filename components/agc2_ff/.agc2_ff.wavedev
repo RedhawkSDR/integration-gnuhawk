@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<codegen:WaveDevSettings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:codegen="http://www.redhawk.gov/model/codegen">
+  <implSettings key="cpp">
+    <value outputDir="cpp" template="gov.redhawk.ide.codegen.jet.cplusplus.GNURadioTemplate" generatorId="gov.redhawk.ide.codegen.jet.cplusplus.CplusplusGenerator" primary="true">
+      <properties id="pattern_gr_block" value="FALSE"/>
+      <properties id="pattern_gr_sync_block" value="TRUE"/>
+      <properties id="pattern_gr_sync_decimator" value="FALSE"/>
+      <properties id="pattern_gr_sync_interpolator" value="FALSE"/>
+      <generatedFileCRCs crc="1746641546" file="reconf"/>
+      <generatedFileCRCs crc="2361289271" file="port_impl.cpp"/>
+      <generatedFileCRCs crc="410939002" file="RH_ProcessThread.h"/>
+      <generatedFileCRCs crc="4129395847" file="build.sh"/>
+      <generatedFileCRCs crc="2079246424" file="configure.ac"/>
+      <generatedFileCRCs crc="1336691699" file="port_impl.h"/>
+      <generatedFileCRCs crc="1173758540" file="agc2_ff_GnuHawkBlock.h"/>
+      <generatedFileCRCs crc="3255758163" file="main.cpp"/>
+      <generatedFileCRCs crc="1162614311" file="agc2_ff_base.cpp"/>
+      <generatedFileCRCs crc="503690752" file="RH_GnuHawkBlock.h"/>
+      <generatedFileCRCs crc="3034677163" file="agc2_ff.cpp"/>
+      <generatedFileCRCs crc="3613828519" file="struct_props.h"/>
+      <generatedFileCRCs crc="810768206" file="agc2_ff.h"/>
+      <generatedFileCRCs crc="1875427857" file="agc2_ff_base.h"/>
+      <generatedFileCRCs crc="1313297011" file="Makefile.am"/>
+    </value>
+  </implSettings>
+</codegen:WaveDevSettings>

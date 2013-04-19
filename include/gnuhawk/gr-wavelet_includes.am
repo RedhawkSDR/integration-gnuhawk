@@ -1,0 +1,7 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_squash_ff.h
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_squash_ff_impl.h
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_wavelet_ff.h
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_wavelet_ff_impl.h
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_wvps_ff.h
+nobase_pkginclude_HEADERS += gnuradio/gr-wavelet/wavelet_wvps_ff_impl.h
