@@ -31,7 +31,9 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="complex_to_float_1o.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>convert a stream of gr_complex to 1 or 2 streams of float
+
+param: vlen	- vector len (default 1)</description>
     <code type="Executable">
       <localfile name="cpp/complex_to_float_1o"/>
       <entrypoint>cpp/complex_to_float_1o</entrypoint>

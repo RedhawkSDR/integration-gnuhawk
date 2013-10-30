@@ -31,7 +31,9 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="agc_ff.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>high performance Automatic Gain Control class
+
+Power is approximated by absolute value</description>
     <code type="Executable">
       <localfile name="cpp/agc_ff"/>
       <entrypoint>cpp/agc_ff</entrypoint>

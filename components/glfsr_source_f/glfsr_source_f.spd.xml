@@ -31,7 +31,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="glfsr_source_f.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>Galois LFSR pseudo-random source generating float outputs -1.0 - 1.0</description>
     <code type="Executable">
       <localfile name="cpp/glfsr_source_f"/>
       <entrypoint>cpp/glfsr_source_f</entrypoint>

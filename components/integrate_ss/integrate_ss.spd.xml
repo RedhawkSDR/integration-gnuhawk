@@ -31,7 +31,9 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="integrate_ss.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>output = sum(input[0]...input[n])
+
+Integrate successive samples in input stream and decimate</description>
     <code type="Executable">
       <localfile name="cpp/integrate_ss"/>
       <entrypoint>cpp/integrate_ss</entrypoint>

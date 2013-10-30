@@ -31,7 +31,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="unpack_k_bits_bb.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>Converts a byte with k relevent bits to k output bytes with 1 bit in the LSB.</description>
     <code type="Executable">
       <localfile name="cpp/unpack_k_bits_bb"/>
       <entrypoint>cpp/unpack_k_bits_bb</entrypoint>

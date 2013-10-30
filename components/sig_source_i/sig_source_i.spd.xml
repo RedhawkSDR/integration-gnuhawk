@@ -31,7 +31,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="sig_source_i.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>signal generator with long output.</description>
     <code type="Executable">
       <localfile name="cpp/sig_source_i"/>
       <entrypoint>cpp/sig_source_i</entrypoint>

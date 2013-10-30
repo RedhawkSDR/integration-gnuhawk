@@ -31,7 +31,9 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="phase_modulator_fc.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>Phase modulator block
+
+output=complex(cos(in*sensitivity),sin(in*sensitivity))</description>
     <code type="Executable">
       <localfile name="cpp/phase_modulator_fc"/>
       <entrypoint>cpp/phase_modulator_fc</entrypoint>

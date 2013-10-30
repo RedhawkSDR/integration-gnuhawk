@@ -31,7 +31,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="multiply_cc_2i.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>Multiply streams of complex values</description>
     <code type="Executable">
       <localfile name="cpp/multiply_cc_2i"/>
       <entrypoint>cpp/multiply_cc_2i</entrypoint>

@@ -31,7 +31,9 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="and_ss_2i.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>output = input_0 &amp; input_1
+
+bitwise boolean and</description>
     <code type="Executable">
       <localfile name="cpp/and_ss_2i"/>
       <entrypoint>cpp/and_ss_2i</entrypoint>

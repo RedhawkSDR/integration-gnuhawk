@@ -31,7 +31,32 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="dc_blocker_ff.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>class gr_dc_blocker_ff
+
+a computationally efficient controllable DC blocker
+
+This block implements a computationally efficient DC blocker that produces
+a tighter notch filter around DC for a smaller group delay than an
+equivalent FIR filter or using a single pole IIR filter (though the IIR
+filter is computationally cheaper).
+
+The block defaults to using a delay line of length 32 and the long form
+of the filter. Optionally, the delay line length can be changed to alter
+the width of the DC notch (longer lines will decrease the width).
+
+The long form of the filter produces a nearly flat response outside of
+the notch but at the cost of a group delay of 2D-2.
+
+The short form of the filter does not have as flat a response in the
+passband but has a group delay of only D-1 and is cheaper to compute.
+
+The theory behind this block can be found in the paper:
+
+R. Yates, &quot;DC Blocker Algorithms,&quot; IEEE Signal Processing Magazine,
+Mar. 2008, pp 132-134.
+
+param: D -          (int) the length of the delay line
+param: long_form -  (bool) whether to use long (true, default) or short form</description>
     <code type="Executable">
       <localfile name="cpp/dc_blocker_ff"/>
       <entrypoint>cpp/dc_blocker_ff</entrypoint>

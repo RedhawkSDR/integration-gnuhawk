@@ -31,7 +31,9 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="and_const_bb.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>output_N = input_N &amp; value
+
+bitwise boolean and of const to the data stream.</description>
     <code type="Executable">
       <localfile name="cpp/and_const_bb"/>
       <entrypoint>cpp/and_const_bb</entrypoint>

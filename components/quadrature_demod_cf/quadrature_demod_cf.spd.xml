@@ -31,7 +31,10 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="quadrature_demod_cf.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>quadrature demodulator: complex in, float out
+
+This can be used to demod FM, FSK, GMSK, etc.
+The input is complex baseband.</description>
     <code type="Executable">
       <localfile name="cpp/quadrature_demod_cf"/>
       <entrypoint>cpp/quadrature_demod_cf</entrypoint>

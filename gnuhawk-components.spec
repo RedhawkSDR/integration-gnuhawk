@@ -21,8 +21,8 @@
 %{!?_sdrroot:    %define _sdrroot    /var/redhawk/sdr}
 
 Name:		gnuhawk-components
-Version:	1.8.3
-Release:	4%{?dist}
+Version:	1.8.5
+Release:	1%{?dist}
 Summary:	A set of GNU Radio blocks built for use in REDHAWK
 Prefix:		%{_sdrroot}
 
@@ -42,7 +42,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 A set of GNU Radio blocks built for use in REDHAWK
-
+ * Commit: __REVISION__
+ * Source Date/Time: __DATETIME__
 
 %prep
 %setup -q

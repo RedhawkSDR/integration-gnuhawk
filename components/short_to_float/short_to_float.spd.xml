@@ -31,7 +31,10 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="short_to_float.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>Convert stream of short to a stream of float
+
+param: vlen vector length of data streams.
+param: scale a scalar divider to change the output signal scale.</description>
     <code type="Executable">
       <localfile name="cpp/short_to_float"/>
       <entrypoint>cpp/short_to_float</entrypoint>

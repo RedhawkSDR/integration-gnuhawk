@@ -31,7 +31,15 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="noise_source_s.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <description>Random number source
+
+Generate random values from different distributions.
+Currently, only Gaussian and uniform are enabled.
+
+param: type - the random distribution to use (see gr_noise_type.h)
+param: ampl - a scaling factor for the output
+param: seed - seed for random generators. Note that for uniform and
+                       Gaussian distributions, this should be a negative number.</description>
     <code type="Executable">
       <localfile name="cpp/noise_source_s"/>
       <entrypoint>cpp/noise_source_s</entrypoint>
