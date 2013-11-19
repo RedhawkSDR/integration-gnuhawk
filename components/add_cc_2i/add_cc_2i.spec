@@ -14,7 +14,7 @@ Prefix: %{_prefix}
 Name: add_cc_2i
 Summary: Component %{name}
 Version: 1.0.0
-Release: 1%{?dist}%{?dist}
+Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components
 Source: %{name}-%{version}.tar.gz
