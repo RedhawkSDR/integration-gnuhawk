@@ -76,6 +76,12 @@ if not cwd+"/swig_modules" in sys.path:
 if not cwd+"/tests" in sys.path:
     sys.path.append(cwd+"/tests")
 
+# Set the the DEBUG_LEVEL execparam for the other component namespaces
+swig_modules = os.listdir(cwd+"/swig_modules")
+for mod in swig_modules:
+    x = __import__(mod)
+    x.setDebug(debug_level)
+
 testLoader = unittest.TestLoader()
 if qa_test_prefix != None:
     testLoader.testMethodPrefix = qa_test_prefix 

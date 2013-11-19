@@ -14,7 +14,7 @@ Prefix: %{_prefix}
 Name: noise_source_s
 Summary: Component %{name}
 Version: 1.0.0
-Release: 1
+Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components
 Source: %{name}-%{version}.tar.gz
