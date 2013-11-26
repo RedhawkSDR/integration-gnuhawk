@@ -1,0 +1,10 @@
+b750300a2b08d7a0125932c2e68030fa argmax_is_3i_GnuHawkBlock.h
+5787ec8aba7ef761c1efeec6612dc8c2 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+bdc8ef42859e870da6eb28c9857de6f7 argmax_is_3i_base.cpp
+abfd91b5ef756fa63b336f4f61aa1b6c argmax_is_3i_base.h
+0579936ccf51dc1e7f53ed3d242f7d9f configure.ac
+df450bc6f211ede062a03a96f878e0c8 Makefile.am
+7de78ee5f18f6b9b27405d6e4a812982 argmax_is_3i.cpp
+e71e3ba356488b28cc2ae6f71a3cfa77 argmax_is_3i.h
+5104a8ceb7d3f824b2a8b58ab6eac66b Makefile.am.ide

@@ -22,9 +22,9 @@
 #define glfsr_source_f_GH_BLOCK_H
 
 #include <gr_component.h>
-#include "gr_glfsr_source_f.h"
+#include "digital_glfsr_source_f.h"
 
-typedef GHComponent< gr_glfsr_source_f >            GnuHawkBlock;
+typedef GHComponent< digital_glfsr_source_f >            GnuHawkBlock;
 
 
 #endif

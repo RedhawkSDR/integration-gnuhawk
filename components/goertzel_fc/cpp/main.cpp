@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "goertzel_fc.h"
 
 int main(int argc, char* argv[])
-{ 
-    goertzel_fc_i* goertzel_fc_servant; 
-    Resource_impl::start_component(goertzel_fc_servant, argc, argv);         
+{
+    goertzel_fc_i* goertzel_fc_servant;
+    Resource_impl::start_component(goertzel_fc_servant, argc, argv);
+    return 0;
 }
+

@@ -1,0 +1,10 @@
+7a2ae3c12853ed53e19b06fa5eb292e4 main.cpp
+76e7cab1c20ab8f362279dbfde006546 or_ss_4i.cpp
+92a6a5459e888768c3ceff835d0599c7 or_ss_4i.h
+c3eec221ecf93eaa50ab91e698b5bf86 or_ss_4i_GnuHawkBlock.h
+d193775e0ac25076db454b4c6f313155 reconf
+f7c50da6069a2e3d03ee08ee3fa58350 or_ss_4i_base.h
+c7d7ddf743451245f6f805f2154c4876 configure.ac
+08ef43841ace9bb8a7e0f89a72133c7d Makefile.am
+9441335748fbf2c83c4a691039f6151b Makefile.am.ide
+bb545eb1b78f29268742d3f2a2b409c4 or_ss_4i_base.cpp

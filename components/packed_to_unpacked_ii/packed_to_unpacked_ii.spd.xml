@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:154dc0d6-0101-442f-826b-7e11059d6577" name="packed_to_unpacked_ii" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="packed_to_unpacked_ii.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="packed_to_unpacked_ii.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Convert a stream of packed bytes or shorts to stream of unpacked bytes or shorts.
+
+input: stream of int; output: stream of int
+
+This is the inverse of gr_unpacked_to_packed_XX.
+
+The bits in the bytes or shorts input stream are grouped into chunks of
+bits_per_chunk bits and each resulting chunk is written right-
+justified to the output stream of bytes or shorts.
+All b or 16 bits of the each input bytes or short are processed.
+The right thing is done if bits_per_chunk is not a power of two.
+
+The combination of gr_packed_to_unpacked_XX_ followed by
+gr_chunks_to_symbols_Xf or gr_chunks_to_symbols_Xc handles the
+general case of mapping from a stream of bytes or shorts into
+arbitrary float or complex symbols.</description>
+    <code type="Executable">
+      <localfile name="cpp/packed_to_unpacked_ii"/>
+      <entrypoint>cpp/packed_to_unpacked_ii</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

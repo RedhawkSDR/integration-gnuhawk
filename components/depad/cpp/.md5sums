@@ -1,0 +1,10 @@
+a967440defc73642e4485b9497acdbad main.cpp
+a24a3979bc0c5f7da5a3a4a202a84ddf depad.cpp
+5ad7224e2b983a6341bb3bf1e64f506d depad_GnuHawkBlock.h
+a23069b563691091ee7500d8710f2dee depad.h
+e0534e68e300ce97a1c9c5328d9f9c28 depad_base.cpp
+76e56feeb7618a314fa3b332d5612052 configure.ac
+6d0a458f8c53bdd0a927da269ead3eb3 Makefile.am
+d193775e0ac25076db454b4c6f313155 reconf
+9fc129ac72e49fb60f5b2140655cf1f1 depad_base.h
+3db658e3552f7012c0596a6807472459 Makefile.am.ide

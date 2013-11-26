@@ -92,6 +92,15 @@ public:
 
 };
 
+class long_to_int: std::unary_function< CORBA::Long, int > {
+
+public:
+  result_type operator()( argument_type i ) {
+    return (result_type)i;
+  }
+
+};
+
 std::vector< CORBA::Long > add_const_vii_i::getK() {
 
   std::vector< CORBA::Long > out_k;
@@ -123,11 +132,21 @@ void add_const_vii_i::setK( const std::string &id ) {
 //
 void add_const_vii_i::createBlock()
 {
-  //
-  // gr_sptr = xxx_make_xxx( args );
-  //
-  std::vector<int> t_k( k.begin(), k.end() );
-  gr_sptr = gr_make_add_const_vii(t_k);
+
+  // need to have at least 1 item in the list... bad things happend if not
+  if ( k.size() < 1 )  return;
+
+  try {
+    std::vector<int> t_k;
+    t_k.resize( k.size() );
+    std::transform( k.begin(), k.end(), t_k.begin(), long_to_int() );
+    gr_sptr = gr_make_add_const_vii( t_k );
+  }
+  catch(...) {
+    return;
+  }
+
+
   this->setPropertyChangeListener("k", this, &add_const_vii_i::setK );
   this->registerGetValue("k", this, &add_const_vii_i::getK);
   //this->registerGetterSetter("k", &gr_add_const_vii::k, &gr_add_const_vii::set_k);

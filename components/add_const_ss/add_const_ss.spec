@@ -1,7 +1,25 @@
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file 
+# distributed with this source distribution.
+# 
+# This file is part of GNUHAWK.
+# 
+# GNUHAWK is free software: you can redistribute it and/or modify is under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later 
+# version.
+# 
+# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program.  If not, see http://www.gnu.org/licenses/.
+#
+
 # By default, the RPM will install to the standard REDHAWK SDR root location (/var/redhawk/sdr)
 # You can override this at install time using --prefix /new/sdr/root when invoking rpm (preferred method, if you must)
 %{!?_sdrroot: %define _sdrroot /var/redhawk/sdr}
-%define _sdrroot /var/redhawk/sdr
 %define _prefix %{_sdrroot}
 Prefix: %{_prefix}
 
@@ -10,6 +28,9 @@ Prefix: %{_prefix}
 %define _localstatedir %{_prefix}/var
 %define _mandir        %{_prefix}/man
 %define _infodir       %{_prefix}/info
+
+# Define the namespace of the GNUHawk component
+%define _namespace gnuhawk/gr/math
 
 Name: add_const_ss
 Summary: Component %{name}
@@ -20,12 +41,12 @@ Group: REDHAWK/Components
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 
-Requires: redhawk >= 1.8
-Requires: gnuhawk >= 1.8.3
-BuildRequires: redhawk-devel >= 1.8
-BuildRequires: gnuhawk >= 1.8.3
-BuildRequires: fftw-devel
+Requires: redhawk >= 1.9
+BuildRequires: redhawk-devel >= 1.9
 BuildRequires: autoconf automake libtool
+Requires: gnuhawk >= 1.9
+BuildRequires: gnuhawk >= 1.9
+BuildRequires: fftw-devel gsl-devel
 
 # Interface requirements
 Requires: bulkioInterfaces
@@ -44,8 +65,8 @@ Component %{name}
 pushd cpp
 export SDRROOT=%{_sdrroot}
 ./reconf
-%define _bindir %{_prefix}/dom/components/add_const_ss/cpp
-%configure
+%define _bindir %{_prefix}/dom/components/%{_namespace}/%{_version}/add_const_ss/cpp
+%configure --enable-deps=sdr
 make %{?_smp_mflags}
 popd
 
@@ -55,7 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 # Implementation cpp
 pushd cpp
 export SDRROOT=%{_sdrroot}
-%define _bindir %{_prefix}/dom/components/add_const_ss/cpp
+%define _bindir %{_prefix}/dom/components/%{_namespace}/%{_version}/add_const_ss/cpp
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 
@@ -66,10 +87,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,redhawk,redhawk)
-%dir %{_prefix}/dom/components/gnuhawk/gr/%{name}/1.0.0
-%{_prefix}/dom/components/gnuhawk/gr/%{name}/1.0.0/add_const_ss.scd.xml
-%{_prefix}/dom/components/gnuhawk/gr/%{name}/1.0.0/add_const_ss.prf.xml
-%{_prefix}/dom/components/gnuhawk/gr/%{name}/1.0.0/add_const_ss.spd.xml
-%{_prefix}/dom/components/gnuhawk/gr/%{name}/1.0.0/cpp
+%dir %{_prefix}/dom/components/%{_namespace}/%{name}/%{version}
+%{_prefix}/dom/components/%{_namespace}/%{name}/%{version}/add_const_ss.scd.xml
+%{_prefix}/dom/components/%{_namespace}/%{name}/%{version}/add_const_ss.prf.xml
+%{_prefix}/dom/components/%{_namespace}/%{name}/%{version}/add_const_ss.spd.xml
+%{_prefix}/dom/components/%{_namespace}/%{name}/%{version}/cpp
+%{_prefix}/dom/components/%{_namespace}/%{name}/current
 
-%{_prefix}/dom/components/gnuhawk/gr/%{name}/current

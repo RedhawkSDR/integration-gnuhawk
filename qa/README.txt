@@ -15,6 +15,46 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 this program.  If not, see http://www.gnu.org/licenses/.
 
+Table of Contents:
+
+Adding New QA Components to Build Environment
+Running QA Tests
+
+
+############################################
+Adding New QA Components to Build Environment
+############################################
+
+1) Generate component using REDHAWK IDE and GNUHAWK code generator
+
+2) cp component directory under gnuhawk/qa/components
+
+3) from qa directory 
+   ./bld/fixcomp  <component directory name >
+
+4) add component to build environment
+   vi bld/cdirs
+
+5) Rebuild QA components:
+   ./reconf; ./configure; make
+  
+   or 
+
+   cd components/<component name>/cpp
+   ./reconf;./configure; make
+
+   or 
+
+
+   -- to build with gnuhawk sdr dependency
+   cd components/<component name>/cpp
+   ./configure --enable-deps=sdr
+   
+
+
+########################################
+Running QA Tests
+########################################
 Usage: ./runtests.py <qa filename matching string> [options]
 
 Options:
@@ -81,6 +121,7 @@ Do the following:
 1. Build the gnuradio baseline separate from what was built for gnuhawk
    A. You may need to generate an include file which is needed for the make,
 pmt_unv.h
+   B. You may need to install swig.
       Do the following to generate:
       1. cd <path to gnuradio source>/gruel/src/lib/pmt
       2. python generate_unv.py

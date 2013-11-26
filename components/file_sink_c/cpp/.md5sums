@@ -1,0 +1,10 @@
+45e7992f24b1f011da09f8613f62a284 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+d47b3da2f599457c9f964a2a24676065 configure.ac
+73e607b67f3e02a787ebf8ef0bd492a1 file_sink_c_GnuHawkBlock.h
+08ddfb56c14501c601d08ec1220548ee file_sink_c_base.h
+33197554a288e228d95b37f588989a15 Makefile.am
+2c8aafef8325ef7fabb1c35b4d3a107e Makefile.am.ide
+f844860ac54548e6623f9bb354c1fe09 file_sink_c_base.cpp
+05ab95efd3837064ccec7442f6a325ce file_sink_c.cpp
+08199b4a19467c728e7284bcb5e3750a file_sink_c.h

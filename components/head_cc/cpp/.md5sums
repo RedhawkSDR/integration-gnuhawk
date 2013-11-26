@@ -1,0 +1,10 @@
+5747f8ade83a43f5edb8d2cf8a92633f head_cc_GnuHawkBlock.h
+d015e5b490ec1d7765385f5058443feb main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+8a1aca84ced624d65d7a68676f249811 head_cc.h
+bd6104cf2b528ecd04c4aebc705d221a head_cc_base.cpp
+0a6b605b14b85122bcd9d713359c05f9 head_cc.cpp
+9d4ba3afa8e73637aab2ed3a483af3ab configure.ac
+fb1bd959b59f03b14575d3727d9c6d9b Makefile.am
+b283adabd791c4f4836823ae114ce11a Makefile.am.ide
+f6bce260c8d370b57a6cf7fa078d04a1 head_cc_base.h

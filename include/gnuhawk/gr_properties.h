@@ -97,6 +97,42 @@ namespace ossie {
             _a <<= seq;
         }
 
+        /*
+         * Vector functions for complex sequence
+         * a -> seq_p -> v
+         * any -> CORBA sequence type -> std::vector<simple type>
+         */
+        template<>
+        inline bool vector_extract<std::complex<float>, CF::complexFloatSeq>
+             (const CORBA::Any& _a, std::vector<std::complex<float> >& _s)
+        {
+            CF::complexFloatSeq* seq;
+            if (_a >>= seq) {
+                // any -> CORBA sequence type worked
+                _s.resize(seq->length());
+                if ( _s.size() > 0 )  {
+                    // CORBA sequence -> std::vector<simple type>
+                    memcpy(&_s[0], &(*seq)[0], seq->length()*sizeof(std::complex<float>));
+                }
+                return true;
+            } else {
+                // Something went wrong with any -> CORBA sequence type.  Abort.
+                return false;
+            }
+        }
+
+        template<>
+        inline void vector_insert<std::complex<float>, CF::complexFloatSeq>
+            (CORBA::Any& _a, const std::vector<std::complex<float> >& _s)
+	 {
+            CF::complexFloatSeq::_var_type seq = new CF::complexFloatSeq(_s.size(), 
+                                         _s.size(),
+                                        (CF::complexFloat*)&_s[0],
+                                        0);  
+            _a <<= seq;
+        } 
+
+
     } // namespace ossie
 } //namespace corba
 
@@ -119,6 +155,7 @@ ANY_VECTOR_OPERATORS(CORBA::LongLong, CORBA::LongLongSeq);
 ANY_VECTOR_OPERATORS(CORBA::ULongLong, CORBA::ULongLongSeq);
 ANY_VECTOR_OPERATORS(CORBA::Float, CORBA::FloatSeq);
 ANY_VECTOR_OPERATORS(CORBA::Double, CORBA::DoubleSeq);
+ANY_VECTOR_OPERATORS(std::complex<float>, CF::complexFloatSeq);
 #undef ANY_VECTOR_OPERATORS
 
 #define ANY_VECTOR_CONVERT_OPERATORS(T,SEQ)                         \
@@ -139,7 +176,7 @@ ANY_VECTOR_CONVERT_OPERATORS(std::string,CORBA::StringSeq);
 // End core framework section
 
 template <typename T>
-class GR_PropertyWrapper : public PropertyWrapper<T>
+class GR_PropertyWrapper : public PropertyWrapper< T >
 {
 public:
     typedef T value_type;
@@ -424,7 +461,7 @@ protected:
     GR_StructProperty (value_type& value) :
         super(value)
     {
-        super::type = CORBA::tk_struct;
+        super::type = CORBA::_tc_TypeCode;
     }
 
     friend class GR_PropertyWrapperFactory;
@@ -442,6 +479,7 @@ typedef GR_PropertyWrapper<std::vector<CORBA::LongLong> > GR_LongLongSeqProperty
 typedef GR_PropertyWrapper<std::vector<CORBA::ULongLong> > GR_ULongLongSeqProperty;
 typedef GR_PropertyWrapper<std::vector<CORBA::Float> > GR_FloatSeqProperty;
 typedef GR_PropertyWrapper<std::vector<CORBA::Double> > GR_DoubleSeqProperty;
+typedef GR_PropertyWrapper<std::vector<std::complex<float> >  > GR_ComplexFloatSeqProperty;
 
 class GR_PropertyWrapperFactory : public PropertyWrapperFactory
 {
@@ -455,11 +493,11 @@ public:
     template <typename T>
     static PropertyInterface* Create (T& value)
     {
-        return new GR_StructProperty<T>(value);
+        return new GR_StructProperty< T >(value);
     }
 
     template <typename T>
-    static PropertyInterface* Create (std::vector<T>& value)
+    static PropertyInterface* Create (std::vector< T >& value)
     {
       return new StructSequenceProperty<T>(value);
     }
@@ -615,6 +653,13 @@ template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Double> (std::vector<CORBA::Double>& value)
 {
   return new GR_DoubleSeqProperty(value);
+}
+
+template <>
+inline PropertyInterface* GR_PropertyWrapperFactory::Create<std::complex<float> > (
+    std::vector<std::complex<float> >& inputVector)
+{
+    return new GR_ComplexFloatSeqProperty(inputVector);
 }
 #endif
 

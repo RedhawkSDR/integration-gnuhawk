@@ -1,0 +1,8 @@
+#{% extends "common/reconf" %}
+
+#{% block license %}
+{{component.shellLicense}}
+
+#{% endblock %}
+
+#{######### Inherit reconf from redhawk base template #########}

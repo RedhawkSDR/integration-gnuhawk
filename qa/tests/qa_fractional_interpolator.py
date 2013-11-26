@@ -32,7 +32,6 @@ class test_fractional_resampler(gr_unittest.TestCase):
     def tearDown(self):
         self.tb = None
 
-
     def test_001_ff(self):
         N = 10000        # number of samples to use
         fs = 1000        # baseband sampling rate
@@ -46,29 +45,29 @@ class test_fractional_resampler(gr_unittest.TestCase):
 
         self.tb.connect(signal, head, op, snk)
         self.tb.run() 
-        import time
-        time.sleep(2)
-        
+
         Ntest = 5000
         L = len(snk.data())
         t = map(lambda x: float(x)/(fs/rrate), xrange(L))
 
         phase = 0.1884
         expected_data = map(lambda x: math.sin(2.*math.pi*freq*x+phase), t)
+
         dst_data = snk.data()
 
         self.assertFloatTuplesAlmostEqual(expected_data[-Ntest:], dst_data[-Ntest:], 3)
 
-    def test_002_ff(self):
+
+    def test_002_cc(self):
         N = 10000        # number of samples to use
         fs = 1000        # baseband sampling rate
         rrate = 1.123    # resampling rate
 
         freq = 10
-        signal = gr.sig_source_f(fs, gr.GR_SIN_WAVE, freq, 1)
-        head = gr.head(gr.sizeof_float, N)
-        op = filter.fractional_interpolator_ff(0, rrate)
-        snk = gr.vector_sink_f()
+        signal = gr.sig_source_c(fs, gr.GR_SIN_WAVE, freq, 1)
+        head = gr.head(gr.sizeof_gr_complex, N)
+        op = filter.fractional_interpolator_cc(0.0, rrate)
+        snk = gr.vector_sink_c()
 
         self.tb.connect(signal, head, op, snk)
         self.tb.run() 
@@ -78,12 +77,12 @@ class test_fractional_resampler(gr_unittest.TestCase):
         t = map(lambda x: float(x)/(fs/rrate), xrange(L))
 
         phase = 0.1884
-        expected_data = map(lambda x: math.sin(2.*math.pi*freq*x+phase), t)
+        expected_data = map(lambda x: math.cos(2.*math.pi*freq*x+phase) + \
+                                1j*math.sin(2.*math.pi*freq*x+phase), t)
+
         dst_data = snk.data()
 
-        self.assertFloatTuplesAlmostEqual(expected_data[-Ntest:], dst_data[-Ntest:], 3)
-
-
+        self.assertComplexTuplesAlmostEqual(expected_data[-Ntest:], dst_data[-Ntest:], 3)
 
 
 if __name__ == '__main__':

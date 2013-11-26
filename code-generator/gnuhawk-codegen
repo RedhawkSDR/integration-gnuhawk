@@ -1,0 +1,192 @@
+#!/usr/bin/python
+import os
+import sys
+from getopt import getopt
+
+from redhawk.codegen.model.softpkg import SoftPkg
+from redhawk.codegen.utils import strenum
+from gnuhawk.codegen.settings import ImplementationSettings, importWavedevSettings
+
+# Try to use setuptools to locate Jinja2 and add it to the system path--the RPM
+# installs the egg but does not add it to the path.
+try:
+    import pkg_resources
+    try:
+        pkg_resources.require('Jinja2 >= 2.6')
+    except pkg_resources.DistributionNotFound:
+        # The package was not found via setuptools, try the import as-is.
+        pass
+except ImportError:
+    # setuptools is not installed, try the import as-is.
+    pass
+
+# Ensure that the jinja2 package is available.
+try:
+    import jinja2
+except ImportError:
+    raise SystemExit, os.path.basename(sys.argv[0]) + ' requires Jinja2 2.6 or later'
+
+usage = """%s [options] <SPD file> [filenames...]
+
+Arguments:
+    <SPD file>          Path to component .spd.xml
+    [filenames]         Optional list of specific filenames to generate
+
+Options:
+    -l                  List the files that would be generated
+    -f                  Overwrite existing files even if modified
+    -C <dir>            Put output files in directory <dir>
+""" % os.path.basename(sys.argv[0])
+
+Function = strenum('list', 'generate')
+
+if __name__ == '__main__':
+    opts, args = getopt(sys.argv[1:], 'flC:')
+    outputdir = None
+    action = Function.GENERATE
+    overwrite = False
+    overrides = ImplementationSettings()
+    for key, value in opts:
+        if key == '-C':
+            outputdir = value
+        elif key == '-l':
+            action = Function.LIST
+        elif key == '-f':
+            overwrite = True
+    try:
+        spdFile = args[0]
+    except:
+        raise SystemExit(usage)
+
+
+############GOOD 
+
+
+    # Any remaining arguments are filenames to be generated; place into bins
+    # based on the first path component.
+    # NB: This does not work with implementation directories more than 1
+    #     level deep.
+    filelist = {}
+    for filename in args[1:]:
+        if filename.count('/'):
+            dirname, filename = filename.split('/', 1)
+        else:
+            dirname = ''
+        if not dirname in filelist:
+            filelist[dirname] = []
+        filelist[dirname].append(filename)
+
+    # Parse the component profile
+    softpkg = SoftPkg(spdFile)
+
+    # Read existing WaveDev settings file
+    wavedev = '.' + os.path.basename(spdFile).replace('.spd.xml', '.wavedev')
+    wavedev = os.path.join(os.path.dirname(spdFile), wavedev)
+    if os.path.exists(wavedev):
+        settings = importWavedevSettings(wavedev)
+    else:
+        settings = {}
+
+    implList = settings.keys()
+
+    # Check that at least one implementation has been selected.
+    if len(implList) < 1:
+        raise SystemExit, 'No implementation specified and implementation(s) cannot be automatically determined'
+
+    # Disallow invalid combinations of command-line arguments.
+    if len(implList) > 1:
+        if overrides.template:
+            raise SystemExit, 'Cannot specify template for multiple implementations'
+        if overrides.outputDir:
+            raise SystemExit, 'Cannot override implementation directory for multiple implementations'
+        if overrides.properties:
+            raise SystemExit, 'Cannot override template-specific options for multiple implementations'
+
+    # Change to the output directory; all XML should have been processed, so
+    # there are no wories about relative paths.
+    if not outputdir:
+        # Default to the same location as the SPD unless told otherwise.
+        outputdir = os.path.dirname(spdFile)
+    if outputdir:
+        os.chdir(outputdir)
+
+    generators = []
+
+    # Top-level code generation
+    # TODO: Allow disabling, explicit file list, template selection
+    from gnuhawk.codegen.jinja.project import component
+    generator = component.factory(outputdir='.', overwrite=overwrite)
+    generators.append(('Component '+softpkg.name(), '', generator))
+
+    # Set up generation for each requested implementation.
+    for implId in implList:
+        # Make sure the implementation actually exists.
+        try:
+            impl = softpkg.getImplementation(implId)
+        except KeyError:
+            raise SystemExit, "No implementation '%s'" % implId
+
+        # Get generation settings, from a combination of the command line and (optionally)
+        # the .wavedev configuration file; the former has higher precedence.
+        implSettings = settings.get(implId, ImplementationSettings())
+        implSettings.override(overrides)
+
+        # Check that a template was given, either from the configuration file or the
+        # command line.
+        implTemplate = implSettings.template
+        if not implTemplate:
+            raise SystemExit, "No generator template given for implementation '%s'" % implId
+
+        # If no implementation directory was given at all, infer it from the entry point.
+        implOutputDir = implSettings.outputDir
+        if implOutputDir is None:
+            implOutputDir = os.path.dirname(impl.entrypoint())
+
+        # Find the code generator module from the template argument. Since it
+        # probably has dots, get the most specific module (e.g. 'component' from
+        # 'template.cpp.component').
+        package = __import__(implTemplate)
+        for name in implTemplate.split('.')[1:]:
+            package = getattr(package, name)
+        generator = package.factory(implId=implId, outputdir=implOutputDir,
+                                    overwrite=overwrite, crcs=implSettings.generatedFileCRCs,
+                                    **implSettings.properties)
+
+        # Display the implementation; pre-1.8 projects use UUIDs for the identifier
+        # and have a separate symbolic name in the project settings.
+        implName = implSettings.name
+        if not implName:
+            implName = implId
+
+        generators.append(('Implementation: '+implName, implOutputDir, generator))
+
+    # Run all generators.
+    for header, path, generator in generators:
+        if action == Function.GENERATE:
+            if filelist:
+                if not path in filelist:
+                    continue
+                implFiles = filelist[path]
+            else:
+                implFiles = []
+            print header
+            generated, skipped = generator.generate(softpkg, *implFiles)
+            for filename, verb in skipped:
+                print >>sys.stderr, 'WARNING:', os.path.join(path, filename), 'has been modified, use -f to', verb
+            for filename, verb in generated:
+                print ' ', os.path.join(path, filename), verb
+        elif action == Function.LIST:
+            for fileinfo in generator.fileinfo(softpkg):
+                # Convert file attributes to annotations; if the attribute is
+                # true, add the corresponding character to the string
+                attrmap = (('user',     'U'),
+                           ('modified', 'M'),
+                           ('new',      'A'),
+                           ('remove',   'D'))
+                attrs = ''
+                for key, mark in attrmap:
+                    if fileinfo[key]:
+                        attrs += mark
+                    else:
+                        attrs += ' '
+                print attrs, os.path.join(path, fileinfo['filename'])

@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "fir_filter_fsf.h"
 
 int main(int argc, char* argv[])
-{ 
-    fir_filter_fsf_i* fir_filter_fsf_servant; 
-    Resource_impl::start_component(fir_filter_fsf_servant, argc, argv);         
+{
+    fir_filter_fsf_i* fir_filter_fsf_servant;
+    Resource_impl::start_component(fir_filter_fsf_servant, argc, argv);
+    return 0;
 }
+

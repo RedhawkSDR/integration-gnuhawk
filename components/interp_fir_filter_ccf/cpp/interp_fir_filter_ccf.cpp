@@ -100,7 +100,7 @@ void interp_fir_filter_ccf_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_interp_fir_filter_ccf( this->interpolation, this->taps );
+    this->gr_sptr = gr::filter::interp_fir_filter_ccf::make( this->interpolation, this->taps );
     this->setPropertyChangeListener("taps", this, &interp_fir_filter_ccf_i::setTaps);
 
   // 

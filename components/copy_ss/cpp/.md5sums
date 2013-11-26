@@ -1,0 +1,10 @@
+c27b68f7ae8cffa9c674249d48530c2d main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+c708f6d3043428f44b3b2e0fe375c6d1 copy_ss_GnuHawkBlock.h
+725ac5ed2f7c1935130db3f9d845cd96 copy_ss.cpp
+a22406fdb369bc0edbd1298e11a07de1 copy_ss_base.cpp
+720a9ed0501468ee614b6d7b4f892c33 copy_ss_base.h
+827c0281e3beaa04bf145fb9e1303288 configure.ac
+ef4de713be05068234637e1d5b51a8e6 Makefile.am
+77fdfecde89248ab4163a12f1fe28e83 Makefile.am.ide
+20f4ebef2dc6dfb787e13ad0f483de53 copy_ss.h

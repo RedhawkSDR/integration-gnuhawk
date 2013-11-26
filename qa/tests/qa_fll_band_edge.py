@@ -34,7 +34,7 @@ class test_fll_band_edge_cc(gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-    def xtest01 (self):
+    def test01 (self):
         sps = 4
         rolloff = 0.35
         bw = 2*math.pi/100.0

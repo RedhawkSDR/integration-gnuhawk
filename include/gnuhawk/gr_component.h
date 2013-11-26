@@ -28,10 +28,10 @@
 template < typename GR_BLOCK >
 class GHComponent : public Resource_impl
 {
-    typedef GR_BLOCK                                       GNU_RADIO_BLOCK;
-    typedef typename boost::shared_ptr< GNU_RADIO_BLOCK >  GNU_RADIO_BLOCK_PTR;
         
 protected:
+    typedef GR_BLOCK                                       GNU_RADIO_BLOCK;
+    typedef typename boost::shared_ptr< GNU_RADIO_BLOCK >  GNU_RADIO_BLOCK_PTR;
 
     GHComponent(const char* uuid, const char* label) :
         Resource_impl(uuid, label),

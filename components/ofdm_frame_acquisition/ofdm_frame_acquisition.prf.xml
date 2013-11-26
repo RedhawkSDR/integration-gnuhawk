@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="occupied_carriers" mode="readwrite" type="ulong">
+    <description>The number of subcarriers with data in the received symbol</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="fft_length" mode="readwrite" type="ulong">
+    <description>The size of the FFT vector (occupied_carriers + unused carriers)</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="cplen" mode="readwrite" type="ulong">
+    <description>The length of the cycle prefix</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simplesequence id="known_symbol" mode="readwrite" type="float" complex="true">
+    <description>A vector of complex numbers representing a known symbol at the
+start of a frame (usually a BPSK PN sequence)</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simplesequence>
+  <simple id="max_fft_shift_len" mode="readwrite" type="ulong">
+    <description>Set's the maximum distance you can look between bins for correlation</description>
+    <value>10</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="snr" mode="readwrite" type="float">
+    <description>an estimation of the signal to noise ratio</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>

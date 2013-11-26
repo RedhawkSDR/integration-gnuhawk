@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "filter_delay_fc_1i.h"
 
 int main(int argc, char* argv[])
-{ 
-    filter_delay_fc_1i_i* filter_delay_fc_1i_servant; 
-    Resource_impl::start_component(filter_delay_fc_1i_servant, argc, argv);         
+{
+    filter_delay_fc_1i_i* filter_delay_fc_1i_servant;
+    Resource_impl::start_component(filter_delay_fc_1i_servant, argc, argv);
+    return 0;
 }
+

@@ -69,58 +69,130 @@ if [ ! -d ./include/gnuhawk/gnuradio/filter ]
 then
     mkdir ./include/gnuhawk/gnuradio/filter
 fi
-cp ./gnuradio/gnuradio-core/src/lib/filter/*.h ./include/gnuhawk/gnuradio/filter
+# Only copy filter header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/filter/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/filter/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/filter
+    fi
+done
 
 # gnuradio-core general include files
 if [ ! -d ./include/gnuhawk/gnuradio/general ]
 then
     mkdir ./include/gnuhawk/gnuradio/general
 fi
-cp ./gnuradio/gnuradio-core/src/lib/general/*.h ./include/gnuhawk/gnuradio/general
+# Only copy general header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/general/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/general/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/general
+    fi
+done
 
 # gnuradio-core gengen include files
 topdir=`pwd`
-(PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH};cd gnuradio/gnuradio-core/src/lib/gengen;python generate_all.py;)
+(PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH}; \
+cd gnuradio/gnuradio-core/src/lib/gengen; \
+cmake . -DCMAKE_MODULE_PATH=../../../../cmake/Modules; \
+python generate_helper.py gr_vector_insert_X gr_vector_insert_X.h.t b; \
+python generate_helper.py gr_vector_insert_X gr_vector_insert_X.cc.t b; \
+python generate_helper.py gr_add_const_XX gr_add_const_XX.h.t bb; \
+python generate_helper.py gr_add_const_XX gr_add_const_XX.cc.t bb; \
+python generate_all.py;)
+
 if [ ! -d ./include/gnuhawk/gnuradio/gengen ]
 then
     mkdir ./include/gnuhawk/gnuradio/gengen
 fi
-cp ./gnuradio/gnuradio-core/src/lib/gengen/*.h ./include/gnuhawk/gnuradio/gengen
+# Only copy gengen header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/gengen/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gengen/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gengen
+    fi
+done
 
 # gnuradio-core hier include files
 if [ ! -d ./include/gnuhawk/gnuradio/hier ]
 then
     mkdir ./include/gnuhawk/gnuradio/hier
 fi
-cp ./gnuradio/gnuradio-core/src/lib/hier/*.h ./include/gnuhawk/gnuradio/hier
+# Only copy hier header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/hier/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/hier/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/hier
+    fi
+done
 
 # gnuradio-core io include files
 if [ ! -d ./include/gnuhawk/gnuradio/io ]
 then
     mkdir ./include/gnuhawk/gnuradio/io
 fi
-cp ./gnuradio/gnuradio-core/src/lib/io/*.h ./include/gnuhawk/gnuradio/io
+# Only copy io header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/io/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/io/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/io
+    fi
+done
 
 # gnuradio-core reed-solomon include files
 if [ ! -d ./include/gnuhawk/gnuradio/reed-solomon ]
 then
     mkdir ./include/gnuhawk/gnuradio/reed-solomon
 fi
-cp ./gnuradio/gnuradio-core/src/lib/reed-solomon/*.h ./include/gnuhawk/gnuradio/reed-solomon
+# Only copy reed-solomon header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/reed-solomon/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/reed-solomon/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/reed-solomon
+    fi
+done
 
 # gnuradio-core runtime include files
 if [ ! -d ./include/gnuhawk/gnuradio/runtime ]
 then
     mkdir ./include/gnuhawk/gnuradio/runtime
 fi
-cp ./gnuradio/gnuradio-core/src/lib/runtime/*.h ./include/gnuhawk/gnuradio/runtime
+# Only copy runtime header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/runtime/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/runtime/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/runtime
+    fi
+done
 
 # gnuradio-core viterbi include files
 if [ ! -d ./include/gnuhawk/gnuradio/viterbi ]
 then
     mkdir ./include/gnuhawk/gnuradio/viterbi
 fi
-cp ./gnuradio/gnuradio-core/src/lib/viterbi/*.h ./include/gnuhawk/gnuradio/viterbi
+# Only copy viterbi header files that have changed
+for i in ./gnuradio/gnuradio-core/src/lib/viterbi/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/viterbi/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/viterbi
+    fi
+done
 
 # gruel include files
 (cd gnuradio/gruel/src/lib/pmt;python generate_unv.py;)
@@ -128,15 +200,41 @@ if [ ! -d ./include/gnuhawk/gnuradio/gruel ]
 then
     mkdir ./include/gnuhawk/gnuradio/gruel
 fi
-cp ./gnuradio/gruel/src/include/gruel/*.h ./include/gnuhawk/gnuradio/gruel
-cp ./gnuradio/gruel/src/lib/pmt/*.h ./include/gnuhawk/gnuradio/gruel
+# Only copy gruel header files that have changed
+for i in ./gnuradio/gruel/src/include/gruel/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gruel/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gruel
+    fi
+done
+for i in ./gnuradio/gruel/src/lib/pmt/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gruel/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gruel
+    fi
+done
 
 # gr-atsc include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-atsc ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-atsc
 fi
-cp ./gnuradio/gr-atsc/src/lib/*.h ./include/gnuhawk/gnuradio/gr-atsc
+# Only copy gr-atsc header files that have changed
+for i in ./gnuradio/gr-atsc/src/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-atsc/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-atsc
+    fi
+done
+# Generate extra gr-atsc file
+g++ gnuradio/gr-atsc/src/lib/atsci_viterbi_gen.cc -o gnuradio/gr-atsc/src/lib/atsci_viterbi_gen
+gnuradio/gr-atsc/src/lib/atsci_viterbi_gen -o gnuradio/gr-atsc/src/lib/atsci_viterbi_mux.cc
 
 # gr-audio include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-audio ]
@@ -147,27 +245,93 @@ if [ ! -d ./include/gnuhawk/gnuradio/gr-audio/alsa ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-audio/alsa
 fi
-cp ./gnuradio/gr-audio/include/*.h ./include/gnuhawk/gnuradio/gr-audio
-cp ./gnuradio/gr-audio/lib/*.h ./include/gnuhawk/gnuradio/gr-audio
-cp ./gnuradio/gr-audio/lib/alsa/*.h ./include/gnuhawk/gnuradio/gr-audio/alsa
-cp ./gnuradio/gr-audio/lib/oss/*.h ./include/gnuhawk/gnuradio/gr-audio
+# Only copy gr-audio header files that have changed
+for i in ./gnuradio/gr-audio/include/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-audio/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-audio
+    fi
+done
+for i in ./gnuradio/gr-audio/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-audio/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-audio
+    fi
+done
+for i in ./gnuradio/gr-audio/lib/alsa/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-audio/alsa/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-audio/alsa
+    fi
+done
+for i in ./gnuradio/gr-audio/lib/oss/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-audio/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-audio
+    fi
+done
 
 # gr-digital include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-digital ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-digital
 fi
-cp ./gnuradio/gr-digital/include/*.h ./include/gnuhawk/gnuradio/gr-digital
+# Only copy gr-digital header files that have changed
+for i in ./gnuradio/gr-digital/include/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-digital/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-digital
+    fi
+done
 
 # gr-fcd include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-fcd ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-fcd
 fi
-cp ./gnuradio/gr-fcd/include/fcd/*.h ./include/gnuhawk/gnuradio/gr-fcd
-cp ./gnuradio/gr-fcd/lib/*.h ./include/gnuhawk/gnuradio/gr-fcd
-cp ./gnuradio/gr-fcd/lib/fcd/*.h ./include/gnuhawk/gnuradio/gr-fcd
-cp ./gnuradio/gr-fcd/lib/hid/*.h ./include/gnuhawk/gnuradio/gr-fcd
+# Only copy gr-fcd header files that have changed
+for i in ./gnuradio/gr-fcd/include/fcd/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-fcd/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-fcd
+    fi
+done
+for i in ./gnuradio/gr-fcd/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-fcd/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-fcd
+    fi
+done
+for i in ./gnuradio/gr-fcd/lib/fcd/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-fcd/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-fcd
+    fi
+done
+for i in ./gnuradio/gr-fcd/lib/hid/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-fcd/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-fcd
+    fi
+done
 
 # gr-fft include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-fft ]
@@ -178,9 +342,48 @@ if [ ! -d ./include/gnuhawk/gnuradio/gr-fft/fft ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-fft/fft
 fi
-cp ./gnuradio/gr-fft/include/fft/*.h ./include/gnuhawk/gnuradio/gr-fft/fft
+# Only copy gr-fft header files that have changed
+for i in ./gnuradio/gr-fft/include/fft/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-fft/fft/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-fft/fft
+    fi
+done
+for i in ./gnuradio/gr-fft/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-fft/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-fft
+    fi
+done
 
 # gr-filter include files
+topdir=`pwd`
+(cd gnuradio/gr-filter/include/filter;\
+ cmake . -DCMAKE_MODULE_PATH=../../../cmake/Modules; \
+ PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH}; \
+ python generate_helper.py fir_filter_XXX fir_filter_XXX.h.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py freq_xlating_fir_filter_XXX freq_xlating_fir_filter_XXX.h.t ccc ccf fcc fcf scf scc; \
+ python generate_helper.py interp_fir_filter_XXX interp_fir_filter_XXX.h.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py rational_resampler_base_XXX rational_resampler_base_XXX.h.t ccc ccf fcc fff fsf scc; \
+)
+
+(cd gnuradio/gr-filter/lib;\
+ cmake . -DCMAKE_MODULE_PATH=../../cmake/Modules; \
+ PYTHONPATH=${topdir}/gnuradio/gnuradio-core/src/python:${PYTHONPATH}; \
+ python generate_helper.py fir_filter_XXX_impl fir_filter_XXX_impl.cc.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py fir_filter_XXX_impl fir_filter_XXX_impl.h.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py freq_xlating_fir_filter_XXX_impl freq_xlating_fir_filter_XXX_impl.cc.t ccc ccf fcc fcf scf scc; \
+ python generate_helper.py freq_xlating_fir_filter_XXX_impl freq_xlating_fir_filter_XXX_impl.h.t ccc ccf fcc fcf scf scc; \
+ python generate_helper.py interp_fir_filter_XXX_impl interp_fir_filter_XXX_impl.cc.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py interp_fir_filter_XXX_impl interp_fir_filter_XXX_impl.h.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py rational_resampler_base_XXX_impl rational_resampler_base_XXX_impl.cc.t ccc ccf fcc fff fsf scc; \
+ python generate_helper.py rational_resampler_base_XXX_impl rational_resampler_base_XXX_impl.h.t ccc ccf fcc fff fsf scc; \
+)
+
 if [ ! -d ./include/gnuhawk/gnuradio/gr-filter ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-filter
@@ -189,29 +392,68 @@ if [ ! -d ./include/gnuhawk/gnuradio/gr-filter/filter ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-filter/filter
 fi
-cp ./gnuradio/gr-filter/include/filter/*.h ./include/gnuhawk/gnuradio/gr-filter/filter
-cp ./gnuradio/gr-filter/lib/*.h ./include/gnuhawk/gnuradio/gr-filter/
+# Only copy gr-filter header files that have changed
+for i in ./gnuradio/gr-filter/include/filter/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-filter/filter/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-filter/filter
+    fi
+done
+for i in ./gnuradio/gr-filter/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-filter/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-filter
+    fi
+done
 
 # gr-howto-write-a-block include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-howto-write-a-block ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-howto-write-a-block
 fi
-cp ./gnuradio/gr-howto-write-a-block/include/*.h ./include/gnuhawk/gnuradio/gr-howto-write-a-block
+# Only copy gr-howto-write-a-block header files that have changed
+for i in ./gnuradio/gr-howto-write-a-block/include/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-howto-write-a-block/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-howto-write-a-block
+    fi
+done
 
 # gr-noaa include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-noaa ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-noaa
 fi
-cp ./gnuradio/gr-noaa/lib/*.h ./include/gnuhawk/gnuradio/gr-noaa
+# Only copy gr-noaa header files that have changed
+for i in ./gnuradio/gr-noaa/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-noaa/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-noaa
+    fi
+done
 
 # gr-pager include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-pager ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-pager
 fi
-cp ./gnuradio/gr-pager/lib/*.h ./include/gnuhawk/gnuradio/gr-pager
+# Only copy gr-pager header files that have changed
+for i in ./gnuradio/gr-pager/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-pager/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-pager
+    fi
+done
 
 # gr-trellis include files
 topdir=`pwd`
@@ -220,7 +462,15 @@ if [ ! -d ./include/gnuhawk/gnuradio/gr-trellis ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-trellis
 fi
-cp ./gnuradio/gr-trellis/src/lib/*.h ./include/gnuhawk/gnuradio/gr-trellis
+# Only copy gr-noaa header files that have changed
+for i in ./gnuradio/gr-trellis/src/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-trellis/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-trellis
+    fi
+done
 
 # gr-vocoder include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-vocoder ]
@@ -239,76 +489,71 @@ if [ ! -d ./include/gnuhawk/gnuradio/gr-vocoder/gsm ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-vocoder/gsm
 fi
-cp ./gnuradio/gr-vocoder/include/*.h ./include/gnuhawk/gnuradio/gr-vocoder
-cp ./gnuradio/gr-vocoder/lib/codec2/*.h ./include/gnuhawk/gnuradio/gr-vocoder/codec2
-cp ./gnuradio/gr-vocoder/lib/g7xx/*.h ./include/gnuhawk/gnuradio/gr-vocoder/g7xx
-cp ./gnuradio/gr-vocoder/lib/gsm/*.h ./include/gnuhawk/gnuradio/gr-vocoder/gsm
+# Only copy gr-vocoder header files that have changed
+for i in ./gnuradio/gr-vocoder/include/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-vocoder/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-vocoder
+    fi
+done
+for i in ./gnuradio/gr-vocoder/lib/codec2/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-vocoder/codec2/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-vocoder/codec2
+    fi
+done
+for i in ./gnuradio/gr-vocoder/lib/g7xx/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-vocoder/g7xx/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-vocoder/g7xx
+    fi
+done
+for i in ./gnuradio/gr-vocoder/lib/gsm/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-vocoder/gsm/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-vocoder/gsm
+    fi
+done
 
 # gr-wavelet include files
 if [ ! -d ./include/gnuhawk/gnuradio/gr-wavelet ]
 then
     mkdir ./include/gnuhawk/gnuradio/gr-wavelet
 fi
-cp ./gnuradio/gr-wavelet/lib/*.h ./include/gnuhawk/gnuradio/gr-wavelet
-cp ./gnuradio/gr-wavelet/include/wavelet/*.h ./include/gnuhawk/gnuradio/gr-wavelet
+# Only copy gr-wavelet header files that have changed
+for i in ./gnuradio/gr-wavelet/lib/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-wavelet/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-wavelet
+    fi
+done
+for i in ./gnuradio/gr-wavelet/include/wavelet/*.h
+do
+    diff ${i} "./include/gnuhawk/gnuradio/gr-wavelet/"$(basename ${i}) >& /dev/null
+    if [[ $? != 0 ]];
+    then
+        cp ${i} ./include/gnuhawk/gnuradio/gr-wavelet
+    fi
+done
 
 # reconf for each component
 if [ "$1" == "--with-components" ];
 then
-    for i in components/*
-    do
-        # Only reconf component dirs
-        if [ "$i" != "components/components_with_complex_props" ] &&
-           [ "$i" != "components/components_for_testing" ] &&
-           [[ -d $i ]]
-        then
-            # Make sure reconf script is there
-            if [[ -f "$i/cpp/reconf" ]]
-            then 
-                cd $i/cpp
-                echo "./configure
-# Make sure configure succeeds
-if [[ \$? != 0 ]];
-then
-    exit 1
-fi" > configure.gnu
-                ./reconf
-                # Make sure each reconf succeeds
-                if [[ $? != 0 ]];
-                then
-                    exit 1
-                fi
-                cd ../../../
-            else
-                echo "NOTE: Folder $i/cpp does not contain a reconf script."
-            fi
-        fi
-    done
 
-    for i in qa/components/*
-    do
-        if [[ -d $i ]]
-        then
-            # Make sure reconf script is there
-            if [[ -f "$i/cpp/reconf" ]]
-            then
-                cd $i/cpp
-                echo "./configure
-# Make sure configure succeeds
-if [[ \$? != 0 ]];
-then
-    exit 1
-fi" > configure.gnu
-                ./reconf
-                # Make sure each reconf succeeds
-                if [[ $? != 0 ]];
-                then
-                    exit 1
-                fi
-                cd ../../../../
-            else
-                echo "NOTE: Folder $i/cpp does not contain a reconf script."
-            fi
-        fi
-    done
+    # build components testing
+    ( cd components; ./reconf)
+
+    # build components for QA testing
+    ( cd qa; ./reconf)
+
 fi

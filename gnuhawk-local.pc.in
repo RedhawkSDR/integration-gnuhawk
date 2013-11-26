@@ -1,0 +1,11 @@
+prefix=@abs_top_srcdir@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/
+includedir=${prefix}/include
+
+Name: gnuhawk-local
+Description: GNU Radio Processing Block compatibility interface for REDHAWK components
+Requires: fftw3f >= 3.2.1 gsl
+Version: 0.1.0
+Libs: -L${prefix}/src/.libs -lgnuhawk -L${prefix}/gnuradio/volk/lib -lvolk
+Cflags: -I${includedir} -I${includedir}/gnuhawk -I${includedir}/gnuhawk/gruel -I${includedir}/gnuhawk/runtime -I${includedir}/gnuhawk/gnuradio -I${includedir}/gnuhawk/gnuradio/filter -I${includedir}/gnuhawk/gnuradio/general -I${includedir}/gnuhawk/gnuradio/gengen -I${includedir}/gnuhawk/gnuradio/gr-atsc -I${includedir}/gnuhawk/gnuradio/gr-audio -I${includedir}/gnuhawk/gnuradio/gr-digital -I${includedir}/gnuhawk/gnuradio/gr-fcd -I${includedir}/gnuhawk/gnuradio/gr-fft -I${includedir}/gnuhawk/gnuradio/gr-filter -I${includedir}/gnuhawk/gnuradio/gr-howto-write-a-block -I${includedir}/gnuhawk/gnuradio/gr-noaa -I${includedir}/gnuhawk/gnuradio/gr-pager -I${includedir}/gnuhawk/gnuradio/gr-trellis -I${includedir}/gnuhawk/gnuradio/gruel -I${includedir}/gnuhawk/gnuradio/gr-vocoder -I${includedir}/gnuhawk/gnuradio/gr-wavelet -I${includedir}/gnuhawk/gnuradio/hier -I${includedir}/gnuhawk/gnuradio/io -I${includedir}/gnuhawk/gnuradio/runtime -I${includedir}/gnuhawk/gnuradio/viterbi -I${prefix}/gnuradio/include/volk  -pthread -I/usr/include -msse2

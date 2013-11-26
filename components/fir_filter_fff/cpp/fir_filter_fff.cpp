@@ -101,32 +101,35 @@ std::vector<float> fir_filter_fff_i::getTaps(){
 //
 void fir_filter_fff_i::createBlock()
 {
-  //
-  // gr_sptr = xxx_make_xxx( args );
-  //
- this->gr_sptr = gr_make_fir_filter_fff( this->decimation, this->taps );
+    //
+    // gr_sptr = xxx_make_xxx( args );
+    //
+    this->gr_sptr = gr::filter::fir_filter_fff::make( this->decimation, this->taps );
 
-  // 
-  // Use setThrottle method to enable the throttling of consumption/production of data by the
-  // service function. The affect of the throttle will try to pause the execution of the 
-  // service function for a specified duration.  This duration is calculated using the getTargetDuration() method
-  // and the actual processing time to perform the work method.
-  //
-  // This is turned ON by default for "output" only components
-  //
-  // setThrottle( bool onoff );
+    this->setPropertyChangeListener("taps", this, &fir_filter_fff_i::setTaps);
+    this->registerGetValue("taps", this, &fir_filter_fff_i::getTaps);
 
-  // 
-  // Use maintainTimeStamp to enable proper data flow of timestamp with input and output data. 
-  // if turned on (true)
-  //  The timestamp from the input source will be used and maintained based on the output rate and
-  //  the number of samples produced
-  // if turned off
-  //   then the timestamp from the input source is passed through if available or the time of day
-  // 
-  // maintainTimestamp( bool onoff );
+    // 
+    // Use setThrottle method to enable the throttling of consumption/production of data by the
+    // service function. The affect of the throttle will try to pause the execution of the 
+    // service function for a specified duration.  This duration is calculated using the getTargetDuration() method
+    // and the actual processing time to perform the work method.
+    //
+    // This is turned ON by default for "output" only components
+    //
+    // setThrottle( bool onoff );
 
-   setupIOMappings();
+    // 
+    // Use maintainTimeStamp to enable proper data flow of timestamp with input and output data. 
+    // if turned on (true)
+    //  The timestamp from the input source will be used and maintained based on the output rate and
+    //  the number of samples produced
+    // if turned off
+    //   then the timestamp from the input source is passed through if available or the time of day
+    // 
+    // maintainTimestamp( bool onoff );
+
+     setupIOMappings();
 
 } 
 

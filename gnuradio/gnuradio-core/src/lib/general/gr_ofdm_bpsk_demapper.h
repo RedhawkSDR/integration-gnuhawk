@@ -55,14 +55,14 @@ class GR_CORE_API gr_ofdm_bpsk_demapper : public gr_block
   unsigned int d_byte_offset;
   unsigned char d_partial_byte;
 
-  void forecast(int noutput_items, gr_vector_int &ninput_items_required);
-
  public:
   ~gr_ofdm_bpsk_demapper(void);
   int general_work(int noutput_items,
 		   gr_vector_int &ninput_items,
 		   gr_vector_const_void_star &input_items,
 		   gr_vector_void_star &output_items);
+
+  void forecast(int noutput_items, gr_vector_int &ninput_items_required);
 };
 
 

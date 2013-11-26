@@ -22,9 +22,9 @@
 #define filter_delay_fc_1i_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_filter_delay_fc.h>
+#include <filter_delay_fc_impl.h>
 
-typedef GHComponent< gr_filter_delay_fc >            GnuHawkBlock;
+typedef GHComponent< gr::filter::filter_delay_fc >            GnuHawkBlock;
 
 
 #endif

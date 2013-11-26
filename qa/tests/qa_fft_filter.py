@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2004,2005,2007,2010 Free Software Foundation, Inc.
+# Copyright 2004,2005,2007,2010,2012 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -21,21 +21,22 @@
 #
 
 from gnuradio import gr, gr_unittest
+import filter_swig as filter
 import sys
 import random
 
 def make_random_complex_tuple(L):
     result = []
     for x in range(L):
-        result.append(complex(random.uniform(-1000,1000),
-                              random.uniform(-1000,1000)))
+        result.append(complex(2*random.random()-1,
+                              2*random.random()-1))
     return tuple(result)
 
 def make_random_float_tuple(L):
     result = []
     for x in range(L):
-        result.append(float(int(random.uniform(-1000,1000))))
-    return result
+        result.append(float(int(2*random.random()-1)))
+    return tuple(result)
 
 
 def reference_filter_ccc(dec, taps, input):
@@ -45,7 +46,7 @@ def reference_filter_ccc(dec, taps, input):
     tb = gr.top_block()
     #src = gr.vector_source_c(((0,) * (len(taps) - 1)) + input)
     src = gr.vector_source_c(input)
-    op = gr.fir_filter_ccc(dec, taps)
+    op = filter.fir_filter_ccc(dec, taps)
     dst = gr.vector_sink_c()
     tb.connect(src, op, dst)
     tb.run()
@@ -58,7 +59,7 @@ def reference_filter_fff(dec, taps, input):
     tb = gr.top_block()
     #src = gr.vector_source_f(((0,) * (len(taps) - 1)) + input)
     src = gr.vector_source_f(input)
-    op = gr.fir_filter_fff(dec, taps)
+    op = filter.fir_filter_fff(dec, taps)
     dst = gr.vector_sink_f()
     tb.connect(src, op, dst)
     tb.run()
@@ -90,16 +91,13 @@ class test_fft_filter(gr_unittest.TestCase):
         self.assertFloatTuplesAlmostEqual2 (expected_result, result_data,
                                             abs_eps, rel_eps)
 
-    #def test_ccc_000(self):
-    #    self.assertRaises (RuntimeError, gr.fft_filter_ccc, 2, (1,))
-
-    def xtest_ccc_001(self):
+    def test_ccc_001(self):
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
         taps = (1,)
         expected_result = tuple([complex(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_c(src_data)
-        op = gr.fft_filter_ccc(1, taps)
+        op =  filter.fft_filter_ccc(1, taps)
         dst = gr.vector_sink_c()
         tb.connect(src, op, dst)
         tb.run()
@@ -109,7 +107,7 @@ class test_fft_filter(gr_unittest.TestCase):
         self.assertComplexTuplesAlmostEqual (expected_result, result_data, 5)
 
 
-    def xtest_ccc_002(self):
+    def test_ccc_002(self):
         # Test nthreads
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
@@ -117,7 +115,7 @@ class test_fft_filter(gr_unittest.TestCase):
         nthreads = 2
         expected_result = tuple([2 * complex(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_c(src_data)
-        op = gr.fft_filter_ccc(1, taps, nthreads)
+        op = filter.fft_filter_ccc(1, taps, nthreads)
         dst = gr.vector_sink_c()
         tb.connect(src, op, dst)
         tb.run()
@@ -126,13 +124,13 @@ class test_fft_filter(gr_unittest.TestCase):
         #print 'results: ', result_data
         self.assertComplexTuplesAlmostEqual (expected_result, result_data, 5)
 
-    def xtest_ccc_003(self):
+    def test_ccc_003(self):
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
         taps = (2,)
         expected_result = tuple([2 * complex(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_c(src_data)
-        op = gr.fft_filter_ccc(1, taps)
+        op = filter.fft_filter_ccc(1, taps)
         dst = gr.vector_sink_c()
         tb.connect(src, op, dst)
         tb.run()
@@ -141,7 +139,8 @@ class test_fft_filter(gr_unittest.TestCase):
         #print 'results: ', result_data
         self.assertComplexTuplesAlmostEqual (expected_result, result_data, 5)
 
-    def xtest_ccc_004(self):
+
+    def test_ccc_004(self):
         random.seed(0)
         for i in xrange(25):
             # sys.stderr.write("\n>>> Loop = %d\n" % (i,))
@@ -152,17 +151,16 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_ccc(1, taps, src_data)
 
             src = gr.vector_source_c(src_data)
-            op = gr.fft_filter_ccc(1, taps)
+            op = filter.fft_filter_ccc(1, taps)
             dst = gr.vector_sink_c()
             tb = gr.top_block()
             tb.connect(src, op, dst)
             tb.run()
             result_data = dst.data()
             del tb
-
             self.assert_fft_ok2(expected_result, result_data)
 
-    def xtest_ccc_005(self):
+    def test_ccc_005(self):
         random.seed(0)
         for i in xrange(25):
             # sys.stderr.write("\n>>> Loop = %d\n" % (i,))
@@ -174,7 +172,7 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_ccc(dec, taps, src_data)
 
             src = gr.vector_source_c(src_data)
-            op = gr.fft_filter_ccc(dec, taps)
+            op = filter.fft_filter_ccc(dec, taps)
             dst = gr.vector_sink_c()
             tb = gr.top_block()
             tb.connect(src, op, dst)
@@ -184,7 +182,7 @@ class test_fft_filter(gr_unittest.TestCase):
 
             self.assert_fft_ok2(expected_result, result_data)
 
-    def xtest_ccc_006(self):
+    def test_ccc_006(self):
         # Test decimating with nthreads=2
         random.seed(0)
         nthreads = 2
@@ -198,7 +196,7 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_ccc(dec, taps, src_data)
 
             src = gr.vector_source_c(src_data)
-            op = gr.fft_filter_ccc(dec, taps, nthreads)
+            op = filter.fft_filter_ccc(dec, taps, nthreads)
             dst = gr.vector_sink_c()
             tb = gr.top_block()
             tb.connect(src, op, dst)
@@ -215,10 +213,10 @@ class test_fft_filter(gr_unittest.TestCase):
     def test_fff_001(self):
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
-        taps = [1,]
+        taps = (1,)
         expected_result = tuple([float(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_f(src_data)
-        op = gr.fft_filter_fff(1, taps)
+        op = filter.fft_filter_fff(1, taps)
         dst = gr.vector_sink_f()
         tb.connect(src, op, dst)
         tb.run()
@@ -231,10 +229,10 @@ class test_fft_filter(gr_unittest.TestCase):
     def test_fff_002(self):
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
-        taps = [2,]
+        taps = (2,)
         expected_result = tuple([2 * float(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_f(src_data)
-        op = gr.fft_filter_fff(1, taps)
+        op = filter.fft_filter_fff(1, taps)
         dst = gr.vector_sink_f()
         tb.connect(src, op, dst)
         tb.run()
@@ -247,11 +245,11 @@ class test_fft_filter(gr_unittest.TestCase):
         # Test 02 with nthreads
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
-        taps = [2,]
+        taps = (2,)
         nthreads = 2
         expected_result = tuple([2 * float(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_f(src_data)
-        op = gr.fft_filter_fff(1, taps, nthreads)
+        op = filter.fft_filter_fff(1, taps, nthreads)
         dst = gr.vector_sink_f()
         tb.connect(src, op, dst)
         tb.run()
@@ -269,14 +267,9 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_fff(1, taps, src_data)
 
             src = gr.vector_source_f(src_data)
-            op = gr.fft_filter_fff(1, taps)
+            op = filter.fft_filter_fff(1, taps)
             dst = gr.vector_sink_f()
             tb = gr.top_block()
-            print "######################################"
-            print type(src)
-            print type(op)
-            print type(dst)
-            print "-------------------------------------------"
             tb.connect(src, op, dst)
             tb.run()
             result_data = dst.data()
@@ -304,7 +297,7 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_fff(1, taps, src_data)
 
             src = gr.vector_source_f(src_data)
-            op = gr.fft_filter_fff(1, taps)
+            op = filter.fft_filter_fff(1, taps)
             dst = gr.vector_sink_f()
             tb = gr.top_block()
             tb.connect(src, op, dst)
@@ -325,7 +318,7 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_fff(dec, taps, src_data)
 
             src = gr.vector_source_f(src_data)
-            op = gr.fft_filter_fff(dec, taps)
+            op = filter.fft_filter_fff(dec, taps)
             dst = gr.vector_sink_f()
             tb = gr.top_block()
             tb.connect(src, op, dst)
@@ -348,7 +341,7 @@ class test_fft_filter(gr_unittest.TestCase):
             expected_result = reference_filter_fff(dec, taps, src_data)
 
             src = gr.vector_source_f(src_data)
-            op = gr.fft_filter_fff(dec, taps, nthreads)
+            op = filter.fft_filter_fff(dec, taps, nthreads)
             dst = gr.vector_sink_f()
             tb = gr.top_block()
             tb.connect(src, op, dst)
@@ -364,23 +357,21 @@ class test_fft_filter(gr_unittest.TestCase):
             taps = make_random_float_tuple(ntaps)
             taps_lst = []
             for i in taps:
-                taps_lst.append(i)        
-
-            op = gr.fft_filter_fff(1, taps_lst)
+                taps_lst.append(i)
+            op = filter.fft_filter_fff(1, taps_lst)
             result_data = op.taps
             #print result_data
 
             self.assertEqual(taps_lst, result_data)
-            #self.assertEqual(taps, result_data)
 
-    def xtest_ccc_get0(self):
+    def test_ccc_get0(self):
         random.seed(0)
         for i in xrange(25):
             ntaps = int(random.uniform(2, 100))
             taps = make_random_complex_tuple(ntaps)
 
-            op = gr.fft_filter_ccc(1, taps)
-            result_data = op.taps()
+            op = filter.fft_filter_ccc(1, taps)
+            result_data = op.taps
             #print result_data
 
             self.assertComplexTuplesAlmostEqual(taps, result_data, 4)

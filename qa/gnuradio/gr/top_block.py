@@ -18,9 +18,11 @@
 #
  
 from ossie.utils import sb
+from ossie.utils.sandbox import local
 import gnuradioStubs
 import sources
 import commands
+import time
 
 def _uuidgen():
     return commands.getoutput('uuidgen')
@@ -31,8 +33,9 @@ def _isStubClass(comp):
             str(comp.__class__).find("stream_to_streams") >= 0)
 
 class top_block(object):
-    def __init__(self):
+    def __init__(self, fanOut=True):
         self.sources = []
+        self.fanOut = fanOut
 
     def __del__(self):
        sb.domainless._cleanUpLaunchedComponents()
@@ -41,7 +44,7 @@ class top_block(object):
         # TODO: consider removing this
         sb.stop()
 
-    def connect(self, src, dest, *next):
+    def connect(self, src, dest, *next  ):
         # If the source is not a real object, skip this connection
         if _isStubClass(src):
             if len(next) > 0:
@@ -60,7 +63,7 @@ class top_block(object):
         else:
             # Default to the first port
             index = 0
-        if isinstance(src, sb.Component):
+        if isinstance(src, local.LocalComponent):
             # Get just the uses ports from the source
             uses_ports = filter(lambda x: x._direction == 'Uses', src._ports)
             if len(uses_ports) > index:
@@ -73,7 +76,7 @@ class top_block(object):
         else:
             # Default to the first port
             index = 0
-        if isinstance(dest, sb.Component):
+        if isinstance(dest, local.LocalComponent):
             # Get just the provides ports from the destination
             provides_ports = filter(lambda x: x._direction == 'Provides', dest._ports)
             # -1 inputs; connect everybody to the same input port until existing components are
@@ -94,7 +97,11 @@ class top_block(object):
             # Generate a unique ID to disambiguate multiple streams into the same component.
             stream_id = _uuidgen()
             src.connect((dest_obj,stream_id))
-            self.sources.append(src)
+            if self.fanOut == True:
+                if src not in self.sources:
+                    self.sources.append(src)
+            else:
+                    self.sources.append(src)
         else:
             src.connect(dest_obj, usesPortName=src_port_name, providesPortName=dest_port_name)
 
@@ -111,4 +118,5 @@ class top_block(object):
                 source.push()
             except AttributeError:
                 pass
-
+        # Give blocks time to get setup
+        time.sleep(.1)

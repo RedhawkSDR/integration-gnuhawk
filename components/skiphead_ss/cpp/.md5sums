@@ -1,0 +1,10 @@
+486aaa0b1e75f50a67d54f1c53bb3070 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+8d7407d38cf4702867e1e54927b7d5ec skiphead_ss.h
+8e887a3f363eff69f966775684526ec3 skiphead_ss_GnuHawkBlock.h
+26f801d2957087bb7cfe95a112ff041c configure.ac
+baadf1db648cf67ed1e7446761edae0b Makefile.am
+93a5fea891e053a90eee721f2c708226 Makefile.am.ide
+259459704331b0c8505ab8081e6018d3 skiphead_ss_base.cpp
+3d91e88e756f997b1c0ac73cceb73115 skiphead_ss.cpp
+01850c57ba420949ea8fa5103bc9a5d1 skiphead_ss_base.h

@@ -22,9 +22,9 @@
 #define goertzel_fc_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_goertzel_fc.h>
+#include <goertzel_fc_impl.h>
 
-typedef GHComponent< gr_goertzel_fc >            GnuHawkBlock;
+typedef GHComponent< gr::fft::goertzel_fc >            GnuHawkBlock;
 
 
 #endif

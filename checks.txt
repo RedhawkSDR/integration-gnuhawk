@@ -1,0 +1,19 @@
+-All complex out have SRI set correctly
+-All Components have descriptions
+-All components launch in SB/Live domain
+-Try function surrounds every gr_sptr creation
+-Makefile.am && .spec file have correct namespace
+-All have GNUhawk soft pkg dependency
+
+
+
+
+
+TEST INSTALLS:
+-From source
+-From mass RPM
+-From individual RPM
+
+
+Questions:
+	-Versioning

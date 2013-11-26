@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "vector_source_s.h"
 
 int main(int argc, char* argv[])
-{ 
-    vector_source_s_i* vector_source_s_servant; 
-    Resource_impl::start_component(vector_source_s_servant, argc, argv);         
+{
+    vector_source_s_i* vector_source_s_servant;
+    Resource_impl::start_component(vector_source_s_servant, argc, argv);
+    return 0;
 }
+

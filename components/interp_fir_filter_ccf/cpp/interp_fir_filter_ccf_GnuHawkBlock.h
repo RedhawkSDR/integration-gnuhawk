@@ -22,9 +22,9 @@
 #define interp_fir_filter_ccf_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_interp_fir_filter_ccf.h>
+#include <interp_fir_filter_ccf_impl.h>
 
-typedef GHComponent< gr_interp_fir_filter_ccf >            GnuHawkBlock;
+typedef GHComponent< gr::filter::interp_fir_filter_ccf >            GnuHawkBlock;
 
 
 #endif

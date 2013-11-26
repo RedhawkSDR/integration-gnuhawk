@@ -1,0 +1,10 @@
+a92010e70c8826fb06a380003366bd10 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+bf1bb802ef67c826836904c33c281263 goertzel_fc.h
+b1e263cf55b94afef19c37398d3294ea goertzel_fc_GnuHawkBlock.h
+06ba7b7f056f02b2b3691afe21929c5f configure.ac
+e16ea046da020ae8717bbc7536d61930 Makefile.am
+37752df8c95ea4ea9ab61dd1f7a86cd6 Makefile.am.ide
+1f0cc18349e6c594754246a23619426e goertzel_fc_base.cpp
+12ecf7f10a74afc8ddb3eb1cd2207733 goertzel_fc.cpp
+a92fa1b0559421dcb17869ece6155716 goertzel_fc_base.h

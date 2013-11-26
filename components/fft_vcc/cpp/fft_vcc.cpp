@@ -100,9 +100,14 @@ void fft_vcc_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-  gr_sptr = gr_make_fft_vcc(fft_size, forward, window, shift, nthreads);
+  try {
+    gr_sptr = gr::fft::fft_vcc::make(fft_size, forward, window, shift, nthreads);
+  } catch (...) {
+    return;
+  }
+
   this->setPropertyChangeListener("window", this, &fft_vcc_i::changedWindow);
-  this->registerGetterSetter("nthreads", &gr_fft_vcc::nthreads,&gr_fft_vcc::set_nthreads);
+  this->registerGetterSetter("nthreads", &gr::fft::fft_vcc::nthreads, &gr::fft::fft_vcc::set_nthreads);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

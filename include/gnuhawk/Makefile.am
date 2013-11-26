@@ -43,6 +43,7 @@ include gr-audio_alsa_includes.am
 include gr-digital_includes.am
 include gr-fcd_includes.am
 include gr-fft_includes.am
+include gr-fft_fft_includes.am
 include gr-filter_includes.am
 include gr-filter_filter_includes.am
 include gr-howto-write-a-block_includes.am

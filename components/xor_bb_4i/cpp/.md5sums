@@ -1,0 +1,10 @@
+6d439edf947ec96be8f1e1c2b6e3d5e6 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+860df2e4fb55f4c75e79c82c9fb78c0d xor_bb_4i.h
+b101058cfb8c4b235a8823c568dcde58 xor_bb_4i_base.h
+e0e8f289a3815df06ca7629b924d0e04 configure.ac
+29db8f3649c7c1f4d43387115dc15b39 xor_bb_4i_base.cpp
+c89de8262992f241daab27a330e4f64c Makefile.am.ide
+ef87b2350154eee000251b8b1c031514 xor_bb_4i.cpp
+81d56662977b6b17e258e6945fce1939 Makefile.am
+39539142260b605993bc60df21ca2818 xor_bb_4i_GnuHawkBlock.h

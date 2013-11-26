@@ -1,0 +1,10 @@
+2d123796f2b25899f097df57c03ac555  main.cpp
+51dfdba9ed7eb24bcad340f5526f4728  ofdm_frame_acquisition.h
+2c70b142796a6429a0ab038e02112a00  ofdm_frame_acquisition_GnuHawkBlock.h
+d193775e0ac25076db454b4c6f313155  reconf
+4552a731c9ff512575cdb0c77b0de013  ofdm_frame_acquisition_base.cpp
+9bcc4517cd258a06b1a63bb9b11247d2  ofdm_frame_acquisition.cpp
+67b3ac2e00f7087d4faf7b11f2f19000  configure.ac
+55d2d02f5ea38ff24ee7a5a57fddff78  Makefile.am
+c1b84b5295cb40a7c24b20f90bee7b17  Makefile.am.ide
+2bc00444e54faf56978dbce813cec7ce  ofdm_frame_acquisition_base.h

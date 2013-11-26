@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="M" mode="readwrite" name="M" type="ulong">
+    <description>modulation order of the M-PSK modulation</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="theta" mode="readwrite" name="theta" type="float">
+    <description>any constant phase rotation from the real axis of the constellation</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="loop_bw" mode="readwrite" name="loop_bw" type="float">
+    <description>Loop bandwidth to set gains of phase/freq tracking loop</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="fmin" mode="readwrite" name="fmin" type="float">
+    <description>minimum normalized frequency value the loop can achieve</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="fmax" mode="readwrite" name="fmax" type="float">
+    <description>maximum normalized frequency value the loop can achieve</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="mu" mode="readwrite" name="mu" type="float">
+    <description>initial parameter for the interpolator [0,1]</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="gain_mu" mode="readwrite" name="gain_mu" type="float">
+    <description>gain parameter of the M&amp;M error signal to adjust mu (~0.05)</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="omega" mode="readwrite" name="omega" type="float">
+    <description>initial value for the number of symbols between samples (~number of samples/symbol)</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="gain_omega" mode="readwrite" name="gain_omega" type="float">
+    <description>gain parameter to adjust omega based on the error (~omega^2/4)</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="omega_rel" mode="readwrite" name="omega_rel" type="float">
+    <description>sets the maximum (omega*(1+omega_rel)) and minimum (omega*(1+omega_rel)) omega (~0.005)</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>

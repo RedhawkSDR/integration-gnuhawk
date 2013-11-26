@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:4c1aefed-557f-4b1b-8775-069cc6a2c3ec" name="adaptive_fir_ccf" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="adaptive_fir_ccf.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="adaptive_fir_ccf.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Adaptive FIR filter with gr_complex input, gr_complex output and float taps
+
+This is a base class to implement an adaptive FIR
+filter. Generally, another block will inherit from this one to
+build a new type of adaptive filter such as an equalizer.
+
+This class implements two functions that are designed to be
+overloaded by the child class: error(gr_complex out) and
+update_tap(float tap, gr_complex in).
+
+The error() function calculates the error value that will be
+used to adjust the taps. The update_tap function then uses the
+error and the input signal value to update a particular
+tap. Typically, the error is calculated for a given output and
+then this is used in a loop to update all of the filter taps in
+a loop:
+
+     d_error = error(sum);
+     for(k = 0; k &lt; l; k++) {
+       update_tap(d_taps[ntaps-k-1], in[i+k]);
+     }
+
+param: name Provides a name to identify this type of algorithm
+param: decimation (interger) decimation rate of the filter
+param: taps (real) filter taps</description>
+    <code type="Executable">
+      <localfile name="cpp/adaptive_fir_ccf"/>
+      <entrypoint>cpp/adaptive_fir_ccf</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

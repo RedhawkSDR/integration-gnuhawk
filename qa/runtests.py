@@ -88,6 +88,6 @@ if qa_test_prefix != None:
 suites = [testLoader.loadTestsFromName(mod_str) for mod_str in module_strings]
 testSuite = unittest.TestSuite(suites)
 suite = unittest.TestSuite()
-text_runner = unittest.TextTestRunner().run(testSuite)
+text_runner = unittest.TextTestRunner(verbosity=5).run(testSuite)
 
 

@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "iir_filter_ffd.h"
 
 int main(int argc, char* argv[])
-{ 
-    iir_filter_ffd_i* iir_filter_ffd_servant; 
-    Resource_impl::start_component(iir_filter_ffd_servant, argc, argv);         
+{
+    iir_filter_ffd_i* iir_filter_ffd_servant;
+    Resource_impl::start_component(iir_filter_ffd_servant, argc, argv);
+    return 0;
 }
+

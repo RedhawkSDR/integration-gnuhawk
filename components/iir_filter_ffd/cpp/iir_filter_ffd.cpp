@@ -99,7 +99,7 @@ void iir_filter_ffd_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_iir_filter_ffd( this->fftaps, this->fbtaps );
+    this->gr_sptr = gr::filter::iir_filter_ffd::make( this->fftaps, this->fbtaps );
     this->setPropertyChangeListener("fftaps", this, &iir_filter_ffd_i::setTaps);
     this->setPropertyChangeListener("fbtaps", this, &iir_filter_ffd_i::setTaps);
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:72778ca6-deee-47fb-b7b9-772a18fe52d7" name="pn_correlator_cc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="pn_correlator_cc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="pn_correlator_cc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>PN code sequential search correlator
+
+Receives complex baseband signal, outputs complex correlation
+against reference PN code, one sample per PN code period. The PN
+sequence is generated using a GLFSR.
+
+param: degree Degree of shift register must be in [1, 32]. If mask
+             is 0, the degree determines a default mask (see
+             digital_impl_glfsr.cc for the mapping).
+param: repeat Set to repeat sequence.
+param: mask   Allows a user-defined bit mask for indexes of the shift
+             register to feed back.
+param: seed   Initial setting for values in shift register.</description>
+    <code type="Executable">
+      <localfile name="cpp/pn_correlator_cc"/>
+      <entrypoint>cpp/pn_correlator_cc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

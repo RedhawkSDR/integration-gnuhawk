@@ -31,10 +31,13 @@ class test_add_and_friends (gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-    def help_ii (self, src_data, exp_data, op):
+    def help_ii (self, src_data, exp_data, op, port_prefix='data_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_i (s[1])
-            src.source.connect(op,providesPortName="data_in_"+str(s[0]))
+            if port_prefix == 'SINGLE_PORT':
+                src.source.connect(op)
+            else:
+                src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_i ()
@@ -53,10 +56,13 @@ class test_add_and_friends (gr_unittest.TestCase):
         result_data = dst.data ()
         self.assertEqual (exp_data, result_data)
 
-    def help_ss (self, src_data, exp_data, op):
+    def help_ss (self, src_data, exp_data, op, port_prefix='data_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_s (s[1])
-            src.source.connect(op,providesPortName="data_in_"+str(s[0]))
+            if port_prefix == 'SINGLE_PORT':
+                src.source.connect(op)
+            else:
+                src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_s ()
@@ -97,10 +103,14 @@ class test_add_and_friends (gr_unittest.TestCase):
         result_data = dst.data ()
         self.assertEqual (exp_data, result_data)
 
-    def help_ff (self, src_data, exp_data, op):
+    def help_ff (self, src_data, exp_data, op, port_prefix='data_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_f (s[1])
-            src.source.connect(op,providesPortName="data_in_"+str(s[0]))
+            # For components with only one port, no need to specify provides port name
+            if port_prefix == 'SINGLE_PORT':
+                src.source.connect(op)
+            else:
+                src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_f ()
@@ -119,10 +129,14 @@ class test_add_and_friends (gr_unittest.TestCase):
         result_data = dst.data ()
         self.assertEqual (exp_data, result_data)
 
-    def help_cc (self, src_data, exp_data, op):
+    def help_cc (self, src_data, exp_data, op, port_prefix='data_complex_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_c (s[1])
-            src.source.connect(op,providesPortName="data_complex_in_"+str(s[0]))
+            # For components with only one port, no need to specify provides port name
+            if port_prefix == 'SINGLE_PORT':
+                src.source.connect(op)
+            else:
+                src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_c ()
@@ -159,7 +173,7 @@ class test_add_and_friends (gr_unittest.TestCase):
         op = gr.add_const_sf (5.5)
         self.help_sf_const ((src_data,), expected_result, op)
 
-    def xtest_add_const_cc (self):
+    def test_add_const_cc (self):
         src_data = (1, 2, 3, 4, 5)
         expected_result = (1+5j, 2+5j, 3+5j, 4+5j, 5+5j)
         op = gr.add_const_cc (5j)
@@ -177,23 +191,23 @@ class test_add_and_friends (gr_unittest.TestCase):
         op = gr.multiply_const_ii (5)
         self.help_ii_const ((src_data,), expected_result, op)
 
-    def xtest_mult_const_ff (self):
+    def test_mult_const_ff (self):
         src_data = (-1, 0, 1, 2, 3)
         expected_result = (-5, 0, 5, 10, 15)
         op = gr.multiply_const_cc (5)
-        self.help_cc ((src_data,), expected_result, op)
+        self.help_cc_const ((src_data,), expected_result, op)
 
-    def xtest_mult_const_cc (self):
+    def test_mult_const_cc (self):
         src_data = (-1-1j, 0+0j, 1+1j, 2+2j, 3+3j)
         expected_result = (-5-5j, 0+0j, 5+5j, 10+10j, 15+15j)
         op = gr.multiply_const_cc (5)
-        self.help_cc ((src_data,), expected_result, op)
+        self.help_cc_const ((src_data,), expected_result, op)
 
-    def xtest_mult_const_cc2 (self):
+    def test_mult_const_cc2 (self):
         src_data = (-1-1j, 0+0j, 1+1j, 2+2j, 3+3j)
         expected_result = (-3-7j, 0+0j, 3+7j, 6+14j, 9+21j)
         op = gr.multiply_const_cc (5+2j)
-        self.help_cc ((src_data,), expected_result, op)
+        self.help_cc_const ((src_data,), expected_result, op)
 
     def test_add_ii (self):
         src1_data = (1,  2, 3, 4, 5)
@@ -247,36 +261,277 @@ class test_add_and_friends (gr_unittest.TestCase):
         self.help_cc ((src1_data, src2_data),
                       expected_result, op)
 
-    def xtest_sub_ii_1 (self):
+    def test_sub_ii_1 (self):
         src1_data = (1,  2, 3, 4, 5)
         expected_result = (-1, -2, -3, -4, -5)
-        op = gr.sub_ii ()
+        op = gr.sub_ii (1)
         self.help_ii ((src1_data,),
-                      expected_result, op)
+                      expected_result, op, port_prefix='SINGLE_PORT')
 
-    def xtest_sub_ii_2 (self):
+    def test_sub_ii_2 (self):
         src1_data = (1,  2, 3, 4, 5)
         src2_data = (8, -3, 4, 8, 2)
         expected_result = (-7, 5, -1, -4, 3)
-        op = gr.sub_ii ()
+        op = gr.sub_ii (2)
         self.help_ii ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='long_in_')
 
-    def xtest_div_ff_1 (self):
+    def test_sub_ii_3 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        src3_data = (-8, 3, 4, -8, -2)
+        expected_result = (1, 2, -5, 4, 5)
+        op = gr.sub_ii (3)
+        self.help_ii ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_sub_ii_4 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        src3_data = (-8, 3, 4, -8, -2)
+        src4_data = (-1, 2, 3, -4, -5)
+        expected_result = (2, 0, -8, 8, 10)
+        op = gr.sub_ii (4)
+        self.help_ii ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_sub_ff_1 (self):
+        src1_data = (-1.0,  2.25, -3.5, 4, -5)
+        expected_result = (1, -2.25, 3.5, -4, 5)
+        op = gr.sub_ff (1)
+        self.help_ff ((src1_data,),
+                      expected_result, op, port_prefix='SINGLE_PORT')
+
+    def test_sub_ff_2 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        expected_result = (-7, 5, -1, -4, 3)
+        op = gr.sub_ff (2)
+        self.help_ff ((src1_data, src2_data),
+                      expected_result, op, port_prefix='float_in_')
+
+    def test_sub_ff_3 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        src3_data = (-8, 3, 4, -8, -2)
+        expected_result = (1, 2, -5, 4, 5)
+        op = gr.sub_ff (3)
+        self.help_ff ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='float_in_')
+
+    def test_sub_ff_4 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        src3_data = (-8, 3, 4, -8, -2)
+        src4_data = (-1, 2, 3, -4, -5)
+        expected_result = (2, 0, -8, 8, 10)
+        op = gr.sub_ff (4)
+        self.help_ff ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='float_in_')
+
+    def test_sub_ss_1 (self):
+        src1_data = (1,  -2, 3, -4, 5)
+        expected_result = (-1, 2, -3, 4, -5)
+        op = gr.sub_ss (1)
+        self.help_ss ((src1_data,),
+                      expected_result, op, port_prefix='SINGLE_PORT')
+
+    def test_sub_ss_2 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        expected_result = (-7, 5, -1, -4, 3)
+        op = gr.sub_ss (2)
+        self.help_ss ((src1_data, src2_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_sub_ss_3 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        src3_data = (-8, 3, 4, -8, -2)
+        expected_result = (1, 2, -5, 4, 5)
+        op = gr.sub_ss (3)
+        self.help_ss ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_sub_ss_4 (self):
+        src1_data = (1,  2, 3, 4, 5)
+        src2_data = (8, -3, 4, 8, 2)
+        src3_data = (-8, 3, 4, -8, -2)
+        src4_data = (-1, 2, 3, -4, -5)
+        expected_result = (2, 0, -8, 8, 10)
+        op = gr.sub_ss (4)
+        self.help_ss ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_sub_cc_1 (self):
+        src1_data       = (2-2j,  1-1j,    -8+0j, -3-7j, -4+2j, 5+5j)
+        expected_result = (-2+2j, -1+1j, 8+0j, 3+7j, 4-2j, -5-5j)
+        op = gr.sub_cc (1)
+        self.help_cc ((src1_data,),
+                      expected_result, op, port_prefix='SINGLE_PORT')
+
+    def test_sub_cc_2 (self):
+        src1_data       = (2-2j,  1-1j, -8+0j,    3-7j,  4+2j, 5+5j)
+        src2_data       = (1-1j,  3+2j,  4-2j,    1-8j,  6+1j, 5+5j)
+        expected_result = (1-1j, -2+-3j, -12+2j,  2+1j,  -2+1j, 0+0j)
+        op = gr.sub_cc (2)
+        self.help_cc ((src1_data, src2_data),
+                      expected_result, op, port_prefix='complex_in_')
+
+    def test_sub_cc_3 (self):
+        src1_data       = (2-2j,  1-1j, -8+0j,    3-7j,  4+2j, 5+5j)
+        src2_data       = (1-1j,  3+2j,  4-2j,    1-8j,  6+1j, 5+5j)
+        src3_data       = (-1+1j,-3-2j, -4+2j,   -1+8j, -6-1j, -5-5j)
+        expected_result = (2-2j,  1-1j, -8+0j,    3-7j,  4+2j, 5+5j)
+        op = gr.sub_cc (3)
+        self.help_cc ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='complex_in_')
+
+    def test_sub_cc_4 (self):
+        src1_data       = (2-2j,  1-1j, -8+0j,    3-7j,  4+2j, 5+5j)
+        src2_data       = (1-1j,  3+2j,  4-2j,    1-8j,  6+1j, 5+5j)
+        src3_data       = (-1+1j,-3-2j, -4+2j,   -1+8j, -6-1j, -5-5j)
+        src4_data       = (1-1j,  3+2j,  4-2j,    1-8j,  6+1j, 5+5j)
+        expected_result = (1-1j, -2+-3j, -12+2j,  2+1j,  -2+1j, 0+0j)
+        op = gr.sub_cc (4)
+        self.help_cc ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='complex_in_')
+
+    def test_div_ff_1 (self):
         src1_data       = (1,  2,  4,    -8)
         expected_result = (1, 0.5, 0.25, -.125)
-        op = gr.divide_ff ()
+        op = gr.divide_ff (1)
         self.help_ff ((src1_data,),
-                      expected_result, op)
+                      expected_result, op, port_prefix='SINGLE_PORT')
 
-    def xtest_div_ff_2 (self):
+    def test_div_ff_2 (self):
         src1_data       = ( 5,  9, -15, 1024)
         src2_data       = (10,  3,  -5,   64)
         expected_result = (0.5, 3,   3,   16)
-        op = gr.divide_ff ()
+        op = gr.divide_ff (2)
         self.help_ff ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='float_in_')
 
+    def test_div_ff_3 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        src3_data       = (2,  3,  -.5,   -4)
+        expected_result = (0.25, 1,   -6,   -4)
+        op = gr.divide_ff (3)
+        self.help_ff ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='float_in_')
+
+    def test_div_ff_4 (self):
+        src1_data       = ( 5,   9,  -15, 1024)
+        src2_data       = (10,   3,   -5,   64)
+        src3_data       = (2,    3,   -.5,  -4)
+        src4_data       = (-0.5, -1   ,-3,   2)
+        expected_result = (-0.5, -1,   2,  -2)
+        op = gr.divide_ff (4)
+        self.help_ff ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='float_in_')
+
+    def test_div_ii_1 (self):
+        src1_data       = (1,  2,  4,    -8, -1)
+        expected_result = (1,  0,  0,    0,   -1)
+        op = gr.divide_ii (1)
+        self.help_ii ((src1_data,),
+                      expected_result, op, port_prefix='SINGLE_PORT')
+
+    def test_div_ii_2 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        expected_result = (0,   3,   3,   16)
+        op = gr.divide_ii (2)
+        self.help_ii ((src1_data, src2_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_div_ii_3 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        src3_data       = (1,   2,  -1,   -4)
+        expected_result = (0,   1,  -3,   -4)
+        op = gr.divide_ii (3)
+        self.help_ii ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_div_ii_4 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        src3_data       = (1,   2,  -1,   -4)
+        src4_data       = (1,   -2,  3,   -2)
+        expected_result = (0,   0,  -1,   2)
+        op = gr.divide_ii (4)
+        self.help_ii ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_div_ss_1 (self):
+        src1_data       = (1,  2,  4,    -8, -1)
+        expected_result = (1, 0, 0, 0, -1)
+        op = gr.divide_ss (1)
+        self.help_ss ((src1_data,),
+                      expected_result, op, port_prefix='SINGLE_PORT')
+
+    def test_div_ss_2 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        expected_result = (0, 3,   3,   16)
+        op = gr.divide_ss (2)
+        self.help_ss ((src1_data, src2_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_div_ss_3 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        src3_data       = (1,   2,  -1,   -4)
+        expected_result = (0,   1,  -3,   -4)
+        op = gr.divide_ss (3)
+        self.help_ss ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_div_ss_4 (self):
+        src1_data       = ( 5,  9, -15, 1024)
+        src2_data       = (10,  3,  -5,   64)
+        src3_data       = (1,   2,  -1,   -4)
+        src4_data       = (1,   -2,  3,   -2)
+        expected_result = (0,   0,  -1,   2)
+        op = gr.divide_ss (4)
+        self.help_ss ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_div_cc_1 (self):
+        src1_data       = (2-2j,  1-1j,    -8+0j)
+        expected_result = (0.25+.25j, .5+.5j, -.125+0j)
+        op = gr.divide_cc (1)
+        self.help_cc ((src1_data,),
+                      expected_result, op, port_prefix='SINGLE_PORT')
+
+    def test_div_cc_2 (self):
+        src1_data = (5-10j,  9+9j, -15-5j, 1024+1024j)
+        src2_data = (10+10j, 3+3j, -5-5j, 64+64j)
+        expected_result = (-.25-.75j, 3+0j,   2-1j,  16+0j)
+        op = gr.divide_cc (2)
+        self.help_cc ((src1_data, src2_data),
+                      expected_result, op, port_prefix='complex_in_')
+
+    def test_div_cc_3 (self):
+        src1_data = (5-10j,  9+9j, -15-5j, 1024+1024j)
+        src2_data = (10+10j, 3+3j, -5-5j, 64+64j)
+        src3_data = (-.25-.75j, 3+0j,   2-1j,  16+0j)
+        expected_result = (1+0j, 1+0j, 1+0j,  1+0j)
+        op = gr.divide_cc (3)
+        self.help_cc ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='complex_in_')
+
+    def test_div_cc_4 (self):
+        src1_data = (5-10j,  9+9j, -15-5j, 1024+1024j)
+        src2_data = (10+10j, 3+3j, -5-5j, 64+64j)
+        src3_data = (-.25-.75j, 3+0j,   2-1j,  16+0j)
+        src4_data = (1+0j, 1+0j, 1-0j, 1+0j)
+        expected_result = (1+0j, 1+0j, 1+0j,  1+0j)
+        op = gr.divide_cc (4)
+        self.help_cc ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='complex_in_')
 
 if __name__ == '__main__':
     gr_unittest.run(test_add_and_friends, "test_add_and_friends.xml")

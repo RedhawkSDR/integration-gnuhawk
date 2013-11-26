@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "complex_to_float_2o.h"
 
 int main(int argc, char* argv[])
-{ 
-    complex_to_float_2o_i* complex_to_float_2o_servant; 
-    Resource_impl::start_component(complex_to_float_2o_servant, argc, argv);         
+{
+    complex_to_float_2o_i* complex_to_float_2o_servant;
+    Resource_impl::start_component(complex_to_float_2o_servant, argc, argv);
+    return 0;
 }
+

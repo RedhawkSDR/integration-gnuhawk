@@ -1,0 +1,10 @@
+3a1c436362fc500c65e072d08a206225 cpfsk_bc_base.h
+c94dbbe80c4f7418b8257c3541a7c7f6 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+1495ad832b1d000c1adbff95dd448c35 cpfsk_bc.cpp
+f9810c4902d90004d2fac0186c61bc5f configure.ac
+a0924167309c8b2e6abb899f1c90bdde cpfsk_bc.h
+6662ac57ef3591df500bf0b27ac4a794 cpfsk_bc_base.cpp
+3cd38ffb8c93bc91d6bd14c4506bcda3 cpfsk_bc_GnuHawkBlock.h
+19230315e51bc91603a6a92eceb910de Makefile.am
+d493011fe2493f61b27446d637b48c04 Makefile.am.ide

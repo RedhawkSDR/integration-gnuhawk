@@ -13,13 +13,12 @@
 # GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
 # A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
+# 
 # You should have received a copy of the GNU General Public License along with 
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
- 
 
-if [ "$1" == "rpm" ]; then
+if [ "$1" = "rpm" ]; then
     # A very simplistic RPM build scenario
     if [ -e add_ii_2i.spec ]; then
         mydir=`dirname $0`
@@ -34,12 +33,14 @@ if [ "$1" == "rpm" ]; then
     fi
 else
     for impl in cpp ; do
-        pushd $impl &> /dev/null
+        cd $impl
         if [ -e build.sh ]; then
             ./build.sh $*
+        elif [ -e reconf ]; then
+            ./reconf && ./configure && make
         else
             echo "No build.sh found for $impl"
         fi
-        popd &> /dev/null
+        cd -
     done
 fi

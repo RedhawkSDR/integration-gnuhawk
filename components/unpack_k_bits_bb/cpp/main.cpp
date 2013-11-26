@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "unpack_k_bits_bb.h"
 
 int main(int argc, char* argv[])
-{ 
-    unpack_k_bits_bb_i* unpack_k_bits_bb_servant; 
-    Resource_impl::start_component(unpack_k_bits_bb_servant, argc, argv);         
+{
+    unpack_k_bits_bb_i* unpack_k_bits_bb_servant;
+    Resource_impl::start_component(unpack_k_bits_bb_servant, argc, argv);
+    return 0;
 }
+

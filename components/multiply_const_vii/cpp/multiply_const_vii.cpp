@@ -122,16 +122,19 @@ void multiply_const_vii_i::setK( const std::string &id ) {
 //
 void multiply_const_vii_i::createBlock()
 {
-  //
-  // gr_sptr = xxx_make_xxx( args );
-  //
-  std::vector<int> t_k( k.begin(), k.end() );
-  gr_sptr = gr_make_multiply_const_vii(t_k);
+
+  if ( k.size() < 1 )  return;
+
+  try {
+    std::vector<int> t_k( k.begin(), k.end() );
+    gr_sptr = gr_make_multiply_const_vii(t_k);
+  }
+  catch(...) {
+    return;
+  }
+
   this->setPropertyChangeListener("k", this, &multiply_const_vii_i::setK );
   this->registerGetValue("k", this, &multiply_const_vii_i::getK);
-  //this->registerGetterSetter("k", &gr_multiply_const_vii::k, &gr_multiply_const_vii::set_k);
-
-
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

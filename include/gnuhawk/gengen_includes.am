@@ -1,4 +1,5 @@
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_add_cc.h
+nobase_pkginclude_HEADERS += gnuradio/gengen/gr_add_const_bb.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_add_const_cc.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_add_const_ff.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_add_const_ii.h
@@ -96,6 +97,7 @@ nobase_pkginclude_HEADERS += gnuradio/gengen/gr_sub_ss.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_unpacked_to_packed_bb.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_unpacked_to_packed_ii.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_unpacked_to_packed_ss.h
+nobase_pkginclude_HEADERS += gnuradio/gengen/gr_vector_insert_b.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_vector_sink_b.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_vector_sink_c.h
 nobase_pkginclude_HEADERS += gnuradio/gengen/gr_vector_sink_f.h

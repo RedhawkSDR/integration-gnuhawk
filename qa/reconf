@@ -1,0 +1,88 @@
+#!/bin/sh
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file 
+# distributed with this source distribution.
+# 
+# This file is part of GNUHAWK.
+# 
+# GNUHAWK is free software: you can redistribute it and/or modify is under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later 
+# version.
+# 
+# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with 
+# this program.  If not, see http://www.gnu.org/licenses/.
+#
+ 
+rm -f config.cache
+
+#
+# setup environment
+#
+ghawk_dir=$(dirname `pwd`)
+ghawk_m4_dir=$ghawk_dir/bld
+comp_dir=$ghawk_dir/components
+qa_dir=$ghawk_dir/qa
+ac_m4_path="-I $ghawk_m4_dir"
+if [ -n "${OSSIEHOME}" ]
+then
+    if [ -d ${OSSIEHOME}/share/aclocal/ossie ]
+    then
+	OSSIE_AC_INCLUDE=${OSSIEHOME}/share/aclocal/ossie
+	ac_m4_path="$ac_m4_path -I ${OSSIE_AC_INCLUDE}"
+    fi
+fi
+
+# Setup the libtool stuff
+if [ -e /usr/local/share/aclocal/libtool.m4 ]; then
+    /bin/cp /usr/local/share/aclocal/libtool.m4 aclocal.d/acinclude.m4
+elif [ -e /usr/share/aclocal/libtool.m4 ]; then
+    /bin/cp /usr/share/aclocal/libtool.m4 acinclude.m4
+fi
+
+
+#
+# Generate configure.ac and Makefile.am
+#
+awk -f bld/cfg.comp.awk bld/cdirs > cfg.cdirs.out
+sed -f bld/cfg.sed bld/configure.ac.gold > configure.ac
+awk -f bld/mk.comp.awk bld/cdirs >  mk.comp.out
+sed -f bld/mk.sed bld/Makefile.am.gold > Makefile.am
+
+
+# Search in expected locations for the OSSIE acincludes
+aclocal $ac_m4_path
+
+autoconf
+automake --foreign --add-missing
+
+#
+# Process Subdirectories
+#
+ignore_list=`cat bld/ignore_dirs`
+
+reconf_subdirs() {
+while read i
+do
+    # check if directory is in ignore list
+    if [[  $ignore_list =~ $i ]]
+    then
+	printf "Skiping: %s\n" $i
+	continue
+    fi
+
+   qa_comp_dir=$qa_dir/components
+   # Only reconf component dirs
+   if  [ -d "$qa_comp_dir/$i" ]  && [ -f "$qa_comp_dir/$i/cpp/reconf" ]
+   then
+      printf "Reconf: %s\n" $i
+      ( cd $qa_comp_dir/$i/cpp; ./reconf $ghawk_m4_dir )
+   fi
+done <$1
+}
+
+reconf_subdirs "bld/cdirs"

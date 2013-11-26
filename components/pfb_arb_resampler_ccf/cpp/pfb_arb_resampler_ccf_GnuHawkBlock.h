@@ -22,9 +22,9 @@
 #define pfb_arb_resampler_ccf_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_pfb_arb_resampler_ccf.h>
+#include <pfb_arb_resampler_ccf_impl.h>
 
-typedef GHComponent< gr_pfb_arb_resampler_ccf >            GnuHawkBlock;
+typedef GHComponent< gr::filter::pfb_arb_resampler_ccf >            GnuHawkBlock;
 
 
 #endif

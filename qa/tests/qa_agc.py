@@ -34,7 +34,7 @@ class test_agc (gr_unittest.TestCase):
         self.tb = None
 
 
-    def xtest_001(self):
+    def test_001(self):
         ''' Test the complex AGC loop (single rate input) '''
         tb = self.tb
 
@@ -184,7 +184,7 @@ class test_agc (gr_unittest.TestCase):
         dst_data = dst1.data ()
         self.assertFloatTuplesAlmostEqual (expected_result, dst_data, 4)
 
-    def xtest_003(self):
+    def test_003(self):
         ''' Test the complex AGC loop (attack and decay rate inputs) '''
         tb = self.tb
 
@@ -335,7 +335,7 @@ class test_agc (gr_unittest.TestCase):
         self.assertFloatTuplesAlmostEqual (expected_result, dst_data, 4)
 
 
-    def xtest_005(self):
+    def test_005(self):
         ''' Test the complex AGC loop (attack and decay rate inputs) '''
         tb = self.tb
 

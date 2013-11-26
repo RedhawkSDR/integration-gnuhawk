@@ -105,7 +105,7 @@ void fir_filter_ccf_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_fir_filter_ccf( this->decimation, this->taps );
+    this->gr_sptr = gr::filter::fir_filter_ccf::make( this->decimation, this->taps );
     this->registerGetValue("taps", this, &fir_filter_ccf_i::getTaps);
     this->setPropertyChangeListener("taps", this, &fir_filter_ccf_i::setTaps);
 

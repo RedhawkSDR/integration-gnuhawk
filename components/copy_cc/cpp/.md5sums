@@ -1,0 +1,10 @@
+269161e03530280f6216b7e77585fe78 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+c9baff59b6eb74e09a222b9080f14544 copy_cc_GnuHawkBlock.h
+e3323184c7f4b3f12db3feb17448f208 copy_cc.cpp
+a7fdefc3b35961f531506bc34d6744bc copy_cc_base.cpp
+e06a37fbc0788f20f1f1abb3400b5e5b copy_cc_base.h
+18f3cf8853525839419aff30a9e34b41 configure.ac
+2257d8b9c810087ae902d501c2ed27d0 Makefile.am
+5079ddefe5c640952cd2bbbabe14df24 Makefile.am.ide
+90edad34ff38567a1833409bc4162c28 copy_cc.h

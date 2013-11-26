@@ -59,7 +59,7 @@ class test_pfb_arb_resampler(gr_unittest.TestCase):
         dst_data = snk.data()
         self.assertFloatTuplesAlmostEqual(expected_data[-Ntest:], dst_data[-Ntest:], 3)
 
-    def xtest_ccf_000(self):
+    def test_ccf_000(self):
         N = 1000         # number of samples to use
         fs = 1000        # baseband sampling rate
         rrate = 1.123    # resampling rate

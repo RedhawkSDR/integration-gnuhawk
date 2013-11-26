@@ -20,6 +20,7 @@
 ########################################################################
 # generate helper scripts to expand templated files
 ########################################################################
+cmake_minimum_required(VERSION 2.6)
 include(GrPython)
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/generate_helper.py "

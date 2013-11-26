@@ -17,7 +17,11 @@
 # You should have received a copy of the GNU General Public License along with 
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
- 
+
+##
+## optional args:  
+##   1 - gnuhawk bld dir that contains GNUHAWK_PKG.m4 macro
+##
 
 rm -f config.cache
 
@@ -29,18 +33,23 @@ elif [ -e /usr/share/aclocal/libtool.m4 ]; then
 fi
 libtoolize --force --automake
 
+ac_m4_path=
 # Search in expected locations for the OSSIE acincludes
 if [ -n ${OSSIEHOME} ] && [ -d ${OSSIEHOME}/share/aclocal/ossie ]; then
         OSSIE_AC_INCLUDE=${OSSIEHOME}/share/aclocal/ossie
+	ac_m4_path="-I ${OSSIE_AC_INCLUDE}"
 else
     echo "Error: Cannot find the OSSIE aclocal files. This is not expected!"
 fi
 
-if [ -n ${OSSIE_AC_INCLUDE} ]; then
-        aclocal -I ${OSSIE_AC_INCLUDE}
-else
-        aclocal
+ghawk_m4_path=../../../../bld
+if [ $# -gt "0" ]
+then
+    ghawk_m4_path=$1
 fi
 
-autoconf
+ac_m4_path="-I $ghawk_m4_path $ac_m4_path"
+aclocal $ac_m4_path
+
+autoconf 
 automake --foreign --add-missing

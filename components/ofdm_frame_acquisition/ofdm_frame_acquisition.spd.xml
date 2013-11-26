@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:44ec9b90-24c6-45bd-bbc3-8f859083acf9" name="ofdm_frame_acquisition" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="ofdm_frame_acquisition.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="ofdm_frame_acquisition.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>take a vector of complex constellation points in from an FFT
+and performs a correlation and equalization.
+
+This block takes the output of an FFT of a received OFDM symbol and finds the 
+start of a frame based on two known symbols. It also looks at the surrounding
+bins in the FFT output for the correlation in case there is a large frequency
+shift in the data. This block assumes that the fine frequency shift has already
+been corrected and that the samples fall in the middle of one FFT bin.
+
+It then uses one of those known
+symbols to estimate the channel response over all subcarriers and does a simple 
+1-tap equalization on all subcarriers. This corrects for the phase and amplitude
+distortion caused by the channel.
+
+param: occupied_carriers   The number of subcarriers with data in the received symbol
+param: fft_length          The size of the FFT vector (occupied_carriers + unused carriers)
+param: cplen		The length of the cycle prefix
+param: known_symbol        A vector of complex numbers representing a known symbol at the
+                                       start of a frame (usually a BPSK PN sequence)
+param: max_fft_shift_len   Set's the maximum distance you can look between bins for correlation</description>
+    <code type="Executable">
+      <localfile name="cpp/ofdm_frame_acquisition"/>
+      <entrypoint>cpp/ofdm_frame_acquisition</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

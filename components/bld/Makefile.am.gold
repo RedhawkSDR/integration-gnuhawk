@@ -1,0 +1,55 @@
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file 
+# distributed with this source distribution.
+# 
+# This file is part of GNUHAWK.
+# 
+# GNUHAWK is free software: you can redistribute it and/or modify is under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later 
+# version.
+# 
+# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with 
+# this program.  If not, see http://www.gnu.org/licenses/.
+#
+#QA_COMPS=@@@QA_COMPS@@@  -- removed to qa dir
+#SUBDIRS=$(QA_COMPS) $(GH_COMPS)
+
+GH_COMPS=@@@GH_COMPS@@@
+
+SUBDIRS=$(GH_COMPS)
+
+.PHONY: $(SUBDIRS) local-clean
+
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+distclean-am: local-clean clean-am distclean-generic 
+	find . -name "configure.gnu" | xargs rm -f
+
+
+local-clean:
+	@-rm cfg*.out
+	@-rm mk*.out
+	@-rm Makefile
+	@-rm Makefile.am
+	@-rm Makefile.in
+	@-rm configure.ac
+	@-rm -f config.*
+	@-rm -rf autom4te.cache
+	@-rm -f acinclude.m4
+	@-rm -f aclocal.m4
+	@-rm -f configure
+	@-rm -f depcomp
+	@-rm -f install-sh
+	@-rm -f ltmain.sh
+	@-rm -f Makefile.in
+	@-rm -f missing
+	@-rm -rf .deps
+	@-rm -rf libtool 
+	@-rm -rf confdefs.h
+

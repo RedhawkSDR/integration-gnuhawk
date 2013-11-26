@@ -1,0 +1,10 @@
+459790c40fefbba2e56a0a21d812ba01 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+53b1204dbca104363821b2229d0c2174 max_ff_3i_base.cpp
+b8d8b98a00fd0c98335bb16a3a5fa14b max_ff_3i.cpp
+f8ed2f7bf014fb9d05c31a602ef2e7e7 configure.ac
+6919faf327158fbd28191519436014ef Makefile.am
+84a746ce94aa812f45a9d37e478c7938 max_ff_3i.h
+cba42bfc4853ada47e0c012d657ab603 max_ff_3i_base.h
+5c20834f4817961c70feff84b8b2ad38 max_ff_3i_GnuHawkBlock.h
+a843f2a967b580861f505195bf7a59ae Makefile.am.ide

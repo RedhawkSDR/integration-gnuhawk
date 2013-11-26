@@ -34,6 +34,7 @@ INCLUDES = $(PROJECTDEPS_CFLAGS) -I../include/gnuhawk -I../include/gnuhawk/runti
 SUBDIRS = 
 
 include grblocks.am
+include more_grblocks.am
 include grblocks_dependencies.am
 if ARCH_64 
 include gnuradio-core_filter_assembly_64.am

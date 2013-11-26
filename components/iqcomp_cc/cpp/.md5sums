@@ -1,0 +1,10 @@
+c81e8fe83fa4a968e4ba6322152a4131 main.cpp
+dc864a1748352d32b4dfdc0fd1d68707 iqcomp_cc_GnuHawkBlock.h
+d193775e0ac25076db454b4c6f313155 reconf
+04cf96686d517376ea886a7afa36cac1 iqcomp_cc.cpp
+e0ad6a94e42d476f778713dc3f9159d0 iqcomp_cc_base.h
+b261d31c75c6431c0177ea8e45023812 iqcomp_cc_base.cpp
+b90fc849ce76b2eb2716f8a4f0913a63 configure.ac
+cb92b9fd30acee2f755ea3305e3b932b Makefile.am
+77b1f74282d9b75b6e69cd871b08fbbf Makefile.am.ide
+37c4a74b80d8a1269abe9e3ecce053c5 iqcomp_cc.h

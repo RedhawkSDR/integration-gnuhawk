@@ -31,7 +31,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <localfile name="dc_blocker_cc.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
-    <description>brief a computationally efficient controllable DC blocker</description>
+    <description>a computationally efficient controllable DC blocker</description>
     <code type="Executable">
       <localfile name="cpp/dc_blocker_cc"/>
       <entrypoint>cpp/dc_blocker_cc</entrypoint>

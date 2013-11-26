@@ -1,0 +1,10 @@
+f39e622d8f7b6ba70908001eeb99bdde main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+486bd8ae4e3a7c19bb7b4ed631113a25 add_cc_2i_GnuHawkBlock.h
+371557b6a1d0d19c9fbff14caf539779 add_cc_2i.cpp
+26e64ae037b1b36ff301819b85c87cff configure.ac
+e6fa39ed714ee9b31b995c094008abbf Makefile.am
+fd2759969aef1786b63704f578c0d3fe add_cc_2i_base.h
+2d0e605f831a8694139e18891f941b50 add_cc_2i_base.cpp
+f53117f43a3f15423f9aa05619c82dda add_cc_2i.h
+c706e2e2a4018baa3d232273f1b37110 Makefile.am.ide

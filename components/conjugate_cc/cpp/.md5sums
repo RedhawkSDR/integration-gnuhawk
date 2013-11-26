@@ -1,0 +1,10 @@
+abc38194ed4581d31d683c2aee098f73 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+c86ba8586a637956abdbe51551ad053f configure.ac
+fff61fa3ef663255ff50ec9d888ebaae conjugate_cc_base.cpp
+93feb6e51690639780909778962fffd2 conjugate_cc.cpp
+f7010754fed923ac859603a35c796de4 Makefile.am
+6290293fa0217b63edd85b4214ba4f83 conjugate_cc_GnuHawkBlock.h
+ae620412745b8559dbf84e9f18ee5f12 conjugate_cc.h
+5cbc1618b8b6f564fda2befab7efad98 conjugate_cc_base.h
+13902d6e7f798f44a92220d257c83f0b Makefile.am.ide

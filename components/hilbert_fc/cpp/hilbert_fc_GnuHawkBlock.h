@@ -22,9 +22,9 @@
 #define hilbert_fc_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_hilbert_fc.h>
+#include <hilbert_fc_impl.h>
 
-typedef GHComponent< gr_hilbert_fc >            GnuHawkBlock;
+typedef GHComponent< gr::filter::hilbert_fc >            GnuHawkBlock;
 
 
 #endif

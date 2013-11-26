@@ -22,9 +22,9 @@
 #define single_pole_iir_filter_ff_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_single_pole_iir_filter_ff.h>
+#include <single_pole_iir_filter_ff_impl.h>
 
-typedef GHComponent< gr_single_pole_iir_filter_ff >            GnuHawkBlock;
+typedef GHComponent< gr::filter::single_pole_iir_filter_ff >            GnuHawkBlock;
 
 
 #endif

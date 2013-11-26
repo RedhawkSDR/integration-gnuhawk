@@ -22,9 +22,9 @@
 #define fft_vcc_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_fft_vcc.h>
+#include <fft_vcc_fftw.h>
 
-typedef GHComponent< gr_fft_vcc >            GnuHawkBlock;
+typedef GHComponent< gr::fft::fft_vcc >            GnuHawkBlock;
 
 
 #endif

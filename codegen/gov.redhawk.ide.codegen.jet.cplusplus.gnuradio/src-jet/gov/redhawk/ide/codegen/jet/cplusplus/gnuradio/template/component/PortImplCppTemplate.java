@@ -104,6 +104,7 @@ public class PortImplCppTemplate
  * this program.  If not, see http://www.gnu.org/licenses/.
  */
 
+
     
     TemplateParameter templ = (TemplateParameter) argument;
     ImplementationSettings implSettings = templ.getImplSettings();

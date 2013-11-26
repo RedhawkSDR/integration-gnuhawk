@@ -96,9 +96,9 @@ void goertzel_fc_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_goertzel_fc( this->rate, this->length, this->frequency );
-    this->registerSetter("frequency", &gr_goertzel_fc::set_freq);
-    this->registerSetter("rate", &gr_goertzel_fc::set_rate);
+    this->gr_sptr = gr::fft::goertzel_fc::make( this->rate, this->length, this->frequency );
+    this->registerSetter("frequency", &gr::fft::goertzel_fc::set_freq);
+    this->registerSetter("rate", &gr::fft::goertzel_fc::set_rate);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

@@ -1,0 +1,1225 @@
+/*{% extends "pull/resource_base.cpp" %}*/
+
+//% set hasOutput = component.hasbulkiouses
+//% set hasInput = component.hasbulkioprovides
+//% set inputType = component.inputType
+//% set outputType = component.outputType
+
+/*{% block license %}*/
+${component.cppLicense}
+
+/*{% endblock %}*/
+
+/*# ********** inherits includes from redhawk base template ********** #*/
+
+/*{% block componentConstructor %}*/
+${className}::${className}(const char *uuid, const char *label) :
+    GnuHawkBlock(uuid, label),
+    serviceThread(0),
+    noutput_items(0),
+    _maintainTimeStamp(false),
+    _throttle(false)
+{
+    construct();
+}
+/*{% endblock %}*/
+
+/*{% block construct %}*/
+void ${className}::construct()
+{
+    Resource_impl::_started = false;
+    loadProperties();
+    serviceThread = 0;
+/*{% if hasOutput %}*/
+    sentEOS = false;
+/*{% endif %}*/
+/*{% if hasInput %}*/
+    inputPortOrder.resize(0);;
+/*{% endif %}*/
+/*{% if hasOutput %}*/
+    outputPortOrder.resize(0);
+/*{% endif %}*/
+
+/*{% if not hasInput and hasOutput %}*/
+    setThrottle(true);
+
+/*{% endif %}*/
+    PortableServer::ObjectId_var oid;
+/*{% for port in component.ports %}*/
+    ${port.cppname} = new ${port.constructor};
+/*{% if port['direction'] == 'provides' %}*/
+    ${port.cppname}->setNewStreamListener(this, &${className}::${port.cppname}_newStreamCallback);
+/*{% endif %}*/
+    oid = ossie::corba::RootPOA()->activate_object(${port.name});
+/*{%   if port.name == 'propEvent' %}*/
+/*{%     for property in component.events %}*/
+    ${port.cppname}->registerProperty(this->_identifier, this->naming_service_name, this->getPropertyFromId("${property.identifier}"));
+/*{%     endfor %}*/
+    this->registerPropertyChangePort(${port.cppname});
+/*{%   endif %}*/
+/*{%   if loop.last %}*/
+
+/*{%   endif %}*/
+/*{% endfor %}*/
+/*{% for port in component.ports if port is provides %}*/
+    registerInPort(${port.cppname});
+    inputPortOrder.push_back("${port.cppname}");
+/*{% endfor %}*/
+/*{% for port in component.ports if port is uses %}*/
+    registerOutPort(${port.cppname}, ${port.cppname}->_this());
+    outputPortOrder.push_back("${port.cppname}");
+/*{% endfor %}*/
+
+}
+/*{% endblock %}*/
+
+/*# ********** inherits initialize() from redhawk template          ********** #*/
+/*# ********** inherits start() from redhawk template               ********** #*/
+/*# ********** inherits getPort() from redhawk base template        ********** #*/
+/*# ********** inherits releaseObject() from redhawk base template  ********** #*/
+/*# ********** inherits loadProperties() from redhawk base template ********** #*/
+
+/*{% block stop %}*/
+void ${className}::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+{
+/*{% for port in component.ports if port['direction'] == 'provides' %}*/
+    if ( ${port.cppname} ) ${port.cppname}->block();
+/*{% endfor %}*/
+/*{% if hasInput %}*/
+    {
+        boost::mutex::scoped_lock lock(_sriMutex);
+        _sriQueue.clear();
+    }
+
+/*{% endif %}*/
+    // release the child thread (if it exists)
+    if (serviceThread != 0) {
+      {
+        boost::mutex::scoped_lock lock(serviceThreadLock);
+        LOG_TRACE( ${className}, "Stopping Service Function" );
+        serviceThread->stop();
+      }
+
+      if ( !serviceThread->release()) {
+         throw CF::Resource::StopError(CF::CF_NOTSET, "Processing thread did not die");
+      }
+
+      boost::mutex::scoped_lock lock(serviceThreadLock);
+      if ( serviceThread ) {
+        delete serviceThread;
+      }
+    }
+    serviceThread = 0;
+
+    if (Resource_impl::started()) {
+        Resource_impl::stop();
+    }
+    
+    LOG_TRACE( ${className}, "COMPLETED STOP REQUEST" );
+}
+/*{% endblock %}*/
+
+/*{% block extensions %}*/
+
+/*{% if hasInput or hasOutput %}*/
+// Destructor
+${className}::~${className}()
+{
+/*{% if hasInput %}*/
+    // Free input streams
+    for (IStreamList::iterator iter = _istreams.begin(); iter != _istreams.end(); ++iter) {
+        delete (*iter);
+    }
+/*{% endif %}*/
+/*{% if hasOutput %}*/
+    // Free output streams
+    for (OStreamList::iterator iter = _ostreams.begin(); iter != _ostreams.end(); ++iter) {
+        delete (*iter);
+    }
+/*{% endif %}*/
+}
+
+/*{% endif %}*/
+//
+//  Allow for logging 
+// 
+PREPARE_LOGGING(${className});
+
+inline static unsigned int
+round_up (unsigned int n, unsigned int multiple)
+{
+  return ((n + multiple - 1) / multiple) * multiple;
+}
+
+inline static unsigned int
+round_down (unsigned int n, unsigned int multiple)
+{
+  return (n / multiple) * multiple;
+}
+
+/*{% if hasOutput %}*/
+uint32_t ${className}::getNOutputStreams() {
+    return 0;
+}
+
+/*{% endif %}*/
+/*{% if hasOutput or hasInput %}*/
+void ${className}::setupIOMappings( )
+{
+    int ninput_streams = 0;
+    int noutput_streams = 0;
+    std::string sid("");
+/*{% if hasInput %}*/
+    int inMode=RealMode;
+/*{% endif %}*/
+
+    if ( !validGRBlock() ) return;
+/*{% if hasInput %}*/
+    ninput_streams  = gr_sptr->get_max_input_streams();
+    gr_io_signature_sptr g_isig = gr_sptr->input_signature();
+
+/*{% endif %}*/
+/*{% if hasOutput %}*/
+    noutput_streams = gr_sptr->get_max_output_streams();
+    gr_io_signature_sptr g_osig = gr_sptr->output_signature();
+
+/*{% endif %}*/
+    LOG_DEBUG( ${className}, "GNUHAWK IO MAPPINGS IN/OUT " << ninput_streams << "/" << noutput_streams );
+
+    //
+    // Someone reset the GR Block so we need to clean up old mappings if they exists
+    // we need to reset the io signatures and check the vlens
+    //
+/*{% if hasInput and hasOutput %}*/
+    if ( _istreams.size() > 0 || _ostreams.size() > 0 ) {
+
+/*{% endif %}*/
+/*{% if hasInput and not hasOutput %}*/
+    if ( _istreams.size() > 0 ) {
+
+/*{% endif %}*/
+/*{% if not hasInput and hasOutput %}*/
+    if ( _ostreams.size() > 0 ) {
+
+/*{% endif %}*/
+/*{% if hasInput %}*/
+        LOG_DEBUG( ${className}, "RESET INPUT SIGNATURE SIZE:" << _istreams.size() );
+        IStreamList::iterator istream;
+        for ( int idx=0 ; istream != _istreams.end(); idx++, istream++ ) {
+            // re-add existing stream definitons
+            LOG_DEBUG(  ${className}, "ADD READ INDEX TO GNU RADIO BLOCK");
+            if ( ninput_streams == -1 ) gr_sptr->add_read_index();
+
+            // setup io signature
+            (*istream)->associate( gr_sptr );
+        }
+
+/*{% endif %}*/
+/*{% if hasOutput %}*/
+        LOG_DEBUG( ${className}, "RESET OUTPUT SIGNATURE SIZE:" << _ostreams.size() );
+        OStreamList::iterator ostream;
+        for ( int idx=0 ; ostream != _ostreams.end(); idx++, ostream++ ) {
+            // need to evaluate new settings...???
+            (*ostream)->associate( gr_sptr );
+        }
+/*{% endif %}*/
+
+        return;
+    }
+
+    int i = 0;
+/*{% if hasInput %}*/
+   //
+   // Setup mapping of RH port to GNU RADIO Block input streams
+   // For version 1,  we are ignoring the GNU Radio input stream -1 case that allows multiple data 
+   // streams over a single connection.  We are mapping a single RH Port to a single GNU Radio stream.
+   // Stream Identifiers will  be pass along as they are received
+   //
+    LOG_TRACE( ${className}, "setupIOMappings INPUT PORTS: " << inPorts.size() );
+    RH_ProvidesPortMap::iterator p_in;
+    i = 0;
+/*{% for port in component.ports if port is provides %}*/
+    // grab ports based on their order in the scd.xml file
+    p_in = inPorts.find("${port.name}");
+    if ( p_in != inPorts.end() ) {
+        ${port.cpptype} *port = dynamic_cast< ${port.cpptype} * >(p_in->second);
+        int mode = inMode;
+        sid = "";
+
+        // need to add read index to GNU Radio Block for processing streams when max_input == -1
+        if ( ninput_streams == -1 ) gr_sptr->add_read_index();
+
+        // check if we received SRI during setup
+        BULKIO::StreamSRISequence_var sris = port->activeSRIs();
+        if (  sris->length() > 0 ) {
+            BULKIO::StreamSRI sri = sris[sris->length()-1];
+            mode = sri.mode;
+        }
+        std::vector<int> in;
+        io_mapping.push_back( in );
+        _istreams.push_back( new gr_istream< ${port.cpptype} > ( port, gr_sptr, i, mode, sid ));
+        LOG_DEBUG( ${className}, "ADDING INPUT MAP IDX:" << i << " SID:" << sid );
+        // increment port counter
+        i++;
+    }
+
+/*{% endfor %}*/
+/*{% endif %}*/
+/*{% if hasOutput%}*/
+    //
+    // Setup mapping of RH port to GNU RADIO Block input streams
+    // For version 1,  we are ignoring the GNU Radio output stream -1 case that allows multiple data 
+    // streams over a single connection.  We are mapping a single RH Port to a single GNU Radio stream.
+    //
+    LOG_TRACE( ${className}, "setupIOMappings OutputPorts: " << outPorts.size() );
+    RH_UsesPortMap::iterator p_out;
+    i = 0;
+/*{% for port in component.ports if port is uses %}*/
+    // grab ports based on their order in the scd.xml file
+    p_out = outPorts.find("${port.name}");
+    if ( p_out != outPorts.end() ) {
+        ${port.cpptype} *port = dynamic_cast< ${port.cpptype} * >(p_out->second);
+        int idx = -1;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx );
+        if (idx == -1) idx = i;
+        if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
+        int mode = sri.mode;
+        sid = sri.streamID;
+        _ostreams.push_back( new gr_ostream< ${port.cpptype} > ( port, gr_sptr, i, mode, sid ));
+        LOG_DEBUG( ${className}, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
+        _ostreams[i]->setSRI(sri, i );
+/*{% if not hasInput %}*/
+        _ostreams[i]->pushSRI();
+/*{% endif %}*/
+        // increment port counter
+        i++;
+    }
+
+/*{% endfor %}*/
+/*{% endif %}*/
+}
+
+/*{% endif %}*/
+/*{% if hasInput %}*/
+/*{% for port in component.ports if port['direction'] == 'provides' %}*/
+void ${className}::${port.cppname}_newStreamCallback( BULKIO::StreamSRI &sri )
+{
+  LOG_TRACE( ${className}, "START NotifySRI  port:stream " << ${port.cppname}->getName() << "/" << sri.streamID);
+
+  boost::mutex::scoped_lock lock(_sriMutex);
+  _sriQueue.push_back( std::make_pair( ${port.cppname}, sri ) );
+
+  LOG_TRACE( ${className}, "END  NotifySRI  QUEUE " << _sriQueue.size() << " port:stream " << ${port.cppname}->getName() << "/" << sri.streamID); 
+}
+
+/*{% endfor %}*/
+
+void ${className}::processStreamIdChanges()
+{
+    boost::mutex::scoped_lock lock(_sriMutex);
+
+    LOG_TRACE( ${className}, "processStreamIDChanges QUEUE: " << _sriQueue.size()  );
+    if (  _sriQueue.size() == 0 ) return;
+    std::string sid("");
+
+    if ( validGRBlock() ) {
+
+        IStreamList::iterator istream;
+        int idx=0;
+        std::string sid("");
+        int mode=0;
+        SRIQueue::iterator item = _sriQueue.begin();
+
+        for ( ; item != _sriQueue.end(); item++ ) {
+            idx = 0;
+            sid = "";
+            mode= item->second.mode;
+            sid = item->second.streamID;
+            istream = _istreams.begin();
+            for ( ; istream != _istreams.end(); idx++, istream++ ) {
+
+                if ( (*istream)->getPort() == item->first ) {
+                    LOG_DEBUG( ${className},  "  SETTING IN_STREAM ID/STREAM_ID :" << idx << "/" << sid  );
+                    (*istream)->sri(true);
+                    (*istream)->spe(mode);
+
+/*{% if hasOutput %}*/
+                    LOG_DEBUG( ${className},  "  SETTING  OUT_STREAM ID/STREAM_ID :" << idx << "/" << sid  );
+                    setOutputStreamSRI( idx, item->second );
+/*{% endif %}*/
+                }
+            }
+        }
+
+        _sriQueue.clear();
+
+    } else {
+        LOG_WARN( ${className}, " NEW STREAM ID, NO GNU RADIO BLOCK DEFINED, SRI QUEUE SIZE:" << _sriQueue.size() );
+    }
+
+}
+
+/*{% endif %}*/
+/*{% if hasOutput %}*/
+BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx ) {
+    // for each output stream set the SRI context
+    BULKIO::StreamSRI sri = BULKIO::StreamSRI();
+    sri.hversion = 1;
+    sri.xstart = 0.0;
+    sri.xdelta = 1;
+    sri.xunits = BULKIO::UNITS_TIME;
+    sri.subsize = 0;
+    sri.ystart = 0.0;
+    sri.ydelta = 0.0;
+    sri.yunits = BULKIO::UNITS_NONE;
+    sri.mode = 0;
+    std::ostringstream t;
+    t << naming_service_name.c_str() << "_" << oidx;
+    std::string sid = t.str();
+    sri.streamID = CORBA::string_dup(sid.c_str());
+  
+    return sri;
+}
+
+BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx, int32_t &in_idx)
+{
+    return createOutputSRI( oidx );
+}
+
+void ${className}::adjustOutputRate(BULKIO::StreamSRI &sri )
+{
+    if ( validGRBlock() ) {
+        double ret=sri.xdelta*gr_sptr->relative_rate();
+/**
+/*{% if component.gnuType == 'gr_sync_decimator' %}*/
+      ret = ret *gr_sptr->decimation();
+/*{% endif %}*/
+/*{% if component.gnuType == 'gr_sync_interpolator' %}*/
+      ret = ret  / gr_sptr->interpolation();
+/*{% endif %}*/
+**/
+        LOG_TRACE( ${className}, "ADJUSTING SRI.XDELTA FROM/TO: " << sri.xdelta << "/" << ret );
+        sri.xdelta = ret;
+    }
+}
+
+/*{% endif %}*/
+${className}::TimeDuration ${className}::getTargetDuration()
+{
+    TimeDuration  t_drate;;
+    uint64_t samps=0;
+    double   xdelta=1.0;
+    double   trate=1.0;
+
+/*{% if hasOutput %}*/
+    if ( _ostreams.size() > 0 ) {
+        samps= _ostreams[0]->nelems();
+        xdelta= _ostreams[0]->sri.xdelta;
+    }
+
+/*{% endif %}*/
+    trate = samps*xdelta;
+    uint64_t sec = (uint64_t)trunc(trate);
+    uint64_t usec = (uint64_t)((trate-sec)*1e6);
+    t_drate = boost::posix_time::seconds(sec) + 
+            boost::posix_time::microseconds(usec);
+    LOG_TRACE( ${className}, " SEC/USEC " << sec << "/"  << usec << "\n"  <<
+              " target_duration " << t_drate );
+    return t_drate;
+}
+
+${className}::TimeDuration ${className}::calcThrottle( TimeMark &start_time,
+                                             TimeMark &end_time )
+{
+    TimeDuration delta;
+    TimeDuration target_duration = getTargetDuration();
+
+    if ( start_time.is_not_a_date_time() == false ) {
+        TimeDuration s_dtime= end_time - start_time;
+        delta = target_duration - s_dtime;
+        delta /= 4;
+        LOG_TRACE( ${className}, " s_time/t_dime " << s_dtime << "/" << target_duration << "\n"  <<
+                  " delta " << delta );
+    }
+
+    return delta;
+}
+
+/*#///////////////////// BEGIN DATA ANALYZER PATTERN/////////////////////////////////////  #*/
+/*{% if hasInput and not hasOutput %}*/
+/**
+  DATA ANALYZER TEMPLATE Service Function for GR_BLOCK PATTERN
+*/
+
+int ${className}::_analyzerServiceFunction( std::vector< gr_istream_base * > &istreams )
+{
+    typedef std::vector< gr_istream_base * > _IStreamList;
+
+    boost::mutex::scoped_lock lock(serviceThreadLock);
+
+    if ( validGRBlock() == false ) {
+        // create our processing block
+        createBlock();
+
+        LOG_DEBUG( ${className}, " FINISHED BUILDING  GNU RADIO BLOCK");
+    }
+   
+    // process any Stream ID changes this could affect number of io streams
+    processStreamIdChanges();
+    
+    if ( !validGRBlock() || istreams.size() == 0 ) {
+        LOG_WARN( ${className}, "NO STREAMS ATTACHED TO BLOCK..." );
+        return NOOP;
+    }
+
+    // resize data vectors for passing data to GR_BLOCK object
+    _input_ready.resize( istreams.size() );
+    _ninput_items_required.resize( istreams.size());
+    _ninput_items.resize( istreams.size());
+    _input_items.resize(istreams.size());
+    _output_items.resize(0);
+  
+    //
+    // RESOLVE: need to look at forecast strategy, 
+    //    1)  see how many read items are necessary for N number of outputs
+    //    2)  read input data and see how much output we can produce
+    //
+  
+    //
+    // Grab available data from input streams
+    //
+    _IStreamList::iterator istream = istreams.begin();
+    int nitems=0;
+    for ( int idx=0 ; istream != istreams.end() && serviceThread->threadRunning() ; idx++, istream++ ) {
+        // note this a blocking read that can cause deadlocks
+        nitems = (*istream)->read();
+
+        if ( (*istream)->overrun() ) {
+            LOG_WARN( ${className}, " NOT KEEPING UP WITH STREAM ID:" << (*istream)->streamID );
+        }
+    
+        // RESOLVE issue when SRI changes that could affect the GNU Radio BLOCK
+        if ( (*istream)->sriChanged() ) {
+            LOG_DEBUG( ${className}, "SRI CHANGED, STREAMD IDX/ID: " 
+                   << idx << "/" << (*istream)->getPktStreamId() );
+        }
+    }
+
+    LOG_TRACE( ${className}, "READ NITEMS: "  << nitems );
+    if ( nitems <= 0 && !_istreams[0]->eos() ) return NOOP;
+
+    bool eos = false;
+    int  nout = 0;
+    while ( nout > -1 && serviceThread->threadRunning() ) {
+        eos = false;
+        nout = _forecastAndProcess( eos, istreams );
+        if ( nout > -1  ) {
+            // we chunked on data so move read pointer..
+            istream = istreams.begin();
+            for ( ; istream != istreams.end(); istream++ ) {
+
+                int idx=std::distance( istreams.begin(), istream );
+                // if we processed data for this stream
+                if ( _input_ready[idx] ) {
+                    size_t nitems = 0;
+                    try {
+                        nitems = gr_sptr->nitems_read( idx );
+                    } catch(...){}
+      
+                    if ( nitems > (*istream)->nitems() ) {
+                        LOG_WARN( ${className},  "WORK CONSUMED MORE DATA THAN AVAILABLE,  READ/AVAILABLE " 
+                                 << nitems << "/" << (*istream)->nitems() );
+                        nitems = (*istream)->nitems();
+                    }
+                    (*istream)->consume( nitems );
+                    LOG_TRACE( ${className}, " CONSUME READ DATA  ITEMS/REMAIN " << nitems << "/" << (*istream)->nitems());
+                }
+            }
+            gr_sptr->reset_read_index();
+        }
+
+        // check for not enough data return
+        if ( nout == -1 ) {
+
+            // check for  end of stream
+            istream = istreams.begin();
+            for ( ; istream != istreams.end() ; istream++) {
+                if ( (*istream)->eos() ) {
+                    eos=true;
+                }
+            }
+
+            if ( eos ) {
+                LOG_TRACE( ${className}, " DATA NOT READY, EOS:" << eos );
+                _forecastAndProcess( eos, istreams );
+            }
+        }
+    }
+
+    if ( eos ) {
+        istream = istreams.begin();
+        for ( ; istream != istreams.end() ; istream++) {
+            int idx=std::distance( istreams.begin(), istream );
+            LOG_TRACE( ${className}, " CLOSING INPUT STREAM IDX:" << idx );
+            (*istream)->close();
+        }
+    }
+
+    //
+    // set the read pointers of the GNU Radio Block to start at the beginning of the 
+    // supplied buffers
+    //
+    gr_sptr->reset_read_index();
+
+    LOG_TRACE( ${className}, " END OF ANALYZER SERVICE FUNCTION....." << noutput_items );
+
+    if ( nout == -1 && eos == false ) {
+        return NOOP; 
+    } else {
+        return NORMAL;
+    }
+}
+
+int ${className}::_forecastAndProcess( bool &eos, std::vector< gr_istream_base * > &istreams )
+{
+    typedef std::vector< gr_istream_base * >   _IStreamList;
+
+    _IStreamList::iterator istream = istreams.begin();
+    int nout = 0;
+    bool dataReady = false;
+    if ( !eos ) {
+        uint64_t max_items_avail = 0;
+        for ( int idx=0 ; istream != istreams.end() && serviceThread->threadRunning() ; idx++, istream++ ) {
+            LOG_TRACE( ${className}, "GET MAX ITEMS: STREAM:" << idx << " NITEMS/SCALARS:"
+                      << (*istream)->nitems() << "/" << (*istream)->nelems() );
+            max_items_avail = std::max( (*istream)->nitems(), max_items_avail );
+        }
+
+        //
+        // calc number of output items to produce
+        //
+        noutput_items = (int) (max_items_avail * gr_sptr->relative_rate ());
+        noutput_items = round_down (noutput_items, gr_sptr->output_multiple ());
+
+        if ( noutput_items <= 0  ) {
+           LOG_TRACE( ${className}, "DATA CHECK - MAX ITEMS  NOUTPUT/MAX_ITEMS:" <<   noutput_items << "/" << max_items_avail);
+           return -1;
+        }
+
+        if ( gr_sptr->fixed_rate() ) {
+            istream = istreams.begin();
+            for ( int i=0; istream != istreams.end(); i++, istream++ ) {
+                int t_noutput_items = gr_sptr->fixed_rate_ninput_to_noutput( (*istream)->nitems() );
+                if ( gr_sptr->output_multiple_set() ) {
+                    t_noutput_items = round_up(t_noutput_items, gr_sptr->output_multiple());
+                }
+                if ( t_noutput_items > 0 ) {
+                    if ( noutput_items == 0 ) {
+                        noutput_items = t_noutput_items;
+                    }
+                    if ( t_noutput_items <= noutput_items ) {
+                        noutput_items = t_noutput_items;
+                    }
+                }
+            }
+            LOG_TRACE( ${className}, " FIXED FORECAST NOUTPUT/output_multiple == " 
+                      << noutput_items  << "/" << gr_sptr->output_multiple());
+        }
+
+        //
+        // ask the block how much input they need to produce noutput_items...
+        // if enough data is available to process then set the dataReady flag
+        //
+        int32_t  outMultiple = gr_sptr->output_multiple();
+        while ( !dataReady && noutput_items >= outMultiple  ) {
+            //
+            // ask the block how much input they need to produce noutput_items...
+            //
+            gr_sptr->forecast(noutput_items, _ninput_items_required);
+
+            LOG_TRACE( ${className}, "--> FORECAST IN/OUT " << _ninput_items_required[0]  << "/" << noutput_items  );
+
+            istream = istreams.begin();
+            uint32_t dr_cnt=0;
+            for ( int idx=0 ; noutput_items > 0 && istream != istreams.end(); idx++, istream++ ) {
+                // check if buffer has enough elements
+                _input_ready[idx] = false;
+                if ( (*istream)->nitems() >= (uint64_t)_ninput_items_required[idx] ) {
+                    _input_ready[idx] = true;
+                    dr_cnt++;
+                }
+                LOG_TRACE( ${className}, "ISTREAM DATACHECK NELMS/NITEMS/REQ/READY:" << 
+                          (*istream)->nelems() << "/" << (*istream)->nitems() << "/" << 
+                          _ninput_items_required[idx] << "/" << _input_ready[idx]);
+            }
+    
+            if ( dr_cnt < istreams.size() ) {
+                if ( outMultiple > 1 ) {
+                    noutput_items -= outMultiple;
+                } else {
+                    noutput_items /= 2;
+                }
+            } else {
+                dataReady = true;
+            }
+            LOG_TRACE( ${className}, " TRIM FORECAST NOUTPUT/READY " << noutput_items << "/" << dataReady );
+        }
+
+        // check if data is ready...
+        if ( !dataReady ) {
+            LOG_TRACE( ${className}, "DATA CHECK - NOT ENOUGH DATA  AVAIL/REQ:" 
+                      <<   _istreams[0]->nitems() << "/" << _ninput_items_required[0] );
+            return -1;
+        }
+
+        // reset looping variables
+        int  ritems = 0;
+        int  nitems = 0;
+
+        // reset caching vectors
+        _output_items.clear();
+        _input_items.clear();
+        _ninput_items.clear();
+        istream = istreams.begin();
+
+        for ( int idx=0 ; istream != istreams.end(); idx++, istream++ ) {
+            // check if the stream is ready
+            if ( !_input_ready[idx] ) continue;
+      
+            // get number of items remaining
+            try {
+                ritems = gr_sptr->nitems_read( idx );
+            } catch(...){
+                // something bad has happened, we are missing an input stream
+                LOG_ERROR( ${className}, "MISSING INPUT STREAM FOR GR BLOCK, STREAM ID:" <<   (*istream)->streamID );
+                return -2;
+            } 
+
+            nitems = (*istream)->nitems() - ritems;
+            LOG_TRACE( ${className},  " ISTREAM: IDX:" << idx  << " ITEMS AVAIL/READ/REQ " << nitems << "/" 
+                      << ritems << "/" << _ninput_items_required[idx] );
+            if ( nitems >= _ninput_items_required[idx] && nitems > 0 ) {
+                //remove eos checks ...if ( nitems < _ninput_items_required[idx] ) nitems=0;
+                _ninput_items.push_back( nitems );
+                _input_items.push_back( (*istream)->read_pointer(ritems) );
+            }
+        }
+
+        nout=0;
+        if ( _input_items.size() != 0 && serviceThread->threadRunning() ) {
+            LOG_TRACE( ${className}, " CALLING WORK.....N_OUT:" << noutput_items << 
+                      " N_IN:" << nitems << " ISTREAMS:" << _input_items.size() << 
+                      " OSTREAMS:" << _output_items.size());
+            nout = gr_sptr->general_work( noutput_items, _ninput_items, _input_items, _output_items);
+
+            // sink/analyzer patterns do not return items, so consume_each is not called in Gnu Radio BLOCK
+            if ( nout == 0 ) {
+                gr_sptr->consume_each(nitems);
+            }
+
+            LOG_TRACE( ${className}, "RETURN  WORK ..... N_OUT:" << nout);
+        }
+
+        // check for stop condition from work method
+        if ( nout < gr_block::WORK_DONE ) {
+            LOG_WARN( ${className}, "WORK RETURNED STOP CONDITION..." << nout );
+            nout=0;
+            eos = true;
+        }
+    }
+
+    return nout;
+ 
+}
+
+/*{% endif %}*/
+/*#  ///////////////////// End of Template for Data Analyzer Pattern  ///////////////////////////// #*/
+/*#///////////////////// BEGIN DATA TRANSFORMER PATTERN /////////////////////////////////////  #*/
+/*{% if hasInput and hasOutput %}*/
+int ${className}::_transformerServiceFunction( std::vector< gr_istream_base * > &istreams ,
+    std::vector< gr_ostream_base * > &ostreams  )
+{
+    typedef std::vector< gr_istream_base * >   _IStreamList;
+    typedef std::vector< gr_ostream_base * >  _OStreamList;
+
+    boost::mutex::scoped_lock lock(serviceThreadLock);
+
+    if ( validGRBlock() == false ) {
+
+        // create our processing block, and setup  property notifiers
+        createBlock();
+
+        LOG_DEBUG( ${className}, " FINISHED BUILDING  GNU RADIO BLOCK");
+    }
+ 
+    //process any Stream ID changes this could affect number of io streams
+    processStreamIdChanges();
+
+    if ( !validGRBlock() || istreams.size() == 0 || ostreams.size() == 0  ) {
+        LOG_WARN( ${className}, "NO STREAMS ATTACHED TO BLOCK..." );
+        return NOOP;
+    }
+
+    _input_ready.resize( istreams.size() );
+    _ninput_items_required.resize( istreams.size() );
+    _ninput_items.resize( istreams.size() );
+    _input_items.resize( istreams.size() );
+    _output_items.resize( ostreams.size() );
+
+    //
+    // RESOLVE: need to look at forecast strategy, 
+    //    1)  see how many read items are necessary for N number of outputs
+    //    2)  read input data and see how much output we can produce
+    //
+
+    //
+    // Grab available data from input streams
+    //
+    _OStreamList::iterator ostream;
+    _IStreamList::iterator istream = istreams.begin();
+    int nitems=0;
+    for ( int idx=0 ; istream != istreams.end() && serviceThread->threadRunning() ; idx++, istream++ ) {
+        // note this a blocking read that can cause deadlocks
+        nitems = (*istream)->read();
+    
+        if ( (*istream)->overrun() ) {
+            LOG_WARN( ${className}, " NOT KEEPING UP WITH STREAM ID:" << (*istream)->streamID );
+        }
+
+        if ( (*istream)->sriChanged() ) {
+            // RESOLVE - need to look at how SRI changes can affect Gnu Radio BLOCK state
+            LOG_DEBUG( ${className}, "SRI CHANGED, STREAMD IDX/ID: " 
+                      << idx << "/" << (*istream)->getPktStreamId() );
+            setOutputStreamSRI( idx, (*istream)->getPktSri() );
+        }
+    }
+
+    LOG_TRACE( ${className}, "READ NITEMS: "  << nitems );
+    if ( nitems <= 0 && !_istreams[0]->eos() ) {
+        return NOOP;
+    }
+
+    bool eos = false;
+    int  nout = 0;
+    bool workDone = false;
+
+    while ( nout > -1 && serviceThread->threadRunning() ) {
+        eos = false;
+        nout = _forecastAndProcess( eos, istreams, ostreams );
+        if ( nout > -1  ) {
+            workDone = true;
+
+            // we chunked on data so move read pointer..
+            istream = istreams.begin();
+            for ( ; istream != istreams.end(); istream++ ) {
+                int idx=std::distance( istreams.begin(), istream );
+                // if we processed data for this stream
+                if ( _input_ready[idx] ) {
+                    size_t nitems = 0;
+                    try {
+                        nitems = gr_sptr->nitems_read( idx );
+                    } catch(...){}
+      
+                    if ( nitems > (*istream)->nitems() ) {
+                        LOG_WARN( ${className},  "WORK CONSUMED MORE DATA THAN AVAILABLE,  READ/AVAILABLE "
+                                 << nitems << "/" << (*istream)->nitems() );
+                        nitems = (*istream)->nitems();
+                    }
+                    (*istream)->consume( nitems );
+                    LOG_TRACE( ${className}, " CONSUME READ DATA  ITEMS/REMAIN " << nitems << "/" << (*istream)->nitems());
+                }
+            }
+            gr_sptr->reset_read_index();
+        }
+
+        // check for not enough data return
+        if ( nout == -1 ) {
+
+            // check for  end of stream
+            istream = istreams.begin();
+            for ( ; istream != istreams.end() ; istream++) {
+                if ( (*istream)->eos() ) {
+                    eos=true;
+                }
+            }
+            if ( eos ) {
+                LOG_TRACE(  ${className}, "EOS SEEN, SENDING DOWNSTREAM " );
+                _forecastAndProcess( eos, istreams, ostreams);
+            }
+        }
+    }
+
+    if ( eos ) {
+        istream = istreams.begin();
+        for ( ; istream != istreams.end() ; istream++ ) {
+            int idx=std::distance( istreams.begin(), istream );
+            LOG_DEBUG( ${className}, " CLOSING INPUT STREAM IDX:" << idx );
+            (*istream)->close();
+        }
+
+        // close remaining output streams
+        ostream = ostreams.begin();
+        for ( ; eos && ostream != ostreams.end(); ostream++ ) {
+            int idx=std::distance( ostreams.begin(), ostream );
+            LOG_DEBUG( ${className}, " CLOSING OUTPUT STREAM IDX:" << idx );
+            (*ostream)->close();
+        }
+    }
+
+    //
+    // set the read pointers of the GNU Radio Block to start at the beginning of the 
+    // supplied buffers
+    //
+    gr_sptr->reset_read_index();
+
+    LOG_TRACE( ${className}, " END OF TRANSFORM SERVICE FUNCTION....." << noutput_items );
+
+    if ( nout == -1 && eos == false && !workDone ) {
+        return NOOP;
+    } else {
+        return NORMAL;
+    }
+}
+
+int ${className}::_forecastAndProcess( bool &eos, std::vector< gr_istream_base * > &istreams ,
+                                 std::vector< gr_ostream_base * > &ostreams  )
+{
+    typedef std::vector< gr_istream_base * >   _IStreamList;
+    typedef std::vector< gr_ostream_base * >  _OStreamList;
+
+    _OStreamList::iterator ostream;
+    _IStreamList::iterator istream = istreams.begin();
+    int nout = 0;
+    bool dataReady = false;
+    if ( !eos ) {
+        uint64_t max_items_avail = 0;
+        for ( int idx=0 ; istream != istreams.end() && serviceThread->threadRunning() ; idx++, istream++ ) {
+            LOG_TRACE( ${className}, "GET MAX ITEMS: STREAM:"<< idx << " NITEMS/SCALARS:" << 
+                       (*istream)->nitems() << "/" << (*istream)->nelems() );
+            max_items_avail = std::max( (*istream)->nitems(), max_items_avail );
+        }
+
+        if ( max_items_avail == 0  ) {
+            LOG_TRACE( ${className}, "DATA CHECK - MAX ITEMS  NOUTPUT/MAX_ITEMS:" <<   noutput_items << "/" << max_items_avail);
+            return -1;
+        }
+
+        //
+        // calc number of output elements based on input items available
+        //
+        noutput_items = 0;
+        if ( !gr_sptr->fixed_rate() )  {
+            noutput_items = round_down((int32_t) (max_items_avail * gr_sptr->relative_rate()), gr_sptr->output_multiple());
+            LOG_TRACE( ${className}, " VARIABLE FORECAST NOUTPUT == " << noutput_items );
+        } else {
+            istream = istreams.begin();
+            for ( int i=0; istream != istreams.end(); i++, istream++ ) {
+                int t_noutput_items = gr_sptr->fixed_rate_ninput_to_noutput( (*istream)->nitems() );
+                if ( gr_sptr->output_multiple_set() ) {
+                    t_noutput_items = round_up(t_noutput_items, gr_sptr->output_multiple());
+                }
+                if ( t_noutput_items > 0 ) {
+                    if ( noutput_items == 0 ) {
+                        noutput_items = t_noutput_items;
+                    }
+                    if ( t_noutput_items <= noutput_items ) {
+                        noutput_items = t_noutput_items;
+                    }
+                }
+            }
+            LOG_TRACE( ${className},  " FIXED FORECAST NOUTPUT/output_multiple == " << 
+                        noutput_items  << "/" << gr_sptr->output_multiple());
+        }
+
+        //
+        // ask the block how much input they need to produce noutput_items...
+        // if enough data is available to process then set the dataReady flag
+        //
+        int32_t  outMultiple = gr_sptr->output_multiple();
+        while ( !dataReady && noutput_items >= outMultiple  ) {
+            //
+            // ask the block how much input they need to produce noutput_items...
+            //
+            gr_sptr->forecast(noutput_items, _ninput_items_required);
+
+            LOG_TRACE( ${className}, "--> FORECAST IN/OUT " << _ninput_items_required[0]  << "/" << noutput_items  );
+
+            istream = istreams.begin();
+            uint32_t dr_cnt=0;
+            for ( int idx=0 ; noutput_items > 0 && istream != istreams.end(); idx++, istream++ ) {
+                // check if buffer has enough elements
+                _input_ready[idx] = false;
+                if ( (*istream)->nitems() >= (uint64_t)_ninput_items_required[idx] ) {
+                    _input_ready[idx] = true;
+                    dr_cnt++;
+                }
+                LOG_TRACE( ${className}, "ISTREAM DATACHECK NELMS/NITEMS/REQ/READY:" <<   (*istream)->nelems() << 
+                          "/" << (*istream)->nitems() << "/" << _ninput_items_required[idx] << "/" << _input_ready[idx]);
+            }
+    
+            if ( dr_cnt < istreams.size() ) {
+                if ( outMultiple > 1 ) {
+                    noutput_items -= outMultiple;
+                } else {
+                    noutput_items /= 2;
+                }
+            } else {
+                dataReady = true;
+            }
+            LOG_TRACE( ${className}, " TRIM FORECAST NOUTPUT/READY " << noutput_items << "/" << dataReady );
+        }
+
+        // check if data is ready...
+        if ( !dataReady ) {
+            LOG_TRACE( ${className}, "DATA CHECK - NOT ENOUGH DATA  AVAIL/REQ:" <<   _istreams[0]->nitems() << 
+                      "/" << _ninput_items_required[0] );
+            return -1;
+        }
+
+        // reset looping variables
+        int  ritems = 0;
+        int  nitems = 0;
+
+        // reset caching vectors
+        _output_items.clear();
+        _input_items.clear();
+        _ninput_items.clear();
+        istream = istreams.begin();
+
+        for ( int idx=0 ; istream != istreams.end(); idx++, istream++ ) {
+            // check if the stream is ready
+            if ( !_input_ready[idx] ) {
+                continue;
+            }
+            // get number of items remaining
+            try {
+                ritems = gr_sptr->nitems_read( idx );
+            } catch(...){
+                // something bad has happened, we are missing an input stream
+                LOG_ERROR( ${className}, "MISSING INPUT STREAM FOR GR BLOCK, STREAM ID:" <<   (*istream)->streamID );
+                return -2;
+            } 
+    
+            nitems = (*istream)->nitems() - ritems;
+            LOG_TRACE( ${className},  " ISTREAM: IDX:" << idx  << " ITEMS AVAIL/READ/REQ " << nitems << "/" 
+                       << ritems << "/" << _ninput_items_required[idx] );
+            if ( nitems >= _ninput_items_required[idx] && nitems > 0 ) {
+                //remove eos checks ...if ( nitems < _ninput_items_required[idx] ) nitems=0;
+                _ninput_items.push_back( nitems );
+                _input_items.push_back( (*istream)->read_pointer(ritems) );
+            }
+        }
+
+        //
+        // setup output buffer vector based on noutput..
+        //
+        ostream = ostreams.begin();
+        for( ; ostream != ostreams.end(); ostream++ ) {
+            (*ostream)->resize(noutput_items);
+            _output_items.push_back( (*ostream)->write_pointer() );
+        }
+
+        nout=0;
+        if ( _input_items.size() != 0 && serviceThread->threadRunning() ) {
+            LOG_TRACE( ${className}, " CALLING WORK.....N_OUT:" << noutput_items << " N_IN:" << nitems 
+                      << " ISTREAMS:" << _input_items.size() << " OSTREAMS:" << _output_items.size());
+            nout = gr_sptr->general_work( noutput_items, _ninput_items, _input_items, _output_items);
+            LOG_TRACE( ${className}, "RETURN  WORK ..... N_OUT:" << nout);
+        }
+
+        // check for stop condition from work method
+        if ( nout < gr_block::WORK_DONE ) {
+            LOG_WARN( ${className}, "WORK RETURNED STOP CONDITION..." << nout );
+            nout=0;
+            eos = true;
+        }
+    }
+
+    if (nout != 0 or eos ) {
+        noutput_items = nout;
+        LOG_TRACE( ${className}, " WORK RETURNED: NOUT : " << nout << " EOS:" << eos);
+        ostream = ostreams.begin();
+
+        for ( int idx=0 ; ostream != ostreams.end(); idx++, ostream++ ) {
+
+            bool gotPkt = false;
+            TimeStamp pktTs;
+            int inputIdx = idx;
+            if ( (size_t)(inputIdx) >= istreams.size() ) {
+                for ( inputIdx= istreams.size()-1; inputIdx > -1; inputIdx--) {
+                    if ( not istreams[inputIdx]->pktNull() ) {
+                        gotPkt = true;
+                        pktTs = istreams[inputIdx]->getPktTimeStamp();
+                        break;
+                    }
+                }
+            } else {
+                pktTs = istreams[inputIdx]->getPktTimeStamp();
+                if ( not istreams[inputIdx]->pktNull() ){
+                    gotPkt = true;
+                }
+            }
+
+            LOG_TRACE( ${className},  "PUSHING DATA   ITEMS/STREAM_ID " << (*ostream)->nitems() << "/" << (*ostream)->streamID );    
+            if ( _maintainTimeStamp ) {
+
+                // set time stamp for output samples based on input time stamp
+                if ( (*ostream)->nelems() == 0 )  {
+#ifdef TEST_TIME_STAMP
+      LOG_DEBUG( ${className}, "SEED - TS SRI:  xdelta:" << std::setprecision(12) << ostream->sri.xdelta );
+      LOG_DEBUG( ${className}, "OSTREAM WRITE:   maint:" << _maintainTimeStamp );
+      LOG_DEBUG( ${className}, "                  mode:" <<  ostream->tstamp.tcmode );
+      LOG_DEBUG( ${className}, "                status:" <<  ostream->tstamp.tcstatus );
+      LOG_DEBUG( ${className}, "                offset:" <<  ostream->tstamp.toff );
+      LOG_DEBUG( ${className}, "                 whole:" <<  std::setprecision(10) << ostream->tstamp.twsec );
+      LOG_DEBUG( ${className}, "SEED - TS         frac:" <<  std::setprecision(12) << ostream->tstamp.tfsec );
+#endif
+                    (*ostream)->setTimeStamp( pktTs, _maintainTimeStamp );
+                }
+
+                // write out samples, and set next time stamp based on xdelta and  noutput_items
+                (*ostream)->write ( noutput_items, eos );
+            } else {
+// use incoming packet's time stamp to forward
+                if ( gotPkt ) {
+#ifdef TEST_TIME_STAMP
+      LOG_DEBUG( ${className}, "OSTREAM  SRI:  items/xdelta:" << noutput_items << "/" << std::setprecision(12) << ostream->sri.xdelta );
+      LOG_DEBUG( ${className}, "PKT - TS         maint:" << _maintainTimeStamp );
+      LOG_DEBUG( ${className}, "                  mode:" <<  pktTs.tcmode );
+      LOG_DEBUG( ${className}, "                status:" <<  pktTs.tcstatus );
+      LOG_DEBUG( ${className}, "                offset:" <<  pktTs.toff );
+      LOG_DEBUG( ${className}, "                 whole:" <<  std::setprecision(10) << pktTs.twsec );
+      LOG_DEBUG( ${className}, "PKT - TS          frac:" <<  std::setprecision(12) << pktTs.tfsec );
+#endif
+                    (*ostream)->write( noutput_items, eos, pktTs  );
+                } else {
+#ifdef TEST_TIME_STAMP
+      LOG_DEBUG( ${className}, "OSTREAM  SRI:  items/xdelta:" << noutput_items << "/" << std::setprecision(12) << ostream->sri.xdelta );
+      LOG_DEBUG( ${className}, "OSTREAM TOD      maint:" << _maintainTimeStamp );
+      LOG_DEBUG( ${className}, "                  mode:" <<  ostream->tstamp.tcmode );
+      LOG_DEBUG( ${className}, "                status:" <<  ostream->tstamp.tcstatus );
+      LOG_DEBUG( ${className}, "                offset:" <<  ostream->tstamp.toff );
+      LOG_DEBUG( ${className}, "                 whole:" <<  std::setprecision(10) << ostream->tstamp.twsec );
+      LOG_DEBUG( ${className}, "OSTREAM TOD       frac:" <<  std::setprecision(12) << ostream->tstamp.tfsec );
+#endif
+                    // use time of day as time stamp
+                    (*ostream)->write( noutput_items, eos,  _maintainTimeStamp );
+                }
+            }
+
+        } // for ostreams
+    }
+
+    return nout;     
+}
+
+/*{% endif %}*/
+/*#  ///////////////////// End of Template for Data Transformer Pattern   ///////////////////////////// #*/
+/*#///////////////////// DATA GENERATOR TEMPLATE Service Function for GR_BLOCK PATTERN /////////////////////////////////////  #*/
+/*{% if not hasInput and hasOutput %}*/
+/**
+  DATA GENERATOR TEMPLATE Service Function for GR_BLOCK PATTERN
+*/
+
+int ${className}::_generatorServiceFunction( std::vector< gr_ostream_base * > &ostreams ) 
+{
+
+    typedef std::vector< gr_ostream_base * >  _OStreamList;
+
+    boost::mutex::scoped_lock lock(serviceThreadLock);
+
+    if ( validGRBlock() == false ) {
+
+        // create our processing block, and setup  property notifiers
+        createBlock();
+
+        LOG_DEBUG( ${className}, "FINISHED BUILDING  GNU RADIO BLOCK");
+    }
+
+    if ( !validGRBlock() || ostreams.size() == 0  ) {
+        LOG_WARN( ${className}, "NO OUTPUT STREAMS DEFINED FOR GNU RADIO BLOCK..." );
+        return NOOP;
+    }
+
+    _ninput_items_required.resize( 0 );
+    _ninput_items.resize( 0 );
+    _input_items.resize(0);
+    _output_items.resize( 0 );
+
+    _OStreamList::iterator  ostream;
+    noutput_items = gr_pagesize();
+
+    // find transfer length for this block... 
+    //   Might want to add per port property and save it off when setupIOMappings is called
+    if ( propTable.find("transfer_size") != propTable.end()) {
+        CORBA::Any transfer_any;
+        CORBA::Long transfer;
+
+        propTable["transfer_size"]->getValue(transfer_any);
+        try {
+            transfer_any >>= transfer;
+            noutput_items = transfer;
+        } catch(...) {}
+    }
+
+    gr_sptr->forecast(noutput_items, _ninput_items_required);
+
+    LOG_TRACE( ${className}, " FORECAST == " << noutput_items );
+
+    ostream = ostreams.begin();
+    for( ; ostream != ostreams.end(); ostream++ ) {
+      // push ostream's buffer address onto list of output buffers
+      (*ostream)->resize(noutput_items);
+      _output_items.push_back( (*ostream)->write_pointer() );
+    }
+
+    // call the work function
+    int numOut=0;
+    numOut = gr_sptr->general_work( noutput_items, _ninput_items, _input_items, _output_items);
+
+    bool eos = false;
+    // check for stop condition from work method
+    if ( numOut == gr_block::WORK_DONE ) {
+      numOut = 0;
+      eos=true;
+    } else {
+      sentEOS = false;
+    }
+
+    if (numOut != 0 or (eos and !sentEOS)){
+        // write out all the data   
+        ostream = ostreams.begin();
+        for ( ; ostream != ostreams.end(); ostream++ ) {
+            LOG_TRACE( ${className}, "PUSHING DATA   NOUT/NITEMS/OITEMS/STREAM_ID " << numOut << 
+                      "/" << (*ostream)->nitems()  << "/" << (*ostream)->oitems() << "/" << (*ostream)->streamID );
+#ifdef TEST_TIME_STAMP
+      LOG_DEBUG( ${className}, "OSTREAM SRI:    xdelta:" << std::setprecision(12) << (*ostream)->sri.xdelta );
+      LOG_DEBUG( ${className}, "OSTREAM WRITE:   maint:" << _maintainTimeStamp );
+      LOG_DEBUG( ${className}, "                  mode:" <<  (*ostream)->tstamp.tcmode );
+      LOG_DEBUG( ${className}, "                status:" <<  (*ostream)->tstamp.tcstatus );
+      LOG_DEBUG( ${className}, "                offset:" <<  (*ostream)->tstamp.toff );
+      LOG_DEBUG( ${className}, "                 whole:" <<  std::setprecision(10) << (*ostream)->tstamp.twsec );
+      LOG_DEBUG( ${className}, "                  frac:" <<  std::setprecision(12) << (*ostream)->tstamp.tfsec );
+#endif
+            (*ostream)->write( numOut, eos, _maintainTimeStamp );
+        }
+        if (eos) {
+            sentEOS = true;
+        }
+        // close stream and reset counters  
+        ostream = ostreams.begin(); 
+        for( ; eos && ostream != ostreams.end(); ostream++ ) {
+            (*ostream)->close();
+        }
+
+        if (eos) {
+            return NOOP;
+        }
+    }
+
+    return NORMAL;
+}
+
+/*{% endif %}*/
+/*#  ///////////////////// // End of Template for Data Generator Pattern ///////////////////////////// #*/
+/*{% endblock %}*/

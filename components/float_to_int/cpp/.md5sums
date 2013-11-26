@@ -1,0 +1,10 @@
+9cf52e56d93080faa4be1d2252d6a348 main.cpp
+b1b1a0f562bd1e3c1c78ce2966820b27 float_to_int_base.cpp
+cff7510ee6d7a6dda9ebfe313ef8f40d float_to_int.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+38a22204fe2ac9321995422f1786773f float_to_int_GnuHawkBlock.h
+0861727aa55fd3ced910c511cc148b07 float_to_int_base.h
+558fd86d99190afb9e381212483736b8 configure.ac
+721f8882bcea96524254f81fd0d607c2 Makefile.am
+2d3ba460058ec59525fe26f86ec5ec40 Makefile.am.ide
+2008cc09c83fb99796a83d404430fb1f float_to_int.h

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:38e004d1-1d68-4d61-b890-06c47b46517b" name="skiphead_bb" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="skiphead_bb.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="skiphead_bb.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>skips the first N items, from then on copies items to the output
+
+Useful for building test cases and sources which have metadata or junk at the start</description>
+    <code type="Executable">
+      <localfile name="cpp/skiphead_bb"/>
+      <entrypoint>cpp/skiphead_bb</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

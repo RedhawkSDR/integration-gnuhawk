@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:dd567f19-0830-4a48-a54a-79beb4088375" name="freq_xlating_fir_filter_fcf" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="freq_xlating_fir_filter_fcf.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="freq_xlating_fir_filter_fcf.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>FIR filter combined with frequency translation with
+float input, gr_complex output and float taps
+
+This class efficiently combines a frequency translation
+(typically &quot;down conversion&quot;) with a FIR filter (typically
+low-pass) and decimation.  It is ideally suited for a &quot;channel
+selection filter&quot; and can be efficiently used to select and
+decimate a narrow band signal out of wide bandwidth input.
+
+Uses a single input array to produce a single output array.
+Additional inputs and/or outputs are ignored.
+
+param: decimation set the integer decimation rate
+param: taps a vector/list of taps of type float
+param: center_freq Center frequency of signal to down convert from (Hz)
+param: sampling_freq Sampling rate of signal (in Hz)</description>
+    <code type="Executable">
+      <localfile name="cpp/freq_xlating_fir_filter_fcf"/>
+      <entrypoint>cpp/freq_xlating_fir_filter_fcf</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

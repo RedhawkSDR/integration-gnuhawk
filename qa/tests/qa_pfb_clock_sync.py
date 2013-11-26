@@ -88,7 +88,7 @@ class test_pfb_clock_sync(gr_unittest.TestCase):
         self.assertComplexTuplesAlmostEqual (expected_result, dst_data, 1)
 
 
-    def xtest02 (self):
+    def test02 (self):
         # Test real BPSK sync
         excess_bw = 0.35
 
@@ -100,8 +100,9 @@ class test_pfb_clock_sync(gr_unittest.TestCase):
         osps = 1
         
         ntaps = 11 * int(sps*nfilts)
-        taps = gr.firdes.root_raised_cosine(nfilts, nfilts*sps,
-                                            1.0, excess_bw, ntaps)
+        #taps = gr.firdes.root_raised_cosine(nfilts, nfilts*sps,
+        #                                    1.0, excess_bw, ntaps)
+        taps = pfb_clock_sync_taps.taps
 
         self.test = digital.pfb_clock_sync_fff(sps, loop_bw, taps,
                                                nfilts, init_phase,
@@ -112,12 +113,13 @@ class test_pfb_clock_sync(gr_unittest.TestCase):
         self.src = gr.vector_source_f(data, False)
 
         # pulse shaping interpolation filter
-        rrc_taps = gr.firdes.root_raised_cosine(
-            nfilts,          # gain
-            nfilts,          # sampling rate based on 32 filters in resampler
-            1.0,             # symbol rate
-            excess_bw,       # excess bandwidth (roll-off factor)
-            ntaps)
+        #rrc_taps = gr.firdes.root_raised_cosine(
+        #    nfilts,          # gain
+        #    nfilts,          # sampling rate based on 32 filters in resampler
+        #    1.0,             # symbol rate
+        #    excess_bw,       # excess bandwidth (roll-off factor)
+        #    ntaps)
+        rrc_taps = pfb_clock_sync_taps.rrc_taps
         self.rrc_filter = gr.pfb_arb_resampler_fff(sps, rrc_taps)
 
         self.snk = gr.vector_sink_f()

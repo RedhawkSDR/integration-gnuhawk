@@ -41,7 +41,7 @@ class sbSource:
         # vector_source_c.
         self.complexData = False
 
-    def connect(self, dst):
+    def connect(self, dst, providesPortName=None):
         """
         A wrapper around the Sandbox connect method.  When connect
         is called by GNURadio, the dst argument will be a tuple
@@ -51,7 +51,7 @@ class sbSource:
 
         # dst is a tuple: first arg is think to connect to 
         # second arg is a streamID
-        self.source.connect(dst[0])
+        self.source.connect(dst[0], providesPortName=providesPortName)
 
         # Hang onto the streamID for the push call.
         self.streamID = str(dst[1])

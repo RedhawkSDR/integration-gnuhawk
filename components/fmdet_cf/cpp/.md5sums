@@ -1,0 +1,10 @@
+ffb5de26196d29e7c6f64dfedf766458 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+1e60234508c5e02a3f02d149d4fbafcb fmdet_cf_GnuHawkBlock.h
+a9a9ed4713797692ed351d3467c6524c fmdet_cf_base.h
+c461ce6481ac82d0a12fe0cf50dc03d4 fmdet_cf_base.cpp
+089d207035d4590c2933609893c08824 Makefile.am
+8fa7309c718a481227025a1fd457399e Makefile.am.ide
+d254f7b90c31601a136baff18496bf5a fmdet_cf.h
+f0cedb536e0c7465ced13c1497d61a41 configure.ac
+22aa435c2955ea64a9f4dfd54a5444be fmdet_cf.cpp

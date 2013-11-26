@@ -115,8 +115,11 @@ void glfsr_source_f_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-	gr_sptr = gr_make_glfsr_source_f(this->degree, this->repeat, this->mask, this->seed);
-
+    try {
+        gr_sptr = digital_make_glfsr_source_f(this->degree, this->repeat, this->mask, this->seed);
+    } catch (...) {
+         return;
+    }
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the
@@ -139,8 +142,8 @@ void glfsr_source_f_i::createBlock()
   // maintainTimestamp( bool onoff );
 
   setupIOMappings();
-  this->registerGetter("period", &gr_glfsr_source_f::period);
-  this->registerGetter("mask", &gr_glfsr_source_f::mask);
+  this->registerGetter("period", &digital_glfsr_source_f::period);
+  this->registerGetter("mask", &digital_glfsr_source_f::mask);
   this->setPropertyChangeListener("sampling_freq", this, &glfsr_source_f_i::changedSamplingFreq);
 } 
 

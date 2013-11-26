@@ -1,0 +1,5 @@
+libgnuhawk_la_SOURCES += ../gnuradio/gr-digital/lib/digital_cma_equalizer_cc.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-digital/lib/digital_lms_dd_equalizer_cc.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-digital/lib/digital_kurtotic_equalizer_cc.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_viterbi_decoder.cc
+libgnuhawk_la_SOURCES += ../gnuradio/gr-atsc/src/lib/atsci_single_viterbi.cc

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:344c5c6d-0fc0-46cc-9545-3c9138cf7dcd" name="lms_dd_equalizer_cc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="lms_dd_equalizer_cc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="lms_dd_equalizer_cc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Least-Mean-Square Decision Directed Equalizer (complex in/out)
+
+This block implements an LMS-based decision-directed equalizer.
+It uses a set of weights, w, to correlate against the inputs, u,
+and a decisions is then made from this output. The error
+in the decision is used to update teh weight vector.
+
+y[n] = conj(w[n]) u[n]
+d[n] = decision(y[n])
+e[n] = d[n] - y[n]
+w[n+1] = w[n] + mu u[n] conj(e[n])
+
+Where mu is a gain value (between 0 and 1 and usualy small,
+around 0.001 - 0.01.
+
+This block uses the digital_constellation object for making
+the decision from y[n]. Create the constellation object for
+whatever constellation is to be used and pass in the object.
+
+To create a QPSK constellation (see the digital_constellation
+block for more details as to what constellations are available
+or how to create your own). You then pass the object to this
+block as an sptr, or using &quot;self.constellation.base()&quot;.
+
+The theory for this algorithm can be found in Chapter 9 of:
+S. Haykin, Adaptive Filter Theory, Upper Saddle River, NJ:
+   Prentice Hall, 1996.</description>
+    <code type="Executable">
+      <localfile name="cpp/lms_dd_equalizer_cc"/>
+      <entrypoint>cpp/lms_dd_equalizer_cc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

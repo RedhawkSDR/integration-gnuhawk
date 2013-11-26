@@ -1,0 +1,10 @@
+52e0b65455f31124d29effcf0255e480 rms_cf_base.cpp
+219b40a3727f492af9d2a00ada05e11f main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+4ea1eb80ea60a3003f89f7c746e37a78 rms_cf.h
+b4371e414ed07f699ceafa44862676df rms_cf_base.h
+b58275d4b7ecd880b3a9b1f71d389a17 configure.ac
+ef7357687b326fc5b5f76d4243fb84b3 Makefile.am
+b0fcde2785a0b8a7337ccd9bb65be294 Makefile.am.ide
+e2ce3ba00ca993cab0dc04de98b1bdbf rms_cf_GnuHawkBlock.h
+1d45fa9aebda8404e35749017bd0396d rms_cf.cpp

@@ -93,10 +93,16 @@ multiply_const_vss_i::~multiply_const_vss_i()
 //
 void multiply_const_vss_i::createBlock()
 {
-  //
-  // gr_sptr = xxx_make_xxx( args );
-  //
-  gr_sptr = gr_make_multiply_const_vss(k);
+
+  // need to have at least 1 item in the list... bad things happend if not
+  if ( k.size() < 1 )  return;
+
+  try {
+    gr_sptr = gr_make_multiply_const_vss(k);
+  }
+  catch(...) {
+    return;
+  }
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

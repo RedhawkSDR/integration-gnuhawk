@@ -34,3 +34,7 @@ try:
     from _gnuComponentWrappers import *
 except ImportError:
     print "ERROR: _gnuComponentWrappers.py not found.  Try setting generateNewComponentWrappers to True in gr/__init__.py.  This will cause a _gnuComponentWrappers.py file to be generated based on GNUHAWK components installed to $SDRROOT.\n"
+
+# Enum bit orders for packed_to_unpacked blocks
+GR_MSB_FIRST = 1
+GR_LSB_FIRST = 2

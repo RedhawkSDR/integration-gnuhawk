@@ -20,6 +20,7 @@
 ########################################################################
 # generate helper scripts to expand templated files
 ########################################################################
+cmake_minimum_required(VERSION 2.6)
 include(GrPython)
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/generate_helper.py "
@@ -149,7 +150,7 @@ list(APPEND filter_libs
 
 add_library(gnuradio-filter SHARED ${filter_sources})
 target_link_libraries(gnuradio-filter ${filter_libs})
-GR_LIBRARY_FOO(gnuradio-filter RUNTIME_COMPONENT "filter_runtime" DEVEL_COMPONENT "filter_devel")
+#GR_LIBRARY_FOO(gnuradio-filter RUNTIME_COMPONENT "filter_runtime" DEVEL_COMPONENT "filter_devel")
 add_dependencies(gnuradio-filter gnuradio-fft filter_generated_includes filter_generated_swigs)
 
 

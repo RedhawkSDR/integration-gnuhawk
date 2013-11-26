@@ -22,9 +22,9 @@
 #define fir_filter_fff_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_fir_filter_fff.h>
+#include <fir_filter_fff_impl.h>
 
-typedef GHComponent< gr_fir_filter_fff >            GnuHawkBlock;
+typedef GHComponent< gr::filter::fir_filter_fff >            GnuHawkBlock;
 
 
 #endif

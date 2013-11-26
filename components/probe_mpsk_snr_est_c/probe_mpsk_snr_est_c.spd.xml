@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:4c85d2f9-6073-411a-a4a8-dc241b6dceb4" name="probe_mpsk_snr_est_c" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="probe_mpsk_snr_est_c.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="probe_mpsk_snr_est_c.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>A probe for computing SNR of a signal.
+
+This is a probe block (a sink) that can be used to monitor and
+retrieve estimations of the signal SNR. This probe is designed for
+use with M-PSK signals especially. The type of estimator is
+specified as the \p type parameter in the constructor. The
+estimators tend to trade off performance for accuracy, although
+experimentation should be done to figure out the right approach
+for a given implementation. Further, the current set of estimators
+are designed and proven theoretically under AWGN conditions; some
+amount of error should be assumed and/or estimated for real
+channel conditions.</description>
+    <code type="Executable">
+      <localfile name="cpp/probe_mpsk_snr_est_c"/>
+      <entrypoint>cpp/probe_mpsk_snr_est_c</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

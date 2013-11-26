@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:d0b3c977-e4a6-4381-9b65-baa10d90b447" name="cma_equalizer_cc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="cma_equalizer_cc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="cma_equalizer_cc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Implements constant modulus adaptive filter on complex stream
+
+The error value and tap update equations (for p=2) can be found in:
+
+&quot;D. Godard, &quot;Self-Recovering Equalization and Carrier Tracking in
+Two-Dimensional Data Communication Systems,&quot; IEEE Transactions on
+Communications, Vol. 28, No. 11, pp. 1867 - 1875, 1980.&quot;</description>
+    <code type="Executable">
+      <localfile name="cpp/cma_equalizer_cc"/>
+      <entrypoint>cpp/cma_equalizer_cc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

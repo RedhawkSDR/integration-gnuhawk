@@ -104,7 +104,10 @@ void fir_filter_fsf_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_fir_filter_fsf( this->decimation, this->taps );
+    this->gr_sptr = gr::filter::fir_filter_fsf::make( this->decimation, this->taps );
+
+    this->setPropertyChangeListener("taps", this, &fir_filter_fsf_i::setTaps);
+    this->registerGetValue("taps", this, &fir_filter_fsf_i::getTaps);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

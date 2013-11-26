@@ -22,9 +22,9 @@
 #define iir_filter_ffd_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_iir_filter_ffd.h>
+#include <iir_filter_ffd_impl.h>
 
-typedef GHComponent< gr_iir_filter_ffd >            GnuHawkBlock;
+typedef GHComponent< gr::filter::iir_filter_ffd >            GnuHawkBlock;
 
 
 #endif

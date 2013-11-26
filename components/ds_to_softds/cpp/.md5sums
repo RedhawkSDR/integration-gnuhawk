@@ -1,0 +1,10 @@
+68c6894e18d484fe0ef297d67f7ba496 ds_to_softds_base.h
+431a8c2a8016b17ce4b0f42b8f34e318 ds_to_softds_GnuHawkBlock.h
+d49da0d44c387009640590150736c3fd main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+c000e953bbe31698e4a9e361666e8202 ds_to_softds_base.cpp
+b579155084f51f01eb09f4a5b6b7d263 configure.ac
+29e7a0c752bfadc3bacad183c5223e54 Makefile.am
+3f81ff2d147873650492141e89a8e348 Makefile.am.ide
+6e86712bd2810eaee41e758f6d04e093 ds_to_softds.h
+4cfb6d2a86edd3a92ed54283d96570f4 ds_to_softds.cpp

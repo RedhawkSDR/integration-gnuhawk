@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:7d8b0e24-772a-4920-9050-717fed61c77f" name="mpsk_receiver_cc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="mpsk_receiver_cc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="mpsk_receiver_cc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>This block takes care of receiving M-PSK modulated signals
+through phase, frequency, and symbol synchronization.
+
+This block takes care of receiving M-PSK modulated signals through
+phase, frequency, and symbol synchronization. It performs carrier
+frequency and phase locking as well as symbol timing recovery.  It
+works with (D)BPSK, (D)QPSK, and (D)8PSK as tested currently. It
+should also work for OQPSK and PI/4 DQPSK.
+
+The phase and frequency synchronization are based on a Costas loop
+that finds the error of the incoming signal point compared to its
+nearest constellation point. The frequency and phase of the NCO are
+updated according to this error. There are optimized phase error
+detectors for BPSK and QPSK, but 8PSK is done using a brute-force
+computation of the constellation points to find the minimum.
+
+The symbol synchronization is done using a modified Mueller and
+Muller circuit from the paper:
+
+&quot;G. R. Danesfahani, T. G. Jeans, &quot;Optimisation of modified Mueller
+and Muller algorithm,&quot; Electronics Letters, Vol. 31, no. 13, 22
+June 1995, pp. 1032 - 1033.&quot;
+
+This circuit interpolates the downconverted sample (using the NCO
+developed by the Costas loop) every mu samples, then it finds the
+sampling error based on this and the past symbols and the decision
+made on the samples. Like the phase error detector, there are
+optimized decision algorithms for BPSK and QPKS, but 8PSK uses
+another brute force computation against all possible symbols. The
+modifications to the M&amp;M used here reduce self-noise.
+</description>
+    <code type="Executable">
+      <localfile name="cpp/mpsk_receiver_cc"/>
+      <entrypoint>cpp/mpsk_receiver_cc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

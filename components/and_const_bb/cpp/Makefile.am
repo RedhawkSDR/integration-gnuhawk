@@ -12,13 +12,13 @@
 # GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
 # A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
+# 
 # You should have received a copy of the GNU General Public License along with 
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
- 
+
 # Manually set the GNURadio namespace here 
-GR_NAMESPACE = gnuhawk/gr
+GR_NAMESPACE = gnuhawk/gr/math
 
 namespacedir = $(prefix)/dom/components/$(GR_NAMESPACE)/and_const_bb
 versiondir = $(namespacedir)/$(PACKAGE_VERSION)
@@ -28,7 +28,7 @@ bindir = $(versiondir)/cpp
 bin_PROGRAMS = and_const_bb
 
 xmldir = $(versiondir)
-dist_xml_DATA = ../and_const_bb.prf.xml ../and_const_bb.scd.xml ../and_const_bb.spd.xml
+dist_xml_DATA = ../and_const_bb.scd.xml ../and_const_bb.prf.xml ../and_const_bb.spd.xml
 
 # Create a "current" link to the version just installed
 install-exec-hook:
@@ -52,6 +52,6 @@ distclean-local:
 # you wish to manually control these options.
 include $(srcdir)/Makefile.am.ide
 and_const_bb_SOURCES = $(redhawk_SOURCES_auto)
-and_const_bb_CXXFLAGS = -Wall $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-and_const_bb_LDADD = $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+and_const_bb_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
+and_const_bb_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 and_const_bb_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)

@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "interp_fir_filter_fff.h"
 
 int main(int argc, char* argv[])
-{ 
-    interp_fir_filter_fff_i* interp_fir_filter_fff_servant; 
-    Resource_impl::start_component(interp_fir_filter_fff_servant, argc, argv);         
+{
+    interp_fir_filter_fff_i* interp_fir_filter_fff_servant;
+    Resource_impl::start_component(interp_fir_filter_fff_servant, argc, argv);
+    return 0;
 }
+

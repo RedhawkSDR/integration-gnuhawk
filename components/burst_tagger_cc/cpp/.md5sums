@@ -1,0 +1,11 @@
+f5ce3691174956c0b330e66b8f1349b6  main.cpp
+69eb26364825c10ceea4eb67b8f98fcd  burst_tagger_cc.cpp
+d193775e0ac25076db454b4c6f313155  reconf
+911ddd3510764200709923d44fe827f5  configure.ac
+d4856bb85644ac63335f50e60a1c564d  Makefile.am.ide
+3c388440da1e4b3fefb4a185532523bb  Makefile.am
+81fa3385fe5f080a7fda2fa3dbde9710  struct_props.h
+34da2f98b40a4cd6eca2d7c2ad490a5c  burst_tagger_cc_GnuHawkBlock.h
+5aaab14526cb54a607184ebc84a56f24  burst_tagger_cc.h
+42fc57a0ec611e6baba69501e47af3c9  burst_tagger_cc_base.h
+aeb2ab693685ef9be57e1e9b4f930fcb  burst_tagger_cc_base.cpp

@@ -1,0 +1,10 @@
+9ff43200f77695516905220e0908c3d0 main.cpp
+24b85b6bf2ddb9fdd0fd4e438eadce06 not_ss_base.cpp
+64398807de7ab80aac33ab799adefc6e not_ss_base.h
+7d1cd5cd32ebab9ef4c1c6d2839c8395 not_ss_GnuHawkBlock.h
+d193775e0ac25076db454b4c6f313155 reconf
+0b4f43510d1c4f05d4ec0f73014a3480 configure.ac
+92590c01ef68fce977616995917856ff not_ss.h
+a046b329664b74df1dbffc0077c9d7ea not_ss.cpp
+2337563f5e2daa37d9cdfec52cacb5ef Makefile.am.ide
+6c3f93da45e0ca80d759ab3c2a853db0 Makefile.am

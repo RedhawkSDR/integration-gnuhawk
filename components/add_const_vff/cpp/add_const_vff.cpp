@@ -93,11 +93,18 @@ add_const_vff_i::~add_const_vff_i()
 //
 void add_const_vff_i::createBlock()
 {
-  //
-  // gr_sptr = xxx_make_xxx( args );
-  //
-	this->gr_sptr = gr_make_add_const_vff( this->k );
-	this->registerGetterSetter("k", &gr_add_const_vff::k, &gr_add_const_vff::set_k);
+  
+  // make sure we have a vector to allocate against
+  if ( k.size() < 1 ) return;
+
+  try {
+    gr_sptr = gr_make_add_const_vff(k );
+  }
+  catch(...){
+    return;
+  }
+  
+  registerGetterSetter("k", &gr_add_const_vff::k, &gr_add_const_vff::set_k);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

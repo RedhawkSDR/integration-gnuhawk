@@ -1,0 +1,10 @@
+b8696a79d5d4c4c50afe52c486fcd5d2 main.cpp
+33b06878afa234baab93b4951b659c6a map_bb.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+05d18b54bb9d2e7445f70f0e3424551d map_bb_base.cpp
+c97f699d34b3e32dda3d7abf98fa05dd map_bb.h
+d319c02dd5b77972af6360c7ef46d5cc map_bb_base.h
+dc3b319f02139628b246c96dd5273c77 configure.ac
+341f5758be96078c0938ec9d483b1048 Makefile.am
+b26344c1ab6c6b8b0745bf5c04824b18 Makefile.am.ide
+58b555cad43921fd526e5acd4a326429 map_bb_GnuHawkBlock.h

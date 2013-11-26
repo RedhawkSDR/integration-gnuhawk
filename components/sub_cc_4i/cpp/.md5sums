@@ -1,0 +1,10 @@
+194a4540e06244aa8fc6e40e0a71cd71 main.cpp
+6593294ab220604f6d83678c848cd76b sub_cc_4i_base.h
+c31f373d1dd370dc764d87f184dfeb0d sub_cc_4i.h
+d193775e0ac25076db454b4c6f313155 reconf
+f8a49c388b2055f2f1f00302e9718a0a sub_cc_4i_GnuHawkBlock.h
+ca43b656a90e85b139aebd0bff022913 configure.ac
+1d9232079cbffff2d5fc8b6f4ffe1b23 Makefile.am
+e630c2f332149307c5332e39558d2eb4 sub_cc_4i_base.cpp
+5397493f9c85f7b70fcd1a695862d282 sub_cc_4i.cpp
+4923fee391ffb5456622b63d1f5fda67 Makefile.am.ide

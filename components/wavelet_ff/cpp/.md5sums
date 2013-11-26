@@ -1,0 +1,10 @@
+924b11f931d11bd9fd3d2921d21db05c main.cpp
+f4244ab007767abda1fd57bacdf2aeb1 wavelet_ff_base.h
+d193775e0ac25076db454b4c6f313155 reconf
+1ede85744e3a71f8d43d6befddd8e3ab wavelet_ff_base.cpp
+ae45a94f2cb92d593a6346d2a8a34ad9 configure.ac
+a2bd00e190b74dd8afbd0e76ab822bd6 Makefile.am
+b5851561ee0991b71f18644808c987e8 Makefile.am.ide
+ece975ba02148de2db387ec2176a8f53 wavelet_ff.h
+da2d8c23d404f314c17d38311b59adfb wavelet_ff.cpp
+c33b44eece937889f632acd8ce0f5948 wavelet_ff_GnuHawkBlock.h

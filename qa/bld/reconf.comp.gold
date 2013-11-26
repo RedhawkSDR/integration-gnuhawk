@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file 
+# distributed with this source distribution.
+# 
+# This file is part of GNUHAWK.
+# 
+# GNUHAWK is free software: you can redistribute it and/or modify is under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later 
+# version.
+# 
+# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with 
+# this program.  If not, see http://www.gnu.org/licenses/.
+#
+
+##
+## optional args:  
+##   1 - gnuhawk bld dir that contains GNUHAWK_PKG.m4 macro
+##
+
+rm -f config.cache
+
+# Setup the libtool stuff
+if [ -e /usr/local/share/aclocal/libtool.m4 ]; then
+    /bin/cp /usr/local/share/aclocal/libtool.m4 aclocal.d/acinclude.m4
+elif [ -e /usr/share/aclocal/libtool.m4 ]; then
+    /bin/cp /usr/share/aclocal/libtool.m4 acinclude.m4
+fi
+libtoolize --force --automake
+
+ac_m4_path=
+# Search in expected locations for the OSSIE acincludes
+if [ -n ${OSSIEHOME} ] && [ -d ${OSSIEHOME}/share/aclocal/ossie ]; then
+        OSSIE_AC_INCLUDE=${OSSIEHOME}/share/aclocal/ossie
+	ac_m4_path="-I ${OSSIE_AC_INCLUDE}"
+else
+    echo "Error: Cannot find the OSSIE aclocal files. This is not expected!"
+fi
+
+ghawk_m4_path=@@@GH_M4_PATH@@@
+if [ $# -gt "0" ]
+then
+    ghawk_m4_path=$1
+fi
+
+ac_m4_path="-I $ghawk_m4_path $ac_m4_path"
+aclocal $ac_m4_path
+
+autoconf 
+automake --foreign --add-missing

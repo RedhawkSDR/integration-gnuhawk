@@ -22,7 +22,7 @@ config_ac='configure.ac'
 make_am='Makefile.am'
 makefile='Makefile'
 
-version=1.8.3
+version=1.8.4
 
 builddir=rpmbuild
 

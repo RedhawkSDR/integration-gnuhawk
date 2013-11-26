@@ -1,0 +1,10 @@
+f666a82f51442adf8973c83d14dc9a8a main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+b1acce48db18a2267fc22e1b15c7bca5 copy_octet_base.cpp
+dda50f1d7557bcfc25485aeb3c32693e copy_octet.cpp
+f2862554c2de96908975f372faed50e8 configure.ac
+8458a58f828d9df35c10162d7caac43d Makefile.am
+36206a14d9e0836d4ad38916178cf0d9 copy_octet.h
+930cfeb7036c4192f024eb7e6daa9b99 copy_octet_GnuHawkBlock.h
+62b1dc8d9b432c87246d591b80d4db7c copy_octet_base.h
+2d7f8ba13fd8a6048ca163c35ee6a4ac Makefile.am.ide

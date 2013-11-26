@@ -1,0 +1,10 @@
+840564690eb3720064d793451c6c6b54 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+1f4ab46fc7d04f41d8b760935bba909f configure.ac
+2a7a99310c3f79d0fcf00f210da67127 max_ss_4i.h
+86ab65c5f46f52b7d8f9dab13a31e6dc max_ss_4i_GnuHawkBlock.h
+316763a2713aa50af4e5fa6a61c824f7 max_ss_4i.cpp
+6406678a365fd40c97cb4ec6646aeb9a Makefile.am.ide
+c65b3ad185612e780073411db8fcb0df max_ss_4i_base.h
+c9c7e9ad54831ba384a6eba163001712 max_ss_4i_base.cpp
+de23eb0408a11675548f1f5120ad8377 Makefile.am

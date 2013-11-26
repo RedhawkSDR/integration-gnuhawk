@@ -1,0 +1,10 @@
+bca676971ae3649d1bf9f693f1ac8c38 add_const_sf_base.cpp
+9cadb94af27fb9d271c5a95e9d65550a main.cpp
+f2c035e48bf1999f0aaf240529cdff7c add_const_sf_GnuHawkBlock.h
+d193775e0ac25076db454b4c6f313155 reconf
+d1d0d0680de63b52bf38d8b5400719a6 add_const_sf.h
+8400fd0aecd7054f3c8a823a1636acd9 add_const_sf_base.h
+0943aa759e8d3fc0fc4ba08afb848879 add_const_sf.cpp
+6e7863cd2b4cd0995181964a823962ff configure.ac
+20565eca441546d6865f5adb7e8d73bc Makefile.am
+732cd192e83c659fda084b65c60dccb3 Makefile.am.ide

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:564f76fa-930a-4364-990c-536355a8c733" name="pfb_interpolator_ccf" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="pfb_interpolator_ccf.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="pfb_interpolator_ccf.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>gr_pfb_interpolator_ccf
+
+Polyphase filterbank interpolator with gr_complex input,
+gr_complex output and float taps
+
+This block takes in a signal stream and performs interger up-
+sampling (interpolation) with a polyphase filterbank. The first
+input is the integer specifying how much to interpolate by. The
+second input is a vector (Python list) of floating-point taps
+of the prototype filter.
+
+The filter's taps should be based on the interpolation rate
+specified. That is, the bandwidth specified is relative to the
+bandwidth after interpolation.
+
+For example, using the GNU Radio's firdes utility to building
+filters, we build a low-pass filter with a sampling rate of
+fs, a 3-dB bandwidth of BW and a transition
+bandwidth of TB. We can also specify the out-of-band
+attenuation to use, ATT, and the filter window function (a
+Blackman-harris window in this case). The first input is the
+gain, which is also specified as the interpolation rate so that
+the output levels are the same as the input (this creates an
+overall increase in power).
+
+self._taps = filter.firdes.low_pass_2(interp, interp*fs, BW, TB,
+attenuation_dB=ATT, window=filter.firdes.WIN_BLACKMAN_hARRIS)
+
+The PFB interpolator code takes the taps generated above and
+builds a set of filters. The set contains interp
+number of filters and each filter contains
+ceil(taps.size()/interp) number of taps. Each tap from the
+filter prototype is sequentially inserted into the next
+filter. When all of the input taps are used, the remaining
+filters in the filterbank are filled out with 0's to make sure
+each filter has the same number of taps.
+
+The theory behind this block can be found in Chapter 7.1 of the
+following book.
+
+f. harris, &quot;Multirate Signal Processing for Communication
+Systems,&quot; Upper Saddle River, NJ: Prentice Hall,
+Inc. 2004.
+</description>
+    <code type="Executable">
+      <localfile name="cpp/pfb_interpolator_ccf"/>
+      <entrypoint>cpp/pfb_interpolator_ccf</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

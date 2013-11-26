@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "multiply_const_vff.h"
 
 int main(int argc, char* argv[])
-{ 
-    multiply_const_vff_i* multiply_const_vff_servant; 
-    Resource_impl::start_component(multiply_const_vff_servant, argc, argv);         
+{
+    multiply_const_vff_i* multiply_const_vff_servant;
+    Resource_impl::start_component(multiply_const_vff_servant, argc, argv);
+    return 0;
 }
+

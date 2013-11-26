@@ -12,13 +12,13 @@
 # GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
 # A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
+# 
 # You should have received a copy of the GNU General Public License along with 
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
- 
+
 # Manually set the GNURadio namespace here 
-GR_NAMESPACE = gnuhawk/gr
+GR_NAMESPACE = gnuhawk/gr/source
 
 namespacedir = $(prefix)/dom/components/$(GR_NAMESPACE)/noise_source_f
 versiondir = $(namespacedir)/$(PACKAGE_VERSION)
@@ -28,7 +28,7 @@ bindir = $(versiondir)/cpp
 bin_PROGRAMS = noise_source_f
 
 xmldir = $(versiondir)
-dist_xml_DATA = ../noise_source_f.prf.xml ../noise_source_f.scd.xml ../noise_source_f.spd.xml
+dist_xml_DATA = ../noise_source_f.scd.xml ../noise_source_f.prf.xml ../noise_source_f.spd.xml
 
 # Create a "current" link to the version just installed
 install-exec-hook:
@@ -52,6 +52,6 @@ distclean-local:
 # you wish to manually control these options.
 include $(srcdir)/Makefile.am.ide
 noise_source_f_SOURCES = $(redhawk_SOURCES_auto)
-noise_source_f_CXXFLAGS = -Wall $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-noise_source_f_LDADD = $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+noise_source_f_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
+noise_source_f_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 noise_source_f_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)

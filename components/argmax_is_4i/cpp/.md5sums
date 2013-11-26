@@ -1,0 +1,10 @@
+d2d7d1966fad49520580009aca2bb049 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+2d219475bf2b1bd181139fe77e9e1b6c argmax_is_4i.h
+49b2716152798dc417f671f8edb27cac argmax_is_4i_base.h
+d8bd2dfd4aed76ccc9540efc486bede5 configure.ac
+ac55d19a8c6c57eea6a91eb500a7cc4f argmax_is_4i_base.cpp
+11a9de379496476bd4a88372916a624c Makefile.am.ide
+b34cf377aadcac5a198d3c45d91b7fe9 argmax_is_4i_GnuHawkBlock.h
+75f2a7415b53072dfdf820e6539a69bb argmax_is_4i.cpp
+52c883acf4771897de34d359a916f451 Makefile.am

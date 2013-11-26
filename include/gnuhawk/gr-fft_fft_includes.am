@@ -1,0 +1,6 @@
+nobase_pkginclude_HEADERS += gnuradio/gr-fft/fft/api.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fft/fft/fft.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fft/fft/fft_vcc.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fft/fft/fft_vfc.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fft/fft/goertzel_fc.h
+nobase_pkginclude_HEADERS += gnuradio/gr-fft/fft/goertzel.h

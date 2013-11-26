@@ -1,0 +1,10 @@
+c59539e27d7eca79a457e114f92060be main.cpp
+671a0ba68517668c74b427f3d4b4780a rs_encoder_GnuHawkBlock.h
+d193775e0ac25076db454b4c6f313155 reconf
+2cb0f4fa225a5b394b93079f91c23ab2 configure.ac
+c4948f7e23951b6b82c501ad6f56fccc Makefile.am
+1be880128d0fbf0b6b9a8fc7f3c45bb5 Makefile.am.ide
+cf2933a1b683e38386c7eb791273fc6e rs_encoder.h
+349d2c10fa1c904d176ca13c75d8ae61 rs_encoder.cpp
+b158054a0ffe92baa08f370059f11ee4 rs_encoder_base.cpp
+5c8a23fa1599f394a8ff5a642de3bf1c rs_encoder_base.h

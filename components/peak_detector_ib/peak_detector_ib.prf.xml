@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="threshold_factor_rise" mode="readwrite" name="threshold_factor_rise" type="float">
+    <description>The threshold factor determins when a peak
+has started. An average of the signal is calculated and when the
+value of the signal goes over threshold_factor_rise*average, we
+start looking for a peak.</description>
+    <value>0.25</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="threshold_factor_fall" mode="readwrite" name="threshold_factor_fall" type="float">
+    <description>The threshold factor determins when a peak
+has ended. An average of the signal is calculated and when the
+value of the signal goes bellow threshold_factor_fall*average, we
+stop looking for a peak.</description>
+    <value>0.40</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="look_ahead" mode="readwrite" name="look_ahead" type="long">
+    <description>look_ahead The look-ahead value is used when the threshold is
+found to look if there another peak within this step range.
+If there is a larger value, we set that as the peak and look ahead
+again. This is continued until the highest point is found with
+This look-ahead range.</description>
+    <value>10</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="alpha" mode="readwrite" name="alpha" type="float">
+    <description>The gain value of a moving average filter</description>
+    <value>0.001</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>

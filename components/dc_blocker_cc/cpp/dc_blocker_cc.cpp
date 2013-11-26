@@ -85,7 +85,7 @@ dc_blocker_cc_i::~dc_blocker_cc_i()
 
 int dc_blocker_cc_i::getGroupDelay(){
 	if ( validGRBlock() )
-      return gr_sptr->get_group_delay();
+      return gr_sptr->group_delay();
 	return 0;
 }
 
@@ -102,7 +102,7 @@ void dc_blocker_cc_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-	gr_sptr = gr_make_dc_blocker_cc( this->delay_length, this->long_form );
+	gr_sptr = gr::filter::dc_blocker_cc::make( this->delay_length, this->long_form );
 	this->registerGetValue("group_delay", this, &dc_blocker_cc_i::getGroupDelay);
 
 

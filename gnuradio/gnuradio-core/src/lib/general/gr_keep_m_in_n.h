@@ -50,7 +50,7 @@ class GR_CORE_API gr_keep_m_in_n : public gr_block
 
  protected:
   gr_keep_m_in_n (size_t item_size, int m, int n, int offset);
-  void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+  //void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
  public:
   int general_work (int noutput_items,
@@ -61,6 +61,7 @@ class GR_CORE_API gr_keep_m_in_n : public gr_block
     void set_offset(int offset);
     void set_n(int n){ d_n = n; }
     void set_m(int m){ d_m = m; }
+    void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
 };
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:1bbac481-7beb-435d-acef-d2e24d69fc3a" name="pll_refout_cc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="pll_refout_cc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="pll_refout_cc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Implements a PLL which locks to the input frequency and outputs a carrier
+
+input: stream of complex; output: stream of complex
+
+This PLL locks onto a [possibly noisy] reference carrier on
+the input and outputs a clean version which is phase and frequency
+aligned to it.
+
+All settings max_freq and min_freq are in terms of radians per sample,
+NOT HERTZ.  The loop bandwidth determins the lock range and should be set
+around pi/200 -- 2pi/100.</description>
+    <code type="Executable">
+      <localfile name="cpp/pll_refout_cc"/>
+      <entrypoint>cpp/pll_refout_cc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

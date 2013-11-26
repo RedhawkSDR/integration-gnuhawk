@@ -1,0 +1,10 @@
+a275b50cdc306b97ac8da100cfca89b9 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+4eb00b9c5a2a56fd9e4be27f29233523 add_ss_2i_GnuHawkBlock.h
+3196a90c2b0026f14ffb38a3d1b08eb5 add_ss_2i.cpp
+9521032c24cd95f995ffd3c770ebca1f configure.ac
+ee7d6da510967b909cdf69c56d440ddb Makefile.am
+3edceefd4425c0faf4c427a559b5fa95 add_ss_2i_base.h
+c2902ce66d6dc942fdc20afa52af59f4 add_ss_2i_base.cpp
+e516a1036f5bda4e39ff55d718bb814c add_ss_2i.h
+df66408e40bb07074010b4ef2e88d9b1 Makefile.am.ide

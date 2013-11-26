@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "quadrature_demod_cf.h"
 
 int main(int argc, char* argv[])
-{ 
-    quadrature_demod_cf_i* quadrature_demod_cf_servant; 
-    Resource_impl::start_component(quadrature_demod_cf_servant, argc, argv);         
+{
+    quadrature_demod_cf_i* quadrature_demod_cf_servant;
+    Resource_impl::start_component(quadrature_demod_cf_servant, argc, argv);
+    return 0;
 }
+

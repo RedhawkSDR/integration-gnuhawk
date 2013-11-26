@@ -1,0 +1,10 @@
+41c6e35c0cb277bcd264f13003f9c8dd main.cpp
+5b5a6801de0b0b31da757ad6cea72ab4 derandomizer.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+96afd9c806a8cc38faaa0c347c031fcb derandomizer.h
+8cad471e7380b61574a3cef1fc983e8d derandomizer_GnuHawkBlock.h
+44b6a2053f8cf511c6ca70df8abb1d47 configure.ac
+423c9a8198f55baf687825fdc9c8329d Makefile.am
+b81d715b4993b2707e444e34b3256960 Makefile.am.ide
+07a1c6c77334c40c2dea60902f158230 derandomizer_base.cpp
+1bbfa8b27d93435a87bcd590b468e369 derandomizer_base.h

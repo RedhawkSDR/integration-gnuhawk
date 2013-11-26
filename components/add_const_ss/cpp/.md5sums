@@ -1,0 +1,10 @@
+e582a673fa7ec012e10f948bb10d4a55 main.cpp
+e112c802ee02ceeec8945273fefcd2c0 add_const_ss.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+eab20fa1f7ae9e9b4d28575c859ece17 add_const_ss_GnuHawkBlock.h
+697f916abdad1dc1fc793b87993467ee configure.ac
+0a4a7ae48e0ea7abb078e2685a23cd64 add_const_ss_base.h
+a71386e90d36f97f19ac7f1ab31f326b Makefile.am.ide
+d826c3d69b83288a9428881ffdbdab4e add_const_ss_base.cpp
+545d026e2f0324c71b974c6378db1715 Makefile.am
+ab637b6737bb811650ed8673dd3db515 add_const_ss.h

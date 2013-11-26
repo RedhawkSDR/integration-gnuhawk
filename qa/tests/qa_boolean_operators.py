@@ -31,10 +31,10 @@ class test_boolean_operators (gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-    def help_ss (self, src_data, exp_data, op):
+    def help_ss (self, src_data, exp_data, op, port_prefix='data_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_s (s[1])
-            src.source.connect(op,providesPortName="data_in_"+str(s[0]))
+            src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_s ()
@@ -53,10 +53,10 @@ class test_boolean_operators (gr_unittest.TestCase):
         result_data = dst.data ()
         self.assertEqual (exp_data, result_data)
 
-    def help_bb (self, src_data, exp_data, op):
+    def help_bb (self, src_data, exp_data, op, port_prefix='data_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_b (s[1])
-            src.source.connect(op,providesPortName="data_in_"+str(s[0]))
+            src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_b ()
@@ -75,10 +75,10 @@ class test_boolean_operators (gr_unittest.TestCase):
         result_data = dst.data ()
         self.assertEqual (exp_data, result_data)
 
-    def help_ii (self, src_data, exp_data, op):
+    def help_ii (self, src_data, exp_data, op, port_prefix='data_in_'):
         for s in zip (range (len (src_data)), src_data):
             src = gr.vector_source_i (s[1])
-            src.source.connect(op,providesPortName="data_in_"+str(s[0]))
+            src.source.connect(op,providesPortName=port_prefix+str(s[0]))
             src.streamID = str(s[0])
             self.tb.sources.append(src)
         dst = gr.vector_sink_i ()
@@ -97,30 +97,86 @@ class test_boolean_operators (gr_unittest.TestCase):
         result_data = dst.data ()
         self.assertEqual (exp_data, result_data)
 
-    def xtest_xor_ss (self):
+    def test_xor_ss_2i (self):
         src1_data =       (1,  2,  3,  0x5004,   0x1150)
         src2_data =       (8,  2,  1 , 0x0508,   0x1105)
         expected_result = (9,  0,  2,  0x550C,   0x0055)
-        op = gr.xor_ss ()
+        op = gr.xor_ss (2)
         self.help_ss ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='short_in_')
 
-    def xtest_xor_bb (self):
+    def test_xor_ss_3i (self):
+        src1_data =       (1,  2,  3,  4,    0x50)
+        src2_data =       (8,  2,  1 , 8,    0x05)
+        src3_data =       (2,  2,  15 , 0,   0x1100)
+        expected_result = (11, 2,  13,  0xC, 0x1155)
+        op = gr.xor_ss (3)
+        self.help_ss ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_xor_ss_4i (self):
+        src1_data =       (1,  2,  3,  4,      0x50)
+        src2_data =       (8,  2,  1 , 8,      0x05)
+        src3_data =       (2,  2,  15 , 0,   0x1100)
+        src4_data =       (11, 2,  13,  0xC, 0x1155)
+        expected_result = (0, 0, 0, 0, 0)
+        op = gr.xor_ss (4)
+        self.help_ss ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_xor_bb_2i (self):
         src1_data =       (1,  2,  3,  4,   0x50)
         src2_data =       (8,  2,  1 , 8,   0x05)
         expected_result = (9,  0,  2,  0xC, 0x55)
-        op = gr.xor_bb ()
+        op = gr.xor_bb (2)
         self.help_bb ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='byte_in_')
 
+    def test_xor_bb_3i (self):
+        src1_data =       (1,  2,  3,  4,    0x50)
+        src2_data =       (8,  2,  1 , 8,    0x05)
+        src3_data =       (2,  2,  15 , 0,   0x00)
+        expected_result = (11, 2,  13,  0xC, 0x55)
+        op = gr.xor_bb (3)
+        self.help_bb ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='byte_in_')
 
-    def xtest_xor_ii (self):
+    def test_xor_bb_4i (self):
+        src1_data =       (1,  2,  3,  4,    0x50)
+        src2_data =       (8,  2,  1 , 8,    0x05)
+        src3_data =       (2,  2,  15 , 0,   0x00)
+        src4_data =       (11, 2,  13,  0xC, 0x55)
+        expected_result = (0, 0, 0, 0, 0)
+        op = gr.xor_bb (4)
+        self.help_bb ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='byte_in_')
+
+    def test_xor_ii_2i (self):
         src1_data =       (1,  2,  3,  0x5000004,   0x11000050)
         src2_data =       (8,  2,  1 , 0x0500008,   0x11000005)
         expected_result = (9,  0,  2,  0x550000C,   0x00000055)
-        op = gr.xor_ii ()
+        op = gr.xor_ii (2)
         self.help_ii ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_xor_ii_3i (self):
+        src1_data =       (1,  2,  3,  4,    0x50)
+        src2_data =       (8,  2,  1 , 8,    0x05)
+        src3_data =       (2,  2,  15 , 0,   0x1100)
+        expected_result = (11, 2,  13,  0xC, 0x1155)
+        op = gr.xor_ii (3)
+        self.help_ii ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_xor_ii_4i (self):
+        src1_data =       (1,  2,  3,  4,      0x50)
+        src2_data =       (8,  2,  1 , 8,      0x05)
+        src3_data =       (2,  2,  15 , 0,   0x841100)
+        src4_data =       (11, 2,  13,  0xC, 0x841155)
+        expected_result = (0, 0, 0, 0, 0)
+        op = gr.xor_ii (4)
+        self.help_ii ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='long_in_')
 
     def test_and_ss (self):
         src1_data =       (1,  2,  3,  0x5004,   0x1150)
@@ -153,50 +209,106 @@ class test_boolean_operators (gr_unittest.TestCase):
         self.help_const_bb ((src1_data,),
                       expected_result, op)
 
-    def xtest_or_ss (self):
+    def test_or_ss_2i (self):
         src1_data =       (1,  2,  3,  0x5004,   0x1150)
         src2_data =       (8,  2,  1 , 0x0508,   0x1105)
         expected_result = (9,  2,  3,  0x550C,   0x1155)
-        op = gr.or_ss ()
+        op = gr.or_ss (2)
         self.help_ss ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='short_in_')
 
-    def xtest_or_bb (self):
+    def test_or_ss_3i (self):
         src1_data =       (1,  2, 2,  3,  0x04,   0x50)
         src2_data =       (8,  2, 2,  1 , 0x08,   0x05)
         src3_data =       (8,  2, 1,  1 , 0x08,   0x05)
         expected_result = (9,  2, 3,  3,  0x0C,   0x55)
-        op = gr.or_bb ()
-        self.help_bb ((src1_data, src2_data, src3_data),
-                      expected_result, op)
+        op = gr.or_ss (3)
+        self.help_ss ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='short_in_')
 
-    def xtest_or_ii (self):
+    def test_or_ss_4i (self):
+        src1_data =       (1,  2, 2,  3 ,   0x04,     0x50)
+        src2_data =       (8,  2, 2,  1 ,   0x08,     0x05)
+        src3_data =       (8,  2, 1,  1 ,   0x08,     0x05)
+        src4_data =       (8,  2, 1,  5 , 0x3508,   0x4105)
+        expected_result = (9,  2, 3,  7,  0x350C,   0x4155)
+        op = gr.or_ss (4)
+        self.help_ss ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='short_in_')
+
+    def test_or_bb_2i (self):
+        src1_data =       (1,  2,  3,  0x04,   0x50)
+        src2_data =       (8,  2,  1 , 0x08,   0x05)
+        expected_result = (9,  2,  3,  0x0C,   0x55)
+        op = gr.or_bb (2)
+        self.help_bb ((src1_data, src2_data),
+                      expected_result, op, port_prefix='byte_in_')
+
+    def test_or_bb_3i (self):
+        src1_data =       (1,  2, 2,  3,  0x04,   0x50)
+        src2_data =       (8,  2, 2,  1 , 0x08,   0x05)
+        src3_data =       (8,  2, 1,  1 , 0x08,   0x05)
+        expected_result = (9,  2, 3,  3,  0x0C,   0x55)
+        op = gr.or_bb (3)
+        self.help_bb ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='byte_in_')
+
+    def test_or_bb_4i (self):
+        src1_data =       (1,  2, 2,  3 , 0x04,   0x50)
+        src2_data =       (8,  2, 2,  1 , 0x08,   0x05)
+        src3_data =       (8,  2, 1,  1 , 0x18,   0x05)
+        src4_data =       (8,  2, 1,  5 , 0x58,   0x15)
+        expected_result = (9,  2, 3,  7,  0x5C,   0x55)
+        op = gr.or_bb (4)
+        self.help_bb ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='byte_in_')
+
+    def test_or_ii_2i (self):
         src1_data =       (1,  2,  3,  0x50005004,   0x11001150)
         src2_data =       (8,  2,  1 , 0x05000508,   0x11001105)
         expected_result = (9,  2,  3,  0x5500550C,   0x11001155)
-        op = gr.or_ii ()
+        op = gr.or_ii (2)
         self.help_ii ((src1_data, src2_data),
-                      expected_result, op)
+                      expected_result, op, port_prefix='long_in_')
 
-    def xtest_not_ss (self):
+    def test_or_ii_3i (self):
+        src1_data =       (1,  2, 2,  3,  0x04,   0x50)
+        src2_data =       (8,  2, 2,  1 , 0x08,   0x05)
+        src3_data =       (8,  2, 1,  1 , 0x08,   0x05)
+        expected_result = (9,  2, 3,  3,  0x0C,   0x55)
+        op = gr.or_ii (3)
+        self.help_ii ((src1_data, src2_data, src3_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_or_ii_4i (self):
+        src1_data =       (1,  2, 2,  3,        0x04,         0x50)
+        src2_data =       (8,  2, 2,  1 ,       0x08,         0x05)
+        src3_data =       (8,  2, 1,  1 ,       0x08,         0x05)
+        src4_data =       (8,  2, 1,  5 , 0x05000508,   0x11001105)
+        expected_result = (9,  2, 3,  7,  0x0500050C,   0x11001155)
+        op = gr.or_ii (4)
+        self.help_ii ((src1_data, src2_data, src3_data, src4_data),
+                      expected_result, op, port_prefix='long_in_')
+
+    def test_not_ss (self):
         src1_data =       (1,      2,      3,       0x5004,   0x1150)
         expected_result = (~1,     ~2,      ~3,       ~0x5004,   ~0x1150)
         op = gr.not_ss ()
-        self.help_ss ((((src1_data),)),
+        self.help_const_ss ((((src1_data),)),
                       expected_result, op)
 
-    def xtest_not_bb (self):
+    def test_not_bb (self):
         src1_data =       (1,     2,    2,     3,     0x04,   0x50)
         expected_result = (0xFE,  0xFD, 0xFD,  0xFC,  0xFB,   0xAF)
         op = gr.not_bb ()
-        self.help_bb (((src1_data), ),
+        self.help_const_bb (((src1_data), ),
                       expected_result, op)
 
-    def xtest_not_ii (self):
+    def test_not_ii (self):
         src1_data =       (1,    2,  3,  0x50005004,   0x11001150)
         expected_result = (~1 , ~2, ~3, ~0x50005004,  ~0x11001150)
         op = gr.not_ii ()
-        self.help_ii (((src1_data),),
+        self.help_const_ii (((src1_data),),
                       expected_result, op)
 
 

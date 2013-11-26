@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "fft_vfc.h"
 
 int main(int argc, char* argv[])
-{ 
-    fft_vfc_i* fft_vfc_servant; 
-    Resource_impl::start_component(fft_vfc_servant, argc, argv);         
+{
+    fft_vfc_i* fft_vfc_servant;
+    Resource_impl::start_component(fft_vfc_servant, argc, argv);
+    return 0;
 }
+

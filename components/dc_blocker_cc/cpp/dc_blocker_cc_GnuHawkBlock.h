@@ -22,10 +22,10 @@
 #define dc_blocker_cc_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_dc_blocker_cc.h>
+#include <dc_blocker_cc_impl.h>
 
 
-typedef GHComponent< gr_dc_blocker_cc >            GnuHawkBlock;
+typedef GHComponent< gr::filter::dc_blocker_cc >            GnuHawkBlock;
 
 
 #endif

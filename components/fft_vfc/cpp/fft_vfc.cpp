@@ -100,9 +100,12 @@ void fft_vfc_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-  gr_sptr = gr_make_fft_vfc(fft_size, forward, window, nthreads);
-  this->setPropertyChangeListener("window", this, &fft_vfc_i::changedWindow);
-  this->registerGetterSetter("nthreads", &gr_fft_vfc::nthreads, &gr_fft_vfc::set_nthreads);
+  try {
+    gr_sptr = gr::fft::fft_vfc::make(fft_size, forward, window, nthreads);
+  } catch (...) {
+    this->setPropertyChangeListener("window", this, &fft_vfc_i::changedWindow);
+    this->registerGetterSetter("nthreads", &gr::fft::fft_vfc::nthreads, &gr::fft::fft_vfc::set_nthreads);
+  }
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the
   // service function. The affect of the throttle will try to pause the execution of the 

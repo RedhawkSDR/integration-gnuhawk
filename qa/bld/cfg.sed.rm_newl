@@ -1,0 +1,7 @@
+/AC_CONFIG_SUBDIRS/,/])/ { 
+     :ack
+       N;
+       /\n])$/! b ack	
+	s/\n//g
+		   }
+/^$/		   p

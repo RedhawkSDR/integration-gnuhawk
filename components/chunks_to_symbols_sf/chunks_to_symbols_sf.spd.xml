@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:9281e123-0a10-4314-a4af-2d62220027f7" name="chunks_to_symbols_sf" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="chunks_to_symbols_sf.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="chunks_to_symbols_sf.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Map a stream of symbol indexes (unpacked bytes or shorts) to stream of float or complex onstellation points.in D dimensions (D = 1 by default)
+
+input: stream of short; output: stream of float
+
+out[n D + k] = symbol_table[in[n] D + k], k=0,1,...,D-1
+
+The combination of gr_packed_to_unpacked_XX followed by
+gr_chunks_to_symbols_XY handles the general case of mapping
+from a stream of bytes or shorts into arbitrary float
+or complex symbols.</description>
+    <code type="Executable">
+      <localfile name="cpp/chunks_to_symbols_sf"/>
+      <entrypoint>cpp/chunks_to_symbols_sf</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

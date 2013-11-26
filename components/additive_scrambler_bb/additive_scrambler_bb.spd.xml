@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:3c8481da-7890-4e54-ab72-a3779d209027" name="additive_scrambler_bb" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="additive_scrambler_bb.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="additive_scrambler_bb.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Scramble an input stream using an LFSR.  This block works on the LSB only
+of the input data stream, i.e., on an &quot;unpacked binary&quot; stream, and
+produces the same format on its output.
+
+param: mask     Polynomial mask for LFSR
+param: seed     Initial shift register contents
+param: len      Shift register length
+param: count    Number of bits after which shift register is reset, 0=never
+
+The scrambler works by XORing the incoming bit stream by the output of
+the LFSR.  Optionally, after 'count' bits have been processed, the shift
+register is reset to the seed value.  This allows processing fixed length
+vectors of samples.</description>
+    <code type="Executable">
+      <localfile name="cpp/additive_scrambler_bb"/>
+      <entrypoint>cpp/additive_scrambler_bb</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

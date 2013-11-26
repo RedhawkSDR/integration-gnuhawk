@@ -1,0 +1,10 @@
+b7af65c8d7fc6323500312a6fb5becb8 main.cpp
+bc1abb69c5da0569d27c905283d29adf argmax_fs_4i_base.h
+74d4efd9d0d17aeb0c50071c5725ff08 argmax_fs_4i.h
+d193775e0ac25076db454b4c6f313155 reconf
+bed5be1c90e9b188f427bc4fec784048 argmax_fs_4i.cpp
+2d98a5ba519f7998e926ecc08036a271 configure.ac
+8df7a88df581234bd36acf45c8f4992d Makefile.am
+1049f534b01e59008fd9336287f505f2 Makefile.am.ide
+aef224c7854bf6bcf17c982314b4bf89 argmax_fs_4i_GnuHawkBlock.h
+83a28c78b78281f000175169b0d9030f argmax_fs_4i_base.cpp

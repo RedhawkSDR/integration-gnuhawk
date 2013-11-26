@@ -96,8 +96,8 @@ void single_pole_iir_filter_ff_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_single_pole_iir_filter_ff( this->alpha, this->vlen );
-    this->registerSetter("alpha", &gr_single_pole_iir_filter_ff::set_taps);
+    this->gr_sptr = gr::filter::single_pole_iir_filter_ff::make( this->alpha, this->vlen );
+    this->registerSetter("alpha", &gr::filter::single_pole_iir_filter_ff::set_taps);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

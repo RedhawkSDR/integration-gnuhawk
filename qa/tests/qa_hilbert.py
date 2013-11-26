@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2004,2007,2010 Free Software Foundation, Inc.
+# Copyright 2004,2007,2010,2012 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -21,17 +21,18 @@
 #
 
 from gnuradio import gr, gr_unittest
+import filter_swig as filter
 import math
 
-class test_hilbert (gr_unittest.TestCase):
+class test_hilbert(gr_unittest.TestCase):
 
-    def setUp (self):
+    def setUp(self):
         self.tb = gr.top_block ()
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_hilbert (self):
+    def test_hilbert(self):
         tb = self.tb
         ntaps = 51
         sampling_freq = 100
@@ -99,17 +100,17 @@ class test_hilbert (gr_unittest.TestCase):
                             (3.218399768911695e-08      +1.0000815391540527j))
 
 
-        src1 = gr.sig_source_f (sampling_freq, gr.GR_SIN_WAVE,
-                                sampling_freq * 0.10, 1.0)
+        src1 = gr.sig_source_f(sampling_freq, gr.GR_SIN_WAVE,
+                               sampling_freq * 0.10, 1.0)
 
-        head = gr.head (gr.sizeof_float, int (ntaps + sampling_freq * 0.10))
-        hilb = gr.hilbert_fc (ntaps)
-        dst1 = gr.vector_sink_c ()
-        tb.connect (src1, head)
-        tb.connect (head, hilb)
-        tb.connect (hilb, dst1)
-        tb.run ()
-        dst_data = dst1.data ()
+        head = gr.head(gr.sizeof_float, int (ntaps + sampling_freq * 0.10))
+        hilb = filter.hilbert_fc(ntaps)
+        dst1 = gr.vector_sink_c()
+        tb.connect(src1, head)
+        tb.connect(head, hilb)
+        tb.connect(hilb, dst1)
+        tb.run()
+        dst_data = dst1.data()
         self.assertComplexTuplesAlmostEqual (expected_result, dst_data, 5)
 
 if __name__ == '__main__':

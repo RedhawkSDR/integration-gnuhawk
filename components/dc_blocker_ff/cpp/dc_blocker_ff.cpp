@@ -84,7 +84,7 @@ dc_blocker_ff_i::~dc_blocker_ff_i()
 }
 
 int dc_blocker_ff_i::getGroupDelay(){
-    return gr_sptr->get_group_delay();
+    return gr_sptr->group_delay();
 }
 
 
@@ -100,7 +100,7 @@ void dc_blocker_ff_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    gr_sptr = gr_make_dc_blocker_ff( this->delay_length, this->long_form );
+    gr_sptr = gr::filter::dc_blocker_ff::make( this->delay_length, this->long_form );
     this->registerGetValue("group_delay", this, &dc_blocker_ff_i::getGroupDelay);
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

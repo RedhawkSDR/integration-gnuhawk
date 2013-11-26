@@ -96,7 +96,7 @@ void hilbert_fc_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_hilbert_fc( this->ntaps );
+    this->gr_sptr = gr::filter::hilbert_fc::make( this->ntaps );
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

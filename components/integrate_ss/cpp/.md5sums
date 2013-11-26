@@ -1,0 +1,10 @@
+003560c4bd3ed302e87890982fc3e822 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+1a775ea949211c3c8a70273c7d8ddb5e integrate_ss_base.h
+1139b1c9a3e294bbd29026a681945db9 integrate_ss.h
+e1a52eb0b2ff01d127dabb46affb7933 integrate_ss.cpp
+1b0659964aff11d13276ed78dd26692c configure.ac
+598b65fe7809beb68b8428d674f25c67 Makefile.am
+ae3ed78f783414a259e3063730008260 Makefile.am.ide
+b02f32018b56a891c80d3de4723dfaa2 integrate_ss_GnuHawkBlock.h
+45fba5688ac3a575587d8b36b1722241 integrate_ss_base.cpp

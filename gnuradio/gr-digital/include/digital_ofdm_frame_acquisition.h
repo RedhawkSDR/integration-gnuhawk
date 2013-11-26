@@ -97,8 +97,6 @@ protected:
 
   gr_complex *d_phase_lut;  // !< look-up table for coarse frequency compensation
 
-  void forecast(int noutput_items, gr_vector_int &ninput_items_required);
-
  public:
   /*!
    * \brief Return an estimate of the SNR of the channel
@@ -110,6 +108,8 @@ protected:
 		   gr_vector_int &ninput_items,
 		   gr_vector_const_void_star &input_items,
 		   gr_vector_void_star &output_items);
+
+  void forecast(int noutput_items, gr_vector_int &ninput_items_required);
 };
 
 

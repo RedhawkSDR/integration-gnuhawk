@@ -128,7 +128,7 @@ OSSIE_SDRROOT_AS_PREFIX
 
 # Dependencies
 export PKG_CONFIG_PATH="${SDRROOT}/dom/deps/gnuhawk/lib64/pkgconfig:${SDRROOT}/dom/deps/gnuhawk/lib/pkgconfig:<%=additionalPkg%>$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig"
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0 gnuhawk >= 1.8.3 ])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0 gnuhawk >= 0.1.0 ])
 <%
     boolean first = true;
     for (String interfaceNamespace : ifaceNameAndVer.keySet()) {

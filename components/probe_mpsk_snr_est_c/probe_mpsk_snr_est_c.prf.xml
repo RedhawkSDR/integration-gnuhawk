@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="type" mode="readwrite" name="type" type="long">
+    <description>Enum for the type of SNR estimator to select
+
+Below are some ROUGH estimates of what values of SNR each of these
+types of estimators is good for. In general, these offer a
+trade-off between accuracy and performance.
+
+ SNR_EST_SIMPLE:  Simple estimator (>= 7 dB)
+ SNR_EST_SKEW:    Skewness-base est (>= 5 dB)
+ SNR_EST_M2M4:    2nd &amp; 4th moment est (>= 1 dB)
+ SNR_EST_SVR:     SVR-based est (>= 0dB)</description>
+    <value>0</value>
+    <enumerations>
+      <enumeration label="SNR_EST_SIMPLE" value="0"/>
+      <enumeration label="SNR_EST_SKEW" value="1"/>
+      <enumeration label="SNR_EST_M2M4" value="2"/>
+      <enumeration label="SNR_EST_SVR" value="3"/>
+    </enumerations>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="msg_nsamples" mode="readwrite" name="msg_nsamples" type="long">
+    <value>10000</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="alpha" mode="readwrite" name="alpha" type="double">
+    <value>0.001</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="snr" mode="readwrite" name="snr" type="double">
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>

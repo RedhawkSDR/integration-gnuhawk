@@ -230,13 +230,13 @@ class test_add_v_and_friends(gr_unittest.TestCase):
         exp_data = (7.0, 9.0, 11.0, 13.0, 15.0)
         self.help_const_ff(src_data, exp_data, op)
 
-    def xtest_add_const_vcc_one(self):
+    def test_add_const_vcc_one(self):
         src_data = (1.0+2.0j,)
         op = gr.add_const_vcc((2.0+3.0j,))
         exp_data = (3.0+5.0j,)
         self.help_const_cc(src_data, exp_data, op)
 
-    def xtest_add_const_vcc_five(self):
+    def test_add_const_vcc_five(self):
         src_data = (1.0+2.0j, 3.0+4.0j, 5.0+6.0j, 7.0+8.0j, 9.0+10.0j)
         op = gr.add_const_vcc((11.0+12.0j, 13.0+14.0j, 15.0+16.0j, 17.0+18.0j, 19.0+20.0j))
         exp_data = (12.0+14.0j, 16.0+18.0j, 20.0+22.0j, 24.0+26.0j, 28.0+30.0j)
@@ -350,13 +350,13 @@ class test_add_v_and_friends(gr_unittest.TestCase):
         exp_data = (6.0, 14.0, 24.0, 36.0, 50.0)
         self.help_const_ff(src_data, exp_data, op)
 
-    def xtest_multiply_const_vcc_one(self):
+    def test_multiply_const_vcc_one(self):
         src_data = (1.0+2.0j,)
         op = gr.multiply_const_vcc((2.0+3.0j,))
         exp_data = (-4.0+7.0j,)
         self.help_const_cc(src_data, exp_data, op)
 
-    def xtest_multiply_const_vcc_five(self):
+    def test_multiply_const_vcc_five(self):
         src_data = (1.0+2.0j, 3.0+4.0j, 5.0+6.0j, 7.0+8.0j, 9.0+10.0j)
         op = gr.multiply_const_vcc((11.0+12.0j, 13.0+14.0j, 15.0+16.0j, 17.0+18.0j, 19.0+20.0j))
         exp_data = (-13.0+34.0j, -17.0+94.0j, -21.0+170.0j, -25.0+262.0j, -29.0+370.0j)

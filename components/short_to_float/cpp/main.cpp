@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "short_to_float.h"
 
 int main(int argc, char* argv[])
-{ 
-    short_to_float_i* short_to_float_servant; 
-    Resource_impl::start_component(short_to_float_servant, argc, argv);         
+{
+    short_to_float_i* short_to_float_servant;
+    Resource_impl::start_component(short_to_float_servant, argc, argv);
+    return 0;
 }
+

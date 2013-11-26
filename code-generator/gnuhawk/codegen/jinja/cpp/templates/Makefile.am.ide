@@ -1,0 +1,8 @@
+#{% extends "base/Makefile.am.ide" %}
+
+#{% block license %}
+{{component.shellLicense}}
+
+#{% endblock %}
+
+#{######### Inherit from redhawk base template #########}

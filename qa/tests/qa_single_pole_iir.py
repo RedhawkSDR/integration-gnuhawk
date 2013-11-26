@@ -21,8 +21,9 @@
 #
 
 from gnuradio import gr, gr_unittest
+import filter_swig as filter
 
-class test_single_pole_iir(gr_unittest.TestCase):
+class test_single_pole_iir_filter(gr_unittest.TestCase):
 
     def setUp (self):
         self.tb = gr.top_block ()
@@ -30,43 +31,84 @@ class test_single_pole_iir(gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-    def test_001(self):
+    def test_ff_001(self):
         src_data = (0, 1000, 2000, 3000, 4000, 5000)
         expected_result = src_data
         src = gr.vector_source_f(src_data)
-        op = gr.single_pole_iir_filter_ff (1.0)
+        op = filter.single_pole_iir_filter_ff(1.0)
         dst = gr.vector_sink_f()
-        self.tb.connect (src, op, dst)
+        self.tb.connect(src, op, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
 
-    def test_002(self):
+    def test_ff_002(self):
         src_data = (0, 1000, 2000, 3000, 4000, 5000)
         expected_result = (0, 125, 359.375, 689.453125, 1103.271484, 1590.36255)
         src = gr.vector_source_f(src_data)
-        op = gr.single_pole_iir_filter_ff (0.125)
+        op = filter.single_pole_iir_filter_ff(0.125)
         dst = gr.vector_sink_f()
-        self.tb.connect (src, op, dst)
+        self.tb.connect(src, op, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data, 3)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data, 3)
 
-    def test_003(self):
+    def test_ff_003(self):
         block_size = 2
         src_data = (0, 1000, 2000, 3000, 4000, 5000)
         expected_result = (0, 125, 250, 484.375, 718.75, 1048.828125)
         src = gr.vector_source_f(src_data)
         s2p = gr.stream_to_vector(gr.sizeof_float, block_size)
-        op = gr.single_pole_iir_filter_ff (0.125, block_size)
+        op = filter.single_pole_iir_filter_ff (0.125, block_size)
         p2s = gr.vector_to_stream(gr.sizeof_float, block_size)
         dst = gr.vector_sink_f()
-        self.tb.connect (src, s2p, op, p2s, dst)
+        self.tb.connect(src, s2p, op, p2s, dst)
         self.tb.run()
         result_data = dst.data()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data, 3)
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data, 3)
 
+    def test_cc_001(self):
+        src_data = (0+0j, 1000+1000j, 2000+2000j, 3000+3000j, 4000+4000j, 5000+5000j)
+        expected_result = src_data
+        src = gr.vector_source_c(src_data)
+        op = filter.single_pole_iir_filter_cc(1.0)
+        dst = gr.vector_sink_c()
+        self.tb.connect(src, op, dst)
+        self.tb.run()
+        result_data = dst.data()
+        self.assertComplexTuplesAlmostEqual(expected_result, result_data)
+
+    def test_cc_002(self):
+        src_data = (complex(0,0), complex(1000,-1000), complex(2000,-2000),
+                    complex(3000,-3000), complex(4000,-4000), complex(5000,-5000))
+        expected_result = (complex(0,0), complex(125,-125), complex(359.375,-359.375),
+                           complex(689.453125,-689.453125), complex(1103.271484,-1103.271484),
+                           complex(1590.36255,-1590.36255))
+        src = gr.vector_source_c(src_data)
+        op = filter.single_pole_iir_filter_cc(0.125)
+        dst = gr.vector_sink_c()
+        self.tb.connect(src, op, dst)
+        self.tb.run()
+        result_data = dst.data()
+        self.assertComplexTuplesAlmostEqual(expected_result, result_data, 3)
+
+    def test_cc_003(self):
+        block_size = 2
+        src_data = (complex(0,0), complex(1000,-1000), complex(2000,-2000),
+                    complex(3000,-3000), complex(4000,-4000), complex(5000,-5000))
+        expected_result = (complex(0,0), complex(125,-125), complex(250,-250),
+                           complex(484.375,-484.375), complex(718.75,-718.75),
+                           complex(1048.828125,-1048.828125))
+        src = gr.vector_source_c(src_data)
+        s2p = gr.stream_to_vector(gr.sizeof_gr_complex, block_size)
+        op = filter.single_pole_iir_filter_cc(0.125, block_size)
+        p2s = gr.vector_to_stream(gr.sizeof_gr_complex, block_size)
+        dst = gr.vector_sink_c()
+        self.tb.connect(src, s2p, op, p2s, dst)
+        self.tb.run()
+        result_data = dst.data()
+        self.assertComplexTuplesAlmostEqual(expected_result, result_data, 3)
 
 if __name__ == '__main__':
-    gr_unittest.run(test_single_pole_iir, "test_single_pole_iir.xml")
+    gr_unittest.run(test_single_pole_iir_filter, "test_single_pole_iir_filter.xml")
 

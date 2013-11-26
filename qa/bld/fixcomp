@@ -1,0 +1,45 @@
+#
+
+#
+# fix all component's reconf configure.ac and Makefile.am 
+# run from gnuhawk/qa directory: bld/fixcomp <component name>
+#
+
+ghawk_dir=$(dirname `pwd`)
+bld_dir=$ghawk_dir/bld
+lbld_dir=`pwd`/bld
+
+relpath() {
+back=    
+tback=
+common_part=$1
+while [ "$common_part" != "/" ] && [ "$common_part" != "." ] ; do
+  common_part=$(dirname $common_part)
+  back="..\/$back"
+done
+printf $back
+}
+
+
+fix_component() {
+    
+    cpp_path=$(dirname `find $1 -name "reconf"` )		
+    # rpath is relative path from component to gnuhawk main bld directory
+    rpath=$(relpath $cpp_path)"..\/..\/bld"
+
+    printf "Fixing: COMP:%s PATH:%s BLD:%s \n" $i $cpp_path $rpath
+
+    ## generate new reconf script
+    cat $lbld_dir/reconf.comp.gold | sed -e "s/@@@GH_M4_PATH@@@/$rpath/" > $cpp_path/reconf
+    cat $lbld_dir/configure.ac.comp.gold | sed -e "s/@@@COMPONENT@@@/$1/" > $cpp_path/configure.ac
+
+    # fix makefile to use GNUHAWK_XXX
+    cat $cpp_path/Makefile.am | sed -e "s/\$(PROJECTDEPS_CFLAGS)/\$(GNUHAWK_CFLAGS) \$(PROJECTDEPS_CFLAGS)/
+    " > $cpp_path/Makefile.fixed
+    mv $cpp_path/Makefile.fixed $cpp_path/Makefile.am
+
+}
+
+(cd components; fix_component $1)
+
+

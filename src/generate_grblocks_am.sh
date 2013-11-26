@@ -29,18 +29,15 @@
         grep -v jack | \
         grep -v portaudio | \
         grep -v audio_windows | \
-        grep -v wavelet_squash_ff_impl | \
         grep -v gr_ofdm_frame_sink2 | \
         grep -v comedi_sink_s | \
         grep -v comedi_source_s | \
         grep -v channel_model_impl | \
         grep -v digital_cpmmod_bc | \
         grep -v fcd_source_c_impl | \
-        grep -v atsc_viterbi_decoder | \
         grep -v qtgui | \
         grep -v gr-shd | \
         grep -v gr-uhd | \
         grep -v gr-video-sdl | \
-        grep -v wavelet_wavelet_ff_impl | \
         grep -v codec2 | \
         awk '{print $1}' | sed 's/:/ /g'| awk '{print "libgnuhawk_la_SOURCES += ../"$1}' | sort -u >& ./src/grblocks.am )

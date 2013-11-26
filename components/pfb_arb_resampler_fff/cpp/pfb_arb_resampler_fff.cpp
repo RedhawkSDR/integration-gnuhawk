@@ -96,8 +96,8 @@ void pfb_arb_resampler_fff_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-  gr_sptr = gr_make_pfb_arb_resampler_fff(rate, taps, filter_size);
-  this->registerSetter("rate", &gr_pfb_arb_resampler_fff::set_rate);
+  gr_sptr = gr::filter::pfb_arb_resampler_fff::make(rate, taps, filter_size);
+  this->registerSetter("rate", &gr::filter::pfb_arb_resampler_fff::set_rate);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

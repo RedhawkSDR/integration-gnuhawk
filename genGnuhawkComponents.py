@@ -1,3 +1,4 @@
+#!/bin/env python
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file 
 # distributed with this source distribution.
@@ -22,20 +23,148 @@ import commands
 from optparse import OptionParser
 import shutil
 
-gnuhawkComponentDir = "./components"
+def bkup_component_cpp( cdir, bkdir=None ):
+    cppdir =  os.path.join(cdir,'cpp')
+    if not bkdir:
+        bkupdir=os.path.join(cdir,'bkup.cpp')
+    try:
+        shutil.os.stat(bkupdir)
+        shutil.rmtree(bkupdir)
+    except Exception, e:
+        pass
+
+    shutil.copytree( cppdir, bkupdir)
+    return cppdir, bkupdir
+
+
+def regen_component( gnuhawk_root, dname, comp, ignore_components_file ):
+    print "COMPONENT ["+comp+"] SRC DIR:" + os.path.join(gnuhawk_root, dname )
+    # start regen process
+    target = os.path.join( gnuhawk_root,dname,comp)
+
+    cppdir=None
+    bkupdir=None
+    try:
+        cppdir,bkupdir =bkup_component_cpp( target )
+        print "\t["+comp+"] Creating backup: ", cppdir, bkupdir
+    except Exception, e:
+        print "WARN: Unable to process "+comp+",  Continuing..." + str(e)
+
+    # get namespace if assigned
+    namespace = ''
+    try:
+        fp = open(cppdir+'/Makefile.am', 'r')
+        old_Makefile = fp.read()
+        namespace = old_Makefile[old_Makefile.find('GR_NAMESPACE'):old_Makefile.find('GR_NAMESPACE')+old_Makefile[old_Makefile.find('GR_NAMESPACE'):].find('\n')+1]
+        fp.close()
+    except:
+        pass
+
+    os.chdir(target)
+    gendir_cmd=''
+    if gendir:
+        gendir_cmd='-C ./' + gendir + ' '
+        # resolve: relative directories are appended to comp/cpp/<dir>
+        cppdir=os.path.join(target,"cpp",gendir)
+        print "\t["+comp+"] Changing CPP directory to:" + str(cppdir)
+
+    codegen = 'gnuhawk-codegen -f '+gendir_cmd+comp+'.spd.xml'
+    print "\t["+comp+"] Regenerating Code:" + codegen
+    (status,output) = commands.getstatusoutput(codegen)
+
+    os.chdir(cppdir)
+    # reapply namespace
+    fp = open('Makefile.am', 'r')
+    new_Makefile = fp.read()
+    fp.close()
+    if namespace != '':
+        new_Makefile = new_Makefile.replace('GR_NAMESPACE =\n',namespace)
+        fp = open('Makefile.am', 'w')
+        new_Makefile = fp.write(new_Makefile)
+        fp.close()
+
+    ## swap old component header/cpp and gnuhawk block definition
+    shutil.copyfile( comp+'.cpp', comp+'.cpp.new' )
+    shutil.copyfile( comp+'.h',  comp+'.h.new')
+    shutil.copyfile( comp+'_GnuHawkBlock.h', comp+'_GnuHawkBlock.h.new')
+    
+    shutil.copyfile( bkupdir+'/'+comp+'.cpp', cppdir+'/'+comp+'.cpp')
+    shutil.copyfile( bkupdir+'/'+comp+'.h', cppdir+'/'+comp+'.h')
+    shutil.copyfile( bkupdir+'/'+comp+'_GnuHawkBlock.h', cppdir+'/'+comp+'_GnuHawkBlock.h')
+
+    os.chdir(cppdir)
+    print "\t["+comp+"] Reconf/Configure/Make...."
+    (status,output) = commands.getstatusoutput('./reconf')
+    if status != 0:
+        print "=========="
+        print status
+        print "----------"
+        print output
+        print "**********"
+        print "Failed to compile",comp
+        return -1
+    (status,output) = commands.getstatusoutput('./configure')
+    if status != 0:
+        print "=========="
+        print status
+        print "----------"
+        print output
+        print "**********"
+        print "Failed to compile",comp
+        return -1
+    (status,output) = commands.getstatusoutput('make clean')
+    if status != 0:
+        print "=========="
+        print status
+        print "----------"
+        print output
+        print "**********"
+        print "Failed to compile",comp
+        return -1
+    (status,output) = commands.getstatusoutput('make -j')
+    if status != 0:
+        print "=========="
+        print status
+        print "----------"
+        print output
+        print "**********"
+        print "Failed to compile",comp
+        return -1
+    
+    os.chdir(gnuhawk_root)
+
+    if ignore_components_file:
+        ignore_components.append(comp)
+        fp = open(ignore_components_file,'w')
+        for entry in ignore_components:
+            fp.write(entry+'\n')
+        fp.close()
+
+    return 0
+
+
+# search directories for components... don't forget to add components/xxxxx to ignore_files list below (i.e. skip the directory)        
+gnuhawkComponentDirs = [ "components", "components/components_for_testing" ]
 
 # Check command line argument to get eclipse directory 
 parser = OptionParser()
 qa_test_prefix = None
-parser.add_option("--eclipse_dir",type="string",action="store",dest="eclipse_dir",default=None,help="path to eclipse executable")
+gendir=None
 parser.add_option("--ignore_components_file",type="string",action="store",dest="ignore_components_file",default='',help="list of components not to regenerate")
+##parser.add_option("--gendir",type="string",action="store",dest="gendir",default=None,help="output directory to save generated source")
 (options,args) = parser.parse_args()
-eclipse_dir = options.eclipse_dir
 ignore_components_file = options.ignore_components_file
+##gendir=options.gendir
 
-# make sure eclipse directory ends in /
-if eclipse_dir[len(eclipse_dir)-1] != "/":
-    eclipse_dir += "/"
+#
+# list of files to ignore and any subdirectories to traverse...
+#
+ignore_files=[ 'Makefile', 'Makefile.in', 'Makefile.am', 'scaLatex.py', 'components_to_ignore', 'bld', 'components_for_testing', 'reconf', 'README.txt', 'mk.comp.out', 'config.log', 'config.status', 'configure', 'configure.ac', 'acinclude.m4', 'aclocal.m4', 'cfg.cdirs.out' '.gitignore', 'autom4te.cache', 'cfg.cdirs.out' ]
+
+# These are for components that need to be manually edited because they have changes to the _base classes
+ignore_comps = ['simple_framer', 'endian_swap_ss', 'endian_swap_bb', 'endian_swap_cc', 'endian_swap_ii']
+
+ignore_files.extend(ignore_comps)
 
 ignore_components = []
 if ignore_components_file:
@@ -49,104 +178,29 @@ if ignore_components_file:
 
 lang = '-Dlang=C++'
 
-gnuhawkComponents=[]
-for name in os.listdir(gnuhawkComponentDir):
-    gnuhawkComponents.append(name)
 
-for comp in gnuhawkComponents:
-    if comp in ignore_components:
-        continue
-    target = os.getcwd()+'/components/'+comp
-    namespace = ''
-    try:
-        fp = open(target+'/cpp/Makefile.am', 'r')
-        old_Makefile = fp.read()
-        namespace = old_Makefile[old_Makefile.find('GR_NAMESPACE'):old_Makefile.find('GR_NAMESPACE')+old_Makefile[old_Makefile.find('GR_NAMESPACE'):].find('\n')+1]
-        fp.close()
-    except:
-        pass
+gnuhawk_root=os.getcwd()
+for dname in gnuhawkComponentDirs:
 
-    old_Derived = ''
-    try:
-        fp = open(target+'/cpp/'+comp+'.cpp', 'r')
-        old_Derived = fp.read()
-        fp.close()
-    except:
-        pass
+    gnuhawkComponents=[]
 
-    try:
-        shutil.copyfile(target+'/cpp/'+comp+'.cpp', target+'/cpp/'+comp+'.cpp.tmp')
-    except:
-        if ignore_components_file:
-            ignore_components.append(comp)
-            fp = open(ignore_components_file,'w')
-            for entry in ignore_components:
-                fp.write(entry+'\n')
-            fp.close()
-        print "Unable to process "+comp+" due to unexpected file content, continuing..."
-        continue
-    shutil.copyfile(target+'/cpp/'+comp+'.h', target+'/cpp/'+comp+'.h.tmp')
-    shutil.copyfile(target+'/cpp/'+comp+'_GnuHawkBlock.h', target+'/cpp/'+comp+'_GnuHawkBlock.h.tmp')
-    codegen = eclipse_dir+'/bin/rhgen -generate '+target+' '+lang
-    print "Regenerating "+comp
-    (status,output) = commands.getstatusoutput(codegen)
-    fp = open(target+'/cpp/Makefile.am', 'r')
-    new_Makefile = fp.read()
-    fp.close()
-    if namespace != '':
-        new_Makefile = new_Makefile.replace('GR_NAMESPACE =\n',namespace)
-        fp = open(target+'/cpp/Makefile.am', 'w')
-        new_Makefile = fp.write(new_Makefile)
-        fp.close()
-    os.rename(target+'/cpp/'+comp+'.cpp', target+'/cpp/'+comp+'.cpp.new')
-    os.rename(target+'/cpp/'+comp+'.h', target+'/cpp/'+comp+'.h.new')
-    os.rename(target+'/cpp/'+comp+'_GnuHawkBlock.h', target+'/cpp/'+comp+'_GnuHawkBlock.h.new')
-    os.rename(target+'/cpp/'+comp+'.cpp.tmp', target+'/cpp/'+comp+'.cpp')
-    os.rename(target+'/cpp/'+comp+'.h.tmp', target+'/cpp/'+comp+'.h')
-    os.rename(target+'/cpp/'+comp+'_GnuHawkBlock.h.tmp', target+'/cpp/'+comp+'_GnuHawkBlock.h')
-    os.chdir('components/'+comp+'/cpp')
-    (status,output) = commands.getstatusoutput('./reconf')
-    if status != 0:
-        print "=========="
-        print status
-        print "----------"
-        print output
-        print "**********"
-        print "Failed to compile",comp
-        break
-    (status,output) = commands.getstatusoutput('./configure')
-    if status != 0:
-        print "=========="
-        print status
-        print "----------"
-        print output
-        print "**********"
-        print "Failed to compile",comp
-        break
-    (status,output) = commands.getstatusoutput('make clean')
-    if status != 0:
-        print "=========="
-        print status
-        print "----------"
-        print output
-        print "**********"
-        print "Failed to compile",comp
-        break
-    (status,output) = commands.getstatusoutput('make -j')
-    if status != 0:
-        print "=========="
-        print status
-        print "----------"
-        print output
-        print "**********"
-        print "Failed to compile",comp
-        break
-    os.chdir('../../..')
+    for name in os.listdir(dname):
+        gnuhawkComponents.append(name)
 
-    if ignore_components_file:
-        ignore_components.append(comp)
-        fp = open(ignore_components_file,'w')
-        for entry in ignore_components:
-            fp.write(entry+'\n')
-        fp.close()
-    
+    #
+    # test case....  gnuhawkComponents=[ 'add_const_ii', 'add_const_ff' ]
+    #
+    for comp in gnuhawkComponents:
+
+        # check to ignore the component
+        if comp in ignore_components:
+            print "Ignore: COMP:" + str(comp)
+            continue
+
+        if comp in  ignore_files:
+            print "Skipping FILE:" + str(comp)
+            continue
+
+        if regen_component( gnuhawk_root, dname, comp, ignore_components_file ) < 0 :
+            sys.exit(-1)
+

@@ -1,0 +1,10 @@
+3d7216bf881433acef09a187ae9c8150 main.cpp
+a3fde4c619243a4d61cdc504bb8f793f add_const_bb.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+221a025fd53ac54a7d6301c8fd33c193 add_const_bb.h
+82ff70fb6010b51d1a91bd06e86de203 add_const_bb_GnuHawkBlock.h
+78223b06b45f2f59195e07c9a63c2968 configure.ac
+e3f9677c388fbe10bfd95b3539cd5efb Makefile.am
+6324a5c034af5b1a2d9431f3a6ac9319 Makefile.am.ide
+93c33adff7f9996ce34c423835c5fe6a add_const_bb_base.cpp
+edb91e22df8561711ef4095ba038e320 add_const_bb_base.h

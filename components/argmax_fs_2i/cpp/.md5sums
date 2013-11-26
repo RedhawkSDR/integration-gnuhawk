@@ -1,0 +1,10 @@
+12c2fa7b6f991a59a07cf4de4131d8a1 argmax_fs_2i_GnuHawkBlock.h
+5fc3e9303fc199c02f00f4f5477e349a main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+916cda5650e2d2ec4c377127f3a4ac75 argmax_fs_2i_base.cpp
+352d80297909ee09a128ec1954dcbf44 argmax_fs_2i_base.h
+6bd9fb42797e07b2639ce5e6e0846f19 configure.ac
+1704c0ee49f0030ffec53b561f54e695 Makefile.am
+a329b2b6e2215e8480f4440355fdc99a argmax_fs_2i.cpp
+beefec9686c6c8c37aeb02cc08b2c776 argmax_fs_2i.h
+c139b860b8baf80c9c327ce31632f41c Makefile.am.ide

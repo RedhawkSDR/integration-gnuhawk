@@ -96,8 +96,11 @@ void filter_delay_fc_2i_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_filter_delay_fc( this->taps );
-
+    try {
+        this->gr_sptr = gr::filter::filter_delay_fc::make( this->taps );
+    } catch(...){
+        return;
+    }
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the
   // service function. The affect of the throttle will try to pause the execution of the 

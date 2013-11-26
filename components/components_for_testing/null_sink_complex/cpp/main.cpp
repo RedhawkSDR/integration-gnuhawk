@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "null_sink_complex.h"
 
 int main(int argc, char* argv[])
-{ 
-    null_sink_complex_i* null_sink_complex_servant; 
-    Resource_impl::start_component(null_sink_complex_servant, argc, argv);         
+{
+    null_sink_complex_i* null_sink_complex_servant;
+    Resource_impl::start_component(null_sink_complex_servant, argc, argv);
+    return 0;
 }
+

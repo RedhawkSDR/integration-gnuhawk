@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "add_const_ii.h"
 
 int main(int argc, char* argv[])
-{ 
-    add_const_ii_i* add_const_ii_servant; 
-    Resource_impl::start_component(add_const_ii_servant, argc, argv);         
+{
+    add_const_ii_i* add_const_ii_servant;
+    Resource_impl::start_component(add_const_ii_servant, argc, argv);
+    return 0;
 }
+

@@ -12,11 +12,11 @@
 # GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
 # A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
+# 
 # You should have received a copy of the GNU General Public License along with 
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
- 
+
 # Manually set the GNURadio namespace here 
 GR_NAMESPACE = gnuhawk/gr
 
@@ -28,7 +28,7 @@ bindir = $(versiondir)/cpp
 bin_PROGRAMS = copy_octet
 
 xmldir = $(versiondir)
-dist_xml_DATA = ../copy_octet.prf.xml ../copy_octet.scd.xml ../copy_octet.spd.xml
+dist_xml_DATA = ../copy_octet.scd.xml ../copy_octet.prf.xml ../copy_octet.spd.xml
 
 # Create a "current" link to the version just installed
 install-exec-hook:

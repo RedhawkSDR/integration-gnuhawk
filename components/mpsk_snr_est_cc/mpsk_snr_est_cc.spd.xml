@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:98c84701-8a27-44fd-9037-536ae9884cdb" name="mpsk_snr_est_cc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="mpsk_snr_est_cc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="mpsk_snr_est_cc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>A block for computing SNR of a signal.
+
+This block can be used to monitor and retrieve estimations of the
+signal SNR. It is designed to work in a flowgraph and passes all
+incoming data along to its output.
+
+The block is designed for use with M-PSK signals especially. The
+type of estimator is specified as the \p type parameter in the
+constructor. The estimators tend to trade off performance for
+accuracy, although experimentation should be done to figure out
+the right approach for a given implementation. Further, the
+current set of estimators are designed and proven theoretically
+under AWGN conditions; some amount of error should be assumed
+and/or estimated for real channel conditions.
+
+param type: the type of estimator to use \ref ref_snr_est_types &quot;snr_est_type_t&quot; for details about the available types.
+param tag_nsamples: after this many samples, a tag containing the SNR (key='snr') will be sent
+param alpha: the update rate of internal running average calculations.</description>
+    <code type="Executable">
+      <localfile name="cpp/mpsk_snr_est_cc"/>
+      <entrypoint>cpp/mpsk_snr_est_cc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

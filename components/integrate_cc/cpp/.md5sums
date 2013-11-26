@@ -1,0 +1,10 @@
+4add56e2a196593e055d34ff07284e3e main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+358d96fb4a7491675eaa40badaece64c integrate_cc_base.h
+6d4be4fd8cd91276aed96674e2a0fbf2 integrate_cc_base.cpp
+85f4f2b86265f7c16aefcbdf61eb3749 integrate_cc.cpp
+bb7040ea9094bafa630f47bdc0bb7abe configure.ac
+9fea00a8b5ebf46291e9e23ae66a2488 Makefile.am
+f9fbc740f1333be77a2df01350881bdd Makefile.am.ide
+a34d83a8b7ecfc1350f3de69c1d11524 integrate_cc.h
+a8d8403cb85e8c92f183f7b59f36ec1c integrate_cc_GnuHawkBlock.h

@@ -24,7 +24,7 @@
 %define _prefix    %{_sdrroot}/dom/deps/gnuhawk
 
 Name:		gnuhawk
-Version:	1.8.5
+Version:	1.9.0
 Release:	1%{?dist}
 Summary:	GNUHAWK is a library for using GNU Radio blocks in REDHAWK
 Prefix:		%{_sdrroot}/dom/deps/gnuhawk
@@ -33,18 +33,15 @@ Group:		Applications/Engineering
 License:	GPLv3+
 Source:		%{name}-%{version}.tar.gz
 
-BuildRequires:	redhawk-devel >= 1.8.3
-BuildRequires:	cmake fftw-devel python-cheetah
-Requires:       redhawk >= 1.8.3
+BuildRequires:	redhawk-devel >= 1.9
+BuildRequires:	cmake fftw-devel python-cheetah gsl-devel
+Requires:	redhawk >= 1.9
+Requires:	fftw gsl
 
-%if "%{?rhel}" != "6"
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-%endif
 
 %description
 GNUHAWK is a library for using GNU Radio blocks in REDHAWK.
- * Commit: __REVISION__
- * Source Date/Time: __DATETIME__
 
 
 %prep
@@ -53,13 +50,15 @@ GNUHAWK is a library for using GNU Radio blocks in REDHAWK.
 
 %build
 ./reconf
-%configure --with-sdr=%{_sdrroot} --without-components
+%configure --with-sdr=%{_sdrroot} 
 make %{?_smp_mflags}
 
 
 %install
 rm -rf --preserve-root %{buildroot}
 make install-strip DESTDIR=%{buildroot}
+mkdir -p %{buildroot}%{_prefix}/share/gnuhawk
+cp bld/GNUHAWK_PKG.m4 %{buildroot}%{_prefix}/share/gnuhawk
 
 
 %clean
@@ -77,9 +76,9 @@ rm -rf --preserve-root %{buildroot}
 %{_prefix}/lib/libgnuhawk.so*
 %{_includedir}
 %{_prefix}/gnuhawk.spd.xml
+%{_prefix}/share/gnuhawk/GNUHAWK_PKG.m4
 
 
 %changelog
-* Tue Apr  9 2013 - 1.8.3-4
+* Mon Apr  1 2013 - 1.8.4.-1
 - Initial release
-

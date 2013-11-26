@@ -64,15 +64,15 @@ class head:
     def __init__(self, sizeof, num_items):
         self.comp = None
         if str(sizeof.__name__).find("sizeof_char") != -1:
-            self.comp = sb.Component("./components/gr_head_octet/gr_head_octet.spd.xml")
+            self.comp = sb.launch("./components/gr_head_octet/gr_head_octet.spd.xml")
         elif str(sizeof.__name__).find("sizeof_float") != -1:
-            self.comp = sb.Component("./components/gr_head_float/gr_head_float.spd.xml")
+            self.comp = sb.launch("./components/gr_head_float/gr_head_float.spd.xml")
         elif str(sizeof.__name__).find("sizeof_gr_complex") != -1:
-            self.comp = sb.Component("./components/gr_head_complex/gr_head_complex.spd.xml")
+            self.comp = sb.launch("./components/gr_head_complex/gr_head_complex.spd.xml")
         elif str(sizeof.__name__).find("sizeof_int") != -1:
-            self.comp = sb.Component("./components/gr_head_int/gr_head_int.spd.xml")
+            self.comp = sb.launch("./components/gr_head_int/gr_head_int.spd.xml")
         elif str(sizeof.__name__).find("sizeof_short") != -1:
-            self.comp = sb.Component("./components/gr_head_short/gr_head_short.spd.xml")
+            self.comp = sb.launch("./components/gr_head_short/gr_head_short.spd.xml")
 
         if self.comp != None:
             self.comp.num = num_items

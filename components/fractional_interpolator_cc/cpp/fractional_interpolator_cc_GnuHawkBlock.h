@@ -22,9 +22,9 @@
 #define fractional_interpolator_cc_GH_BLOCK_H
 
 #include <gr_component.h>
-#include <gr_fractional_interpolator_cc.h>
+#include <fractional_interpolator_cc_impl.h>
 
-typedef GHComponent< gr_fractional_interpolator_cc >            GnuHawkBlock;
+typedef GHComponent< gr::filter::fractional_interpolator_cc >            GnuHawkBlock;
 
 
 #endif

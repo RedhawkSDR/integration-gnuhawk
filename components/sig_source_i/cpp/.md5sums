@@ -1,0 +1,10 @@
+bbc97dfca71e27efeec90edefeeb5b5b sig_source_i_base.h
+d193775e0ac25076db454b4c6f313155 reconf
+760d403d0f6d3e1226ebb9e1ffbfc577 sig_source_i.h
+117fc47cd9d45c7b959b5b20ff8d5ca8 configure.ac
+b935dfdd45812b362e33895ca5633888 sig_source_i_GnuHawkBlock.h
+1517fff6ce675d15aca3d1416a63edb1 Makefile.am.ide
+f594bc3a79d476de07affe5b37b2fe1f main.cpp
+f21405b638dad3092dc81c56bf446812 sig_source_i.cpp
+3b0af3d97892ea9c365066daff7fe41a Makefile.am
+41d83395fcacee888f02553d1678e3cd sig_source_i_base.cpp

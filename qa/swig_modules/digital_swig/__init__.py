@@ -18,3 +18,8 @@
 #
  
 from _gnuComponentWrappers import *
+
+SNR_EST_SIMPLE = 0
+SNR_EST_SKEW = 1
+SNR_EST_M2M4 = 2
+SNR_EST_SVR = 3

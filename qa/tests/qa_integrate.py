@@ -32,44 +32,44 @@ class test_integrate (gr_unittest.TestCase):
         self.tb = None
 
     def test_000_ss(self):
-	src_data = (1, 2, 3, 4, 5, 6)
-	dst_data = (6, 15)
-	src = gr.vector_source_s(src_data)
-	itg = gr.integrate_ss(3)
-	dst = gr.vector_sink_s()
-	self.tb.connect(src, itg, dst)
-	self.tb.run()
-	self.assertEqual(dst_data, dst.data())
+        src_data = (1, 2, 3, 4, 5, 6)
+        dst_data = (6, 15)
+        src = gr.vector_source_s(src_data)
+        itg = gr.integrate_ss(3)
+        dst = gr.vector_sink_s()
+        self.tb.connect(src, itg, dst)
+        self.tb.run()
+        self.assertEqual(dst_data, dst.data())
 
     def test_001_ii(self):
-	src_data = (1, 2, 3, 4, 5, 6)
-	dst_data = (6, 15)
-	src = gr.vector_source_i(src_data)
-	itg = gr.integrate_ii(3)
-	dst = gr.vector_sink_i()
-	self.tb.connect(src, itg, dst)
-	self.tb.run()
-	self.assertEqual(dst_data, dst.data())
+        src_data = (1, 2, 3, 4, 5, 6)
+        dst_data = (6, 15)
+        src = gr.vector_source_i(src_data)
+        itg = gr.integrate_ii(3)
+        dst = gr.vector_sink_i()
+        self.tb.connect(src, itg, dst)
+        self.tb.run()
+        self.assertEqual(dst_data, dst.data())
 
     def test_002_ff(self):
-	src_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-	dst_data = [6.0, 15.0]
-	src = gr.vector_source_f(src_data)
-	itg = gr.integrate_ff(3)
-	dst = gr.vector_sink_f()
-	self.tb.connect(src, itg, dst)
-	self.tb.run()
-	self.assertFloatTuplesAlmostEqual(dst_data, dst.data(), 6)
+        src_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+        dst_data = [6.0, 15.0]
+        src = gr.vector_source_f(src_data)
+        itg = gr.integrate_ff(3)
+        dst = gr.vector_sink_f()
+        self.tb.connect(src, itg, dst)
+        self.tb.run()
+        self.assertFloatTuplesAlmostEqual(dst_data, dst.data(), 6)
 
     def test_003_cc(self):
-	src_data = [1.0+1.0j, 2.0+2.0j, 3.0+3.0j, 4.0+4.0j, 5.0+5.0j, 6.0+6.0j]
-	dst_data = [6.0+6.0j, 15.0+15.0j]
-	src = gr.vector_source_c(src_data)
-	itg = gr.integrate_cc(3)
-	dst = gr.vector_sink_c()
-	self.tb.connect(src, itg, dst)
-	self.tb.run()
-	self.assertComplexTuplesAlmostEqual(dst_data, dst.data(), 6)
+        src_data = [1.0+1.0j, 2.0+2.0j, 3.0+3.0j, 4.0+4.0j, 5.0+5.0j, 6.0+6.0j]
+        dst_data = [6.0+6.0j, 15.0+15.0j]
+        src = gr.vector_source_c(src_data)
+        itg = gr.integrate_cc(3)
+        dst = gr.vector_sink_c()
+        self.tb.connect(src, itg, dst)
+        self.tb.run()
+        self.assertComplexTuplesAlmostEqual(dst_data, dst.data(), 6)
 
 if __name__ == '__main__':
     gr_unittest.run(test_integrate, "test_integrate.xml")

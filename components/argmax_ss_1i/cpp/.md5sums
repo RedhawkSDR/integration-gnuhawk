@@ -1,0 +1,10 @@
+f035c0d66847873a9dab135787d1bc33 argmax_ss_1i_base.cpp
+603ac40b7085650c93e62cf943453e80 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+929f072adf7104fc9c406f6b585d8646 argmax_ss_1i.cpp
+ea1038337d82740a4df025252d078c64 argmax_ss_1i.h
+d38a3a282a7acc69bf265ee96c8e5100 configure.ac
+618fc4db119450b93bb5baee12bfdf4e Makefile.am
+c62d34f8802e13930d6392256f33149d argmax_ss_1i_base.h
+06a63e507efcd7c28d71018676ab6ffc argmax_ss_1i_GnuHawkBlock.h
+8e49dfdd0d7ba1dab713139be4e4d4f0 Makefile.am.ide

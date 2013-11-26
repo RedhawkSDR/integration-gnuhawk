@@ -21,8 +21,8 @@
 %{!?_sdrroot:    %define _sdrroot    /var/redhawk/sdr}
 
 Name:		gnuhawk-components
-Version:	1.8.5
-Release:	1%{?dist}
+Version:	1.9.0
+Release:	0.1%{?dist}
 Summary:	A set of GNU Radio blocks built for use in REDHAWK
 Prefix:		%{_sdrroot}
 
@@ -30,10 +30,10 @@ Group:		Applications/Engineering
 License:	GPLv3+
 Source:		%{name}-%{version}.tar.gz
 
+BuildRequires:	redhawk-devel >= 1.9
 BuildRequires:	cmake
 BuildRequires:	gnuhawk = %{version}-%{release}
-BuildRequires:	autoconf automake libtool
-BuildRequires:	boost-devel fftw-devel apache-log4cxx-devel bulkioInterfaces
+BuildRequires:	fftw-devel bulkioInterfaces gsl-devel
 Requires:	gnuhawk = %{version}-%{release}
 
 %if "%{?rhel}" != "6"
@@ -42,8 +42,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 A set of GNU Radio blocks built for use in REDHAWK
- * Commit: __REVISION__
- * Source Date/Time: __DATETIME__
+
 
 %prep
 %setup -q
@@ -51,9 +50,9 @@ A set of GNU Radio blocks built for use in REDHAWK
 
 %build
 export SDRROOT=%{_sdrroot}
-./reconf --with-components
-./configure --with-sdr=%{_sdrroot} --with-components
 pushd components
+./reconf
+./configure --with-sdr=%{_sdrroot}  --enable-deps=sdr
 make %{?_smp_mflags}
 popd
 
@@ -75,6 +74,5 @@ rm -rf --preserve-root %{buildroot}
 
 
 %changelog
-* Tue Apr  9 2013 - 1.8.3-4
+* Mon Apr  1 2013 - 1.8.4.-1
 - Initial release
-

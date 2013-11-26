@@ -96,10 +96,10 @@ void fractional_interpolator_ff_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_fractional_interpolator_ff( this->phase_shift, this->interp_ratio );
+    this->gr_sptr = gr::filter::fractional_interpolator_ff::make( this->phase_shift, this->interp_ratio );
 
-    this->registerGetterSetter("phase_shift", &gr_fractional_interpolator_ff::mu, &gr_fractional_interpolator_ff::set_mu);
-    this->registerGetterSetter("interp_ratio", &gr_fractional_interpolator_ff::interp_ratio, &gr_fractional_interpolator_ff::set_interp_ratio);
+    this->registerGetterSetter("phase_shift", &gr::filter::fractional_interpolator_ff::mu, &gr::filter::fractional_interpolator_ff::set_mu);
+    this->registerGetterSetter("interp_ratio", &gr::filter::fractional_interpolator_ff::interp_ratio, &gr::filter::fractional_interpolator_ff::set_interp_ratio);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

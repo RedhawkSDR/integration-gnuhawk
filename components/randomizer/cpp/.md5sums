@@ -1,0 +1,10 @@
+14369522f9fc4043fdf806c94b106f6b randomizer_GnuHawkBlock.h
+f0290340bdcd80020dfdf6271620779e main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+2e84a0751b4ab9579ef590fd6ca23b1a randomizer_base.cpp
+3e53b572b32d358058d09825946dda7f randomizer_base.h
+99d0858175fdacc896fcf572499c61f9 configure.ac
+54bd2f32a8d943f60d7892e2d01013f2 Makefile.am
+cb82c0b42439e73a91912206e5b88f2b Makefile.am.ide
+d32ef808cd5149796f962b513963659b randomizer.cpp
+85ea8f9b30c4d597c9a3c42dd542b30b randomizer.h

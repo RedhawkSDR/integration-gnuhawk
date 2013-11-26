@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:ea31ff04-a1fd-4d93-b224-88bb92b1ea0f" name="interp_fir_filter_ccc" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="interp_fir_filter_ccc.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="interp_fir_filter_ccc.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>Interpolating FIR filter with gr_complex input, gr_complex output and gr_complex taps
+
+The fir_filter_ccc blocks create finite impulse response
+(FIR) filters that perform the convolution in the time
+domain:
+
+
+   out = 0
+   for i in ntaps:
+      out += input[n-i] * taps[i]
+
+The taps are a C++ vector (or Python list) of values of the
+type specified by the third letter in the block's suffix. For
+this block, the value is of type gr_complex. Taps can be
+created using the firdes or optfir tools.
+
+These versions of the filter can also act as up-samplers
+(or interpolators) by specifying an integer value for
+interpolation.</description>
+    <code type="Executable">
+      <localfile name="cpp/interp_fir_filter_ccc"/>
+      <entrypoint>cpp/interp_fir_filter_ccc</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

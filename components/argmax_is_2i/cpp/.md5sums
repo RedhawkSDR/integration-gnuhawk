@@ -1,0 +1,10 @@
+daae4fea1e50965c6b19fa107ba170e7 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+4a2f4c4cbe11033e4271db6fbfaa5eec argmax_is_2i.h
+3312ba11e140049e86c26c1a8e428d0d argmax_is_2i.cpp
+3757302e44b025022a179d8786d84278 argmax_is_2i_base.h
+34c04591a51a7f611edc2bfd966213b5 argmax_is_2i_GnuHawkBlock.h
+77bf1b6f4b43c4db02e9572abbaf84c6 configure.ac
+371bf929934138a4f8ba732408e389e5 Makefile.am
+5f2db9885f33321ceddee67ceb96bba9 Makefile.am.ide
+e52ed3de27d48b78f700c425d456bf74 argmax_is_2i_base.cpp

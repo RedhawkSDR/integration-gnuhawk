@@ -47,9 +47,9 @@ class GR_CORE_API gr_keep_one_in_n : public gr_block
   float d_decim_rate;
 
  protected:
-  gr_keep_one_in_n (size_t item_size, int n);
 
  public:
+  gr_keep_one_in_n (size_t item_size, int n);
   int general_work (int noutput_items,
 		    gr_vector_int &ninput_items,
 		    gr_vector_const_void_star &input_items,

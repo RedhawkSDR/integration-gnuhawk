@@ -1,0 +1,10 @@
+622c7a827566d98303390fba3b2afcc9 main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+9f866371783b222cef9199040a499759 agc2_cc_base.cpp
+db1ad752482502c12f51f6a32753eb47 agc2_cc.cpp
+7c4f2016ac0793ef8c254bcf940bc6ac agc2_cc_GnuHawkBlock.h
+d9e79bee8bfa098c64336dfd8f514c00 agc2_cc_base.h
+cdfbd16663c0d22db8ef464305aa2d54 configure.ac
+e8ba9ce6b7530b54d81b0cde9b4f557d Makefile.am
+85b6810fdb1e6ff6bbc60eac1f88fc84 Makefile.am.ide
+1666ead20d6711bdbe84675c18a3e98f agc2_cc.h

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2006,2007,2010 Free Software Foundation, Inc.
+# Copyright 2006,2007,2010,2012 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -22,6 +22,7 @@
 
 from gnuradio import gr, gr_unittest
 from math import pi, cos
+import fft_swig as fft
 
 class test_goertzel(gr_unittest.TestCase):
 
@@ -36,7 +37,7 @@ class test_goertzel(gr_unittest.TestCase):
 
     def transform(self, src_data, rate, freq):
         src = gr.vector_source_f(src_data, False)
-        dft = gr.goertzel_fc(rate, rate, freq)
+        dft = fft.goertzel_fc(rate, rate, freq)
         dst = gr.vector_sink_c()
         self.tb.connect(src, dft, dst)
         self.tb.run()

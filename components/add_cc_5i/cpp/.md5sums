@@ -1,0 +1,10 @@
+76e430ee0faf345a2a37e9fbf424303f  main.cpp
+6cfefe6226426689492fe7c73873ea78  add_cc_5i_base.h
+49e3f133b132633b711356cca8f63d47  add_cc_5i.h
+d193775e0ac25076db454b4c6f313155  reconf
+f64d4e6cfd78ae6a77e8032538de4816  add_cc_5i_GnuHawkBlock.h
+2fa28d4720e860e8eea06405abf2956b  configure.ac
+4c554ba46ecddb8522ed48a2a4e90738  Makefile.am
+dda5797d323398aa4645bf523fffb018  add_cc_5i_base.cpp
+a0702ba630a1a5e3163fd135a2ae4b0b  add_cc_5i.cpp
+3efa84c9d708a80736b6f46ecbbddc97  Makefile.am.ide

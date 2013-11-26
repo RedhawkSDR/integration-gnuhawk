@@ -1,0 +1,10 @@
+ff218efab336632fefd8ab24b1e25ab5 stretch_ff.h
+68d199329da20f030ccd87b07a5d70d3 main.cpp
+7f6ea15402d519246bd4ba6b9f232ea4 stretch_ff_base.cpp
+8fd40ec669b2864ae41d79d2412fef78 stretch_ff_base.h
+d193775e0ac25076db454b4c6f313155 reconf
+30f69e748c488df8bfe38344dea864a9 stretch_ff.cpp
+f4c0e7719f4895fa260740d5d62e3a79 configure.ac
+8ae1d905b08fd86319078ace39f92557 Makefile.am
+7242aca9d1bccf53ea461441085af848 Makefile.am.ide
+dec867802d58cb706fcc6cde6f516666 stretch_ff_GnuHawkBlock.h

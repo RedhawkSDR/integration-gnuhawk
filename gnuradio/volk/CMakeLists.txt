@@ -30,6 +30,18 @@ enable_testing()
 set(VERSION 0.1)
 set(LIBVER 0.0.0)
 
+# Add boost141 path for RHEL 5 custom install
+if(NOT DEFINED CMAKE_INCLUDE_PATH)
+    set(CMAKE_INCLUDE_PATH "/usr/include/boost141/")
+else(NOT DEFINED CMAKE_INCLUDE_PATH)
+    set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "/usr/include/boost141/")
+endif()
+if(NOT DEFINED CMAKE_LIBRARY_PATH)
+    set(CMAKE_LIBRARY_PATH "/usr/lib/boost141/")
+else(NOT DEFINED CMAKE_LIBRARY_PATH)
+    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "/usr/lib/boost141/")
+endif()
+
 set(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}) #allows this to be a sub-project
 set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}) #allows this to be a sub-project
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake) #location for custom "Modules"

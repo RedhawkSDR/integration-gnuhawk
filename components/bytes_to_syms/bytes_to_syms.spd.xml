@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:6bca96c5-33ea-4766-b22a-0fb3727cfc97" name="bytes_to_syms" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="bytes_to_syms.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="bytes_to_syms.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description> Convert stream of bytes to stream of +/- 1 symbols
+
+input: stream of bytes; output: stream of float
+
+This block is deprecated.
+
+The combination of packed_to_unpacked_bb followed by
+chunks_to_symbols_bf or chunks_to_symbols_bc handles the
+general case of mapping from a stream of bytes into arbitrary float
+or complex symbols.
+
+-> packed_to_unpacked_bb, unpacked_to_packed_bb,
+-> chunks_to_symbols_bf, chunks_to_symbols_bc.</description>
+    <code type="Executable">
+      <localfile name="cpp/bytes_to_syms"/>
+      <entrypoint>cpp/bytes_to_syms</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

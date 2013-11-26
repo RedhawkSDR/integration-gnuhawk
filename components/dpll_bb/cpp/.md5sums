@@ -1,0 +1,10 @@
+e9d39f8d48759fd1eca51cca7e77509f main.cpp
+1e99556c7cb1e694b1fca536bf1635b5 dpll_bb_GnuHawkBlock.h
+5aea8f0b9e56d66e08eb16095bfc21f2 dpll_bb_base.h
+d193775e0ac25076db454b4c6f313155 reconf
+a3a1844c133413c0ea62abf66c042aa8 dpll_bb_base.cpp
+3f247f0a46274b14658f73571fccc4c0 configure.ac
+4b9331f1cc2b3e9095fb59ed1e9a957c Makefile.am
+b3513545abe71716ada11373d58b0d2f Makefile.am.ide
+c4a5bb5747c08bd9a689bb6c8f9851c3 dpll_bb.h
+13b15c4aa8899d5d9459d9825ecf66db dpll_bb.cpp

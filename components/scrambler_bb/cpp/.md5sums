@@ -1,0 +1,10 @@
+ffa56dd7a0d2412ffbce155a1f2100f5 main.cpp
+50bec661a7c8e4267b956f3d3135e3c1 scrambler_bb.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+39be5d738a720a18ab581c030bab1197 scrambler_bb.h
+c225486b5afd10bf2f9a4f6291f4a477 scrambler_bb_GnuHawkBlock.h
+51e2cd5ad10fbd9def82eae0869a2aa2 configure.ac
+05f35087d6fab82aa2d30613f9b7d4a3 Makefile.am
+0bc0d7c18fe51a64cf3715227846660d Makefile.am.ide
+519237640db8799bb1a6fcf788a0c1d7 scrambler_bb_base.cpp
+2c01d1b5381cb5075fae605738783e6d scrambler_bb_base.h

@@ -1,0 +1,10 @@
+6b3cdf363e21fe149446f3ee34bf24df main.cpp
+d193775e0ac25076db454b4c6f313155 reconf
+8eea6440126f6dcb3a763abfed375c0a xor_ii_2i.h
+87ed2720d9b7d404f5e38584264eacaa xor_ii_2i_base.h
+87fad779480a50673294bd63e0974bbb configure.ac
+73541b13120ebc70c57a3bbd44601b79 xor_ii_2i_base.cpp
+214a4395f7a33754ae8e567714a7f046 Makefile.am.ide
+fc0d328cafbbef752205be31b4f844cb xor_ii_2i.cpp
+0f5e79914bba0b6156560b4c1a5f2930 Makefile.am
+d4ab7c3b3ae9c92438c97e5811a7f74b xor_ii_2i_GnuHawkBlock.h

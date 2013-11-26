@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -24,7 +24,9 @@
 #include "psk_demod_cb.h"
 
 int main(int argc, char* argv[])
-{ 
-    psk_demod_cb_i* psk_demod_cb_servant; 
-    Resource_impl::start_component(psk_demod_cb_servant, argc, argv);         
+{
+    psk_demod_cb_i* psk_demod_cb_servant;
+    Resource_impl::start_component(psk_demod_cb_servant, argc, argv);
+    return 0;
 }
+

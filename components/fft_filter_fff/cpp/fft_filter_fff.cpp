@@ -103,9 +103,9 @@ void fft_filter_fff_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_fft_filter_fff( this->decimation, this->taps, this->nthreads);
+    this->gr_sptr = gr::filter::fft_filter_fff::make( this->decimation, this->taps, this->nthreads);
 
-    this->registerGetterSetter("nthreads", &gr_fft_filter_fff::nthreads, &gr_fft_filter_fff::set_nthreads);
+    this->registerGetterSetter("nthreads", &gr::filter::fft_filter_fff::nthreads, &gr::filter::fft_filter_fff::set_nthreads);
     this->setPropertyChangeListener("taps", this, &fft_filter_fff_i::setTaps);
     this->registerGetValue("taps", this, &fft_filter_fff_i::getTaps);
 

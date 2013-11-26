@@ -99,7 +99,7 @@ void interp_fir_filter_fff_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-    this->gr_sptr = gr_make_interp_fir_filter_fff( this->interpolation, this->taps );
+    this->gr_sptr = gr::filter::interp_fir_filter_fff::make( this->interpolation, this->taps );
     this->setPropertyChangeListener("taps", this, &interp_fir_filter_fff_i::setTaps);
 
   // 

@@ -96,7 +96,19 @@ void add_const_vss_i::createBlock()
   //
   // gr_sptr = xxx_make_xxx( args );
   //
-  gr_sptr = gr_make_add_const_vss(k);
+
+  if ( k.size() < 1 )  return;
+
+  try {
+    gr_sptr = gr_make_add_const_vss( k );
+  }
+  catch(...) {
+    return;
+  }
+
+  this->registerGetterSetter("k",
+			     &gr_add_const_vss::k,
+			     &gr_add_const_vss::set_k);
 
   // 
   // Use setThrottle method to enable the throttling of consumption/production of data by the

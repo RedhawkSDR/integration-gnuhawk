@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file 
+distributed with this source distribution.
+
+This file is part of GNUHAWK.
+
+GNUHAWK is free software: you can redistribute it and/or modify is under the 
+terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+this program.  If not, see http://www.gnu.org/licenses/.
+-->
+
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:e838649c-2db9-4f16-a766-b7c500aebbe7" name="pfb_channelizer_ccf_5i5o" type="sca_compliant">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="pfb_channelizer_ccf_5i5o.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="pfb_channelizer_ccf_5i5o.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>pfb_channelizer_ccf
+
+Polyphase filterbank channelizer with
+gr_complex input, gr_complex output and float taps
+
+This block takes in complex inputs and channelizes it to M
+channels of equal bandwidth. Each of the resulting channels is
+decimated to the new rate that is the input sampling rate
+fs divided by the number of channels, M
+
+The PFB channelizer code takes the taps generated above and builds
+a set of filters. The set contains M number of filters
+and each filter contains ceil(taps.size()/decim) number of taps.
+Each tap from the filter prototype is sequentially inserted into
+the next filter. When all of the input taps are used, the remaining
+filters in the filterbank are filled out with 0's to make sure each
+filter has the same number of taps.
+
+Each filter operates using the gr_fir filter classs of GNU Radio,
+which takes the input stream at i and performs the inner
+product calculation to i+(n-1) where n is the
+number of filter taps. To efficiently handle this in the GNU Radio
+structure, each filter input must come from its own input
+stream. So the channelizer must be provided with M streams
+where the input stream has been deinterleaved. This is most easily
+done using the gr_stream_to_streams block.
+
+The output is then produced as a vector, where index i in
+the vector is the next sample from the ith channel. This
+is most easily handled by sending the output to a
+gr_vector_to_streams block to handle the conversion and passing
+M streams out.
+
+The input and output formatting is done using a hier_block2 called
+pfb_channelizer_ccf. This can take in a single stream and outputs
+M streams based on the behavior described above.
+
+The filter's taps should be based on the input sampling rate.
+
+For example, using the GNU Radio's firdes utility to building
+filters, we build a low-pass filter with a sampling rate of
+fs, a 3-dB bandwidth of BW and a transition
+bandwidth of TB. We can also specify the out-of-band
+attenuation to use, ATT, and the filter window
+function (a Blackman-harris window in this case). The first input
+is the gain of the filter, which we specify here as unity.
+
+self._taps = filter.firdes.low_pass_2(1, fs, BW, TB,
+                attenuation_dB=ATT, window=filter.firdes.WIN_BLACKMAN_hARRIS)
+
+The filter output can also be overs ampled. The over sampling rate
+is the ratio of the the actual output sampling rate to the normal
+output sampling rate. It must be rationally related to the number
+of channels as N/i for i in [1,N], which gives an outputsample rate
+of [fs/N, fs] where fs is the input sample rate and N is the number
+of channels.
+
+For example, for 6 channels with fs = 6000 Hz, the normal rate is
+6000/6 = 1000 Hz. Allowable oversampling rates are 6/6, 6/5, 6/4,
+6/3, 6/2, and 6/1 where the output sample rate of a 6/1 oversample
+ratio is 6000 Hz, or 6 times the normal 1000 Hz. A rate of 6/5 = 1.2,
+so the output rate would be 1200 Hz.
+
+The theory behind this block can be found in Chapter 6 of
+the following book.
+
+f. harris, &quot;Multirate Signal Processing for Communication
+Systems,&quot; Upper Saddle River, NJ: Prentice Hall, Inc. 2004.</description>
+    <code type="Executable">
+      <localfile name="cpp/pfb_channelizer_ccf_5i5o"/>
+      <entrypoint>cpp/pfb_channelizer_ccf_5i5o</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="other">
+      <softpkgref>
+        <localfile name="/deps/gnuhawk/gnuhawk.spd.xml"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>
