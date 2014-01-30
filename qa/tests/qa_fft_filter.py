@@ -79,7 +79,7 @@ class test_fft_filter(gr_unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.tb = None
 
     def assert_fft_ok2(self, expected_result, result_data):
         expected_result = expected_result[:len(result_data)]
@@ -94,7 +94,7 @@ class test_fft_filter(gr_unittest.TestCase):
     def test_ccc_001(self):
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
-        taps = (1,)
+        taps = (complex(1),)
         expected_result = tuple([complex(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_c(src_data)
         op =  filter.fft_filter_ccc(1, taps)
@@ -111,7 +111,7 @@ class test_fft_filter(gr_unittest.TestCase):
         # Test nthreads
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
-        taps = (2,)
+        taps = (complex(2),)
         nthreads = 2
         expected_result = tuple([2 * complex(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_c(src_data)
@@ -127,7 +127,7 @@ class test_fft_filter(gr_unittest.TestCase):
     def test_ccc_003(self):
         tb = gr.top_block()
         src_data = (0,1,2,3,4,5,6,7)
-        taps = (2,)
+        taps = (complex(2),)
         expected_result = tuple([2 * complex(x) for x in (0,1,2,3,4,5,6,7)])
         src = gr.vector_source_c(src_data)
         op = filter.fft_filter_ccc(1, taps)

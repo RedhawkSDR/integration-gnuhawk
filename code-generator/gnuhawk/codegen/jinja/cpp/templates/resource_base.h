@@ -1,3 +1,22 @@
+/*#
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
+ * distributed with this source distribution.
+ * 
+ * This file is part of GNUHAWK.
+ * 
+ * GNUHAWK is free software: you can redistribute it and/or modify is under the 
+ * terms of the GNU General Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later 
+ * version.
+ * 
+ * GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program.  If not, see http://www.gnu.org/licenses/.
+ #*/
 /*{% extends "pull/resource_base.h" %}*/
 
 //% set prefix = component.prefix
@@ -5,6 +24,7 @@
 //% set hasInput = component.hasbulkioprovides
 //% set inputType = component.inputType
 //% set outputType = component.outputType
+//% set mem_align = component.mem_align
 
 /*{% block license %}*/
 ${component.cppLicense}
@@ -415,7 +435,11 @@ ${super()}
 
     template < typename IN_PORT_TYPE > struct gr_istream : gr_istream_base {
         IN_PORT_TYPE                       *port;            // RH port object
+/*{% if mem_align %}*/
+        std::vector< typename IN_PORT_TYPE::NativeType, GR_MemAlign< typename IN_PORT_TYPE::NativeType > >      _data;     // buffered data from port
+/*{% else %}*/        
         std::vector< typename IN_PORT_TYPE::NativeType >      _data;     // buffered data from port
+/*{% endif %}*/
         typename IN_PORT_TYPE::dataTransfer *pkt;            // pointer to last packet read from port
 
         gr_istream( IN_PORT_TYPE *in_port, GNU_RADIO_BLOCK_PTR in_grb, int idx, int mode, std::string &sid ) :
@@ -784,7 +808,11 @@ ${super()}
 
     template < typename OUT_PORT_TYPE > struct gr_ostream : gr_ostream_base {
         OUT_PORT_TYPE                      *port;                // handle to Port object
+/*{% if mem_align %}*/        
+        std::vector< typename OUT_PORT_TYPE::NativeType, GR_MemAlign< typename OUT_PORT_TYPE::NativeType > >  _data;    // output buffer used by GR_Block
+/*{% else %}*/
         std::vector< typename OUT_PORT_TYPE::NativeType >  _data;    // output buffer used by GR_Block
+/*{% endif %}*/
     
         gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
             gr_ostream_base(ingrb, idx, mode, in_sid), port(out_port), _data(0)
@@ -849,8 +877,12 @@ ${super()}
         int  write( int32_t n_items, bool eos, TimeStamp &ts, bool adjust_ts=false ) {
     
             resize( n_items );
-    
+/*{% if mem_align %}*/ 
+            typename OUT_PORT_TYPE::NativeSequenceType nst(_data.begin(),_data.end() );
+            if ( port ) port->pushPacket( nst, ts, eos, streamID );
+/*{% else %}*/
             if ( port ) port->pushPacket( _data, ts, eos, streamID );
+/*{% endif %}*/
     
             if ( adjust_ts ) forwardTimeStamp( n_items, ts );
     
@@ -868,8 +900,12 @@ ${super()}
             if ( !adjust_ts ) setTimeStamp();
     
             resize( n_items );
+/*{% if mem_align %}*/
+            typename OUT_PORT_TYPE::NativeSequenceType nst(_data.begin(),_data.end() );
+            if ( port ) port->pushPacket( nst, tstamp, eos, streamID );
+/*{% else %}*/
             if ( port ) port->pushPacket( _data, tstamp, eos, streamID );
-    
+/*{% endif %}*/
             if ( adjust_ts ) forwardTimeStamp( n_items );
     
             _eos = eos;
@@ -886,8 +922,12 @@ ${super()}
             if ( !_m_tstamp ) setTimeStamp();
     
             resize( n_items );
+/*{% if mem_align %}*/
+            typename OUT_PORT_TYPE::NativeSequenceType nst(_data.begin(),_data.end() );
+            if ( port ) port->pushPacket( nst, tstamp, eos, streamID );
+/*{% else %}*/
             if ( port ) port->pushPacket( _data, tstamp, eos, streamID );
-    
+/*{% endif %}*/
             if ( _m_tstamp ) forwardTimeStamp( n_items );
     
             _eos = eos;

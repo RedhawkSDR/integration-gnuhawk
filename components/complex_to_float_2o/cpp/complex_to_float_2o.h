@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -25,36 +25,34 @@
 
 class complex_to_float_2o_i : public complex_to_float_2o_base
 {
-   public:
-      complex_to_float_2o_i(const char *uuid, const char *label);
-      ~complex_to_float_2o_i();
+    public:
+        complex_to_float_2o_i(const char *uuid, const char *label);
+        ~complex_to_float_2o_i();
 
-    //
-    // createBlock
-    //
-    // Create the actual GNU Radio Block to that will perform the work method. The resulting
-    // block object is assigned to gr_stpr
-    //
-    // Add property change callbacks for getter/setter methods
-    //
-    //
-    void createBlock();
- 
-    //
-    // createOutputSRI
-    //
-    // Called by setupIOMappings when an output mapping is defined. For each output mapping
-    // defined, a call to createOutputSRI will be issued with the associated output index.
-    // This default SRI and StreamID will be saved to the mapping and pushed down stream via pushSRI.
-    // The subclass is responsible for overriding behavior of this method. The index provide matches
-    // the stream index number that will be use by the GR Block object
-    //
-    // @param idx : output stream index number to associate the returned SRI object with
-    // @return sri : default SRI object passed down stream over a RedHawk port
-    //      
-    BULKIO::StreamSRI  createOutputSRI( int32_t idx );
-    void  setOutputStreamSRI( int streamIdx, BULKIO::StreamSRI &in_sri, bool sendSRI=true, bool setStreamID=true); 
-      
+        //
+        // createBlock
+        //
+        // Create the actual GNU Radio Block to that will perform the work method. The resulting
+        // block object is assigned to gr_stpr
+        //
+        // Add property change callbacks for getter/setter methods
+        //
+        //
+        void createBlock();
+
+        //
+        // createOutputSRI
+        //
+        // Called by setupIOMappings when an output mapping is defined. For each output mapping
+        // defined, a call to createOutputSRI will be issued with the associated output index.
+        // This default SRI and StreamID will be saved to the mapping and pushed down stream via pushSRI.
+        // The subclass is responsible for overriding behavior of this method. The index provide matches
+        // the stream index number that will be use by the GR Block object
+        //
+        // @param idx : output stream index number to associate the returned SRI object with
+        // @return sri : default SRI object passed down stream over a RedHawk port
+        //      
+        BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );
 };
 
 #endif

@@ -26,9 +26,92 @@
 
 #include "adaptive_fir_ccc_impl.h"
 #include <gr_io_signature.h>
+#include "fir_filter_ccc_impl.h"
+#include <volk/volk.h>
 
 namespace gr {
   namespace filter {
+
+    adaptive_fir_ccc::sptr adaptive_fir_ccc::make(const char *name, int decimation,
+					      const std::vector<gr_complex> &taps)
+    {
+      return gnuradio::get_initial_sptr(new adaptive_fir_ccc_impl
+					(name, decimation, taps));
+    }
+
+    adaptive_fir_ccc_impl::adaptive_fir_ccc_impl(const char *name, int decimation,
+					     const std::vector<gr_complex> &taps)
+      : gr_sync_decimator(name,
+			  gr_make_io_signature (1, 1, sizeof(gr_complex)),
+			  gr_make_io_signature (1, 1, sizeof(gr_complex)),
+			  decimation),
+      kernel::fir_filter_ccc(decimation, taps)
+    {
+      d_fir = new kernel::fir_filter_ccc(decimation, taps);
+      d_updated = false;
+      set_history(d_fir->ntaps());
+      
+      const int alignment_multiple = volk_get_alignment() / sizeof(float);
+      set_alignment(std::max(1, alignment_multiple));
+    }
+
+    gr_complex
+    adaptive_fir_ccc_impl::error(const gr_complex &out)
+    {
+      return 0;
+    }
+
+    void
+    adaptive_fir_ccc_impl::update_tap(gr_complex &tap, const gr_complex &in)
+    {
+      tap = tap;
+    }
+    
+    adaptive_fir_ccc_impl::~adaptive_fir_ccc_impl()
+    {
+      delete d_fir;
+    }
+
+    void
+    adaptive_fir_ccc_impl::set_taps(const std::vector<gr_complex> &taps)
+    {
+      d_fir->set_taps(taps);
+      d_updated = true;
+    }
+
+    std::vector<gr_complex>
+    adaptive_fir_ccc_impl::taps() const
+    {
+      return d_fir->taps();
+    }
+
+    int
+    adaptive_fir_ccc_impl::work(int noutput_items,
+			      gr_vector_const_void_star &input_items,
+			      gr_vector_void_star &output_items)
+    {
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      gr_complex *out = (gr_complex *) output_items[0];
+      
+      if (d_updated){
+        set_history(d_fir->ntaps());
+	d_updated = false;
+	return 0;				// history requirements may have changed
+      }
+      
+      if (decimation() == 1) {
+        d_fir->filterN(out, in, noutput_items);
+      }
+      else {
+        d_fir->filterNdec(out, in, noutput_items, decimation());
+      }
+      return noutput_items;
+    }
+    
+  } /* namespace filter */
+} /* namespace gr */
+
+# if 0
 
     adaptive_fir_ccc::sptr adaptive_fir_ccc::make(const char *name, int decimation,
 						  const std::vector<gr_complex> &taps)
@@ -104,3 +187,5 @@ namespace gr {
 
   } /* namespace filter */
 } /* namespace gr */
+
+# endif

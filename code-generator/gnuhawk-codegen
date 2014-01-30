@@ -36,15 +36,17 @@ Options:
     -l                  List the files that would be generated
     -f                  Overwrite existing files even if modified
     -C <dir>            Put output files in directory <dir>
+    -a                  Memory align
 """ % os.path.basename(sys.argv[0])
 
 Function = strenum('list', 'generate')
 
 if __name__ == '__main__':
-    opts, args = getopt(sys.argv[1:], 'flC:')
+    opts, args = getopt(sys.argv[1:], 'flaC:')
     outputdir = None
     action = Function.GENERATE
     overwrite = False
+    mem_align = False
     overrides = ImplementationSettings()
     for key, value in opts:
         if key == '-C':
@@ -53,6 +55,8 @@ if __name__ == '__main__':
             action = Function.LIST
         elif key == '-f':
             overwrite = True
+        elif key == '-a':
+            mem_align = True
     try:
         spdFile = args[0]
     except:
@@ -148,10 +152,13 @@ if __name__ == '__main__':
         package = __import__(implTemplate)
         for name in implTemplate.split('.')[1:]:
             package = getattr(package, name)
+        for k in implSettings.properties:
+            v = implSettings.properties[k]
+            del implSettings.properties[k]
+            implSettings.properties[str(k)] = v
         generator = package.factory(implId=implId, outputdir=implOutputDir,
                                     overwrite=overwrite, crcs=implSettings.generatedFileCRCs,
-                                    **implSettings.properties)
-
+                                    mem_align=mem_align, **implSettings.properties)
         # Display the implementation; pre-1.8 projects use UUIDs for the identifier
         # and have a separate symbolic name in the project settings.
         implName = implSettings.name

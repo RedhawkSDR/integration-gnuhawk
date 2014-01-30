@@ -24,6 +24,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "gr_properties.h"
+#include "gr_malloc.h"
 
 template < typename GR_BLOCK >
 class GHComponent : public Resource_impl

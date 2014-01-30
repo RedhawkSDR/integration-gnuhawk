@@ -31,7 +31,7 @@ class test_keep_m_in_n_octet(gr_unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.tb = None
 
     def test_001(self):
         self.maxDiff = None;
@@ -62,7 +62,7 @@ class test_keep_m_in_n_short(gr_unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.tb = None
 
     def test_001(self):
         self.maxDiff = None;
@@ -93,7 +93,7 @@ class test_keep_m_in_n_int(gr_unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.tb = None
 
     def test_001(self):
         self.maxDiff = None;
@@ -124,7 +124,7 @@ class test_keep_m_in_n_complex(gr_unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.tb = None
 
     def test_001(self):
         self.maxDiff = None;

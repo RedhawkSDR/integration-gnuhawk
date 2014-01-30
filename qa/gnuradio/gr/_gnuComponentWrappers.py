@@ -651,7 +651,10 @@ def filter_delay_fc(taps, in_ports=1):
 def fir_filter_ccc(decimation=1, taps=[]):
     c = sb.launch(components_dir+'fir_filter_ccc/fir_filter_ccc.spd.xml', execparams=execparams)
     c.decimation = decimation
-    c.taps = taps
+    complexTaps=[]
+    for i in taps:
+        complexTaps.append(complex(i))
+    c.taps = complexTaps
     return c
 
 def fir_filter_ccf(decimation=1, taps=[]):
@@ -1497,8 +1500,7 @@ def sig_source_c(sampling_freq=10000.0, waveform=101, frequency=10.0, amplitude=
         c.transfer_size = long(sampling_freq+1)
     else:
         c.transfer_size = long(250000)
-    c.offset.real = offset.real
-    c.offset.imag = offset.imag
+    c.offset = offset
     return c
 
 def sig_source_i(sampling_freq=10000.0, waveform=101, frequency=10.0, amplitude=1000.0, offset=0):

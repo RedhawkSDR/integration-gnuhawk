@@ -35,7 +35,7 @@ class test_fft(gr_unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.tb = None
 
     def assert_fft_ok2(self, expected_result, result_data):
         expected_result = expected_result[:len(result_data)]

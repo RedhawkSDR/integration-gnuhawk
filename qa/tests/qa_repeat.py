@@ -42,7 +42,7 @@ class test_repeat (gr_unittest.TestCase):
         dst = gr.vector_sink_c()
         self.tb.connect(src, rpt, dst)
         self.tb.run()
-        self.assertFloatTuplesAlmostEqual(dst_data, dst.data(), 6)
+        self.assertComplexTuplesAlmostEqual(dst_data, dst.data(), 6)
 
     def test_001_int(self):
         src_data = [n*1 for n in range(100)];

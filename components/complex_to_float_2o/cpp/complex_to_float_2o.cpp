@@ -1,5 +1,5 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file 
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
  * 
  * This file is part of GNUHAWK.
@@ -19,7 +19,6 @@
  */
 
 #include "complex_to_float_2o.h"
-
 
 //
 //   This file contains the bindings to the hosted block
@@ -91,37 +90,36 @@ complex_to_float_2o_i::~complex_to_float_2o_i()
 //
 // Add property change callbacks for getter/setter methods
 //
+
 void complex_to_float_2o_i::createBlock()
 {
-  //
-  // gr_sptr = xxx_make_xxx( args );
-  //
-  gr_sptr = gr_make_complex_to_float(this->vlen);
+    //
+    // gr_sptr = xxx_make_xxx( args );
+    //
+    gr_sptr = gr_make_complex_to_float(this->vlen);
 
-  // 
-  // Use setThrottle method to enable the throttling of consumption/production of data by the
-  // service function. The affect of the throttle will try to pause the execution of the 
-  // service function for a specified duration.  This duration is calculated using the getTargetDuration() method
-  // and the actual processing time to perform the work method.
-  //
-  // This is turned ON by default for "output" only components
-  //
-  // setThrottle( bool onoff );
+    // 
+    // Use setThrottle method to enable the throttling of consumption/production of data by the
+    // service function. The affect of the throttle will try to pause the execution of the 
+    // service function for a specified duration.  This duration is calculated using the getTargetDuration() method
+    // and the actual processing time to perform the work method.
+    //
+    // This is turned ON by default for "output" only components
+    //
+    // setThrottle( bool onoff );
 
-  // 
-  // Use maintainTimeStamp to enable proper data flow of timestamp with input and output data. 
-  // if turned on (true)
-  //  The timestamp from the input source will be used and maintained based on the output rate and
-  //  the number of samples produced
-  // if turned off
-  //   then the timestamp from the input source is passed through if available or the time of day
-  // 
-  // maintainTimestamp( bool onoff );
+    // 
+    // Use maintainTimeStamp to enable proper data flow of timestamp with input and output data. 
+    // if turned on (true)
+    //  The timestamp from the input source will be used and maintained based on the output rate and
+    //  the number of samples produced
+    // if turned off
+    //   then the timestamp from the input source is passed through if available or the time of day
+    // 
+    // maintainTimestamp( bool onoff );
 
-   setupIOMappings();
-
-} 
-
+    setupIOMappings();
+}
 
 //
 // createOutputSRI
@@ -132,36 +130,29 @@ void complex_to_float_2o_i::createBlock()
 // @param idx : output stream index number to associate the returned SRI object with
 // @return sri : default SRI object passed down stream over a RedHawk port
 //      
-BULKIO::StreamSRI complex_to_float_2o_i::createOutputSRI( int32_t idx)
+BULKIO::StreamSRI complex_to_float_2o_i::createOutputSRI( int32_t oidx, int32_t &in_idx)
 {
-  //
-  // idx is the stream number that you are returning an SRI context for
-  //
+    //
+    // idx is the stream number that you are returning an SRI context for
+    //
 
-  BULKIO::StreamSRI sri = BULKIO::StreamSRI();
-  sri.hversion = 1;
-  sri.xstart = 0.0;
-  sri.xdelta = 1;
-  sri.xunits = BULKIO::UNITS_TIME;
-  sri.subsize = 0;
-  sri.ystart = 0.0;
-  sri.ydelta = 0.0;
-  sri.yunits = BULKIO::UNITS_NONE;
-  sri.mode = 0;
-  std::ostringstream t;
-  t << naming_service_name.c_str() << "_" << idx;
-  std::string sid = t.str();
-  sri.streamID = CORBA::string_dup(sid.c_str());
-  
-  return sri;
- 
-} 
+    BULKIO::StreamSRI sri = BULKIO::StreamSRI();
+    sri.hversion = 1;
+    sri.xstart = 0.0;
+    sri.xdelta = 1;
+    sri.xunits = BULKIO::UNITS_TIME;
+    sri.subsize = 0;
+    sri.ystart = 0.0;
+    sri.ydelta = 0.0;
+    sri.yunits = BULKIO::UNITS_NONE;
+    sri.mode = 0;
+    std::ostringstream t;
+    t << naming_service_name.c_str() << "_" << in_idx;
+    std::string sid = t.str();
+    sri.streamID = CORBA::string_dup(sid.c_str());
 
-void  complex_to_float_2o_i::setOutputStreamSRI( int streamIdx, BULKIO::StreamSRI &in_sri, bool sendSRI, bool setStreamID ) {
-   for (int o_idx=0; o_idx< (int)_ostreams.size(); o_idx++){
-       _ostreams[o_idx].adjustSRI(in_sri, o_idx, setStreamID );
-       if ( sendSRI ) _ostreams[o_idx].pushSRI();
-   }
+    // NOTE: For non 1 to 1 port mappings, user needs to specify in_idx
+    in_idx = 0;
+    return sri;
 }
-
 

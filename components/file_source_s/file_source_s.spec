@@ -45,7 +45,10 @@ BuildRequires: redhawk-devel >= 1.9
 BuildRequires: autoconf automake libtool
 Requires: gnuhawk >= 1.9
 BuildRequires: gnuhawk >= 1.9
-BuildRequires: fftw-devel gsl-devel
+BuildRequires: fftw-devel
+%if 0%{?rhel} == 5
+BuildRequires: gsl-devel
+%endif
 
 # Interface requirements
 Requires: bulkioInterfaces

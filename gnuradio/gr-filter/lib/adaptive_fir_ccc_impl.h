@@ -27,6 +27,10 @@
 #include <filter/fir_filter.h>
 #include <gr_types.h>
 
+#include <filter/api.h>
+#include <filter/fft_filter.h>
+#include <filter/fft_filter_ccc.h>
+
 namespace gr {
   namespace filter {
 
@@ -35,6 +39,7 @@ namespace gr {
     private:
       std::vector<gr_complex> d_new_taps;
       bool d_updated;
+      kernel::fir_filter_ccc *d_fir;
       
     protected:
       // Override to calculate error signal per output
@@ -49,6 +54,7 @@ namespace gr {
 
       adaptive_fir_ccc_impl(const char *name, int decimation,
 			    const std::vector<gr_complex> &taps);
+      ~adaptive_fir_ccc_impl();
 
       int work(int noutput_items,
 	       gr_vector_const_void_star &input_items,

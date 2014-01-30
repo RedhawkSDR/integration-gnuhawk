@@ -39,6 +39,8 @@ class top_block(object):
 
     def __del__(self):
        sb.domainless._cleanUpLaunchedComponents()
+       # clear out prop_helpers _enums dictionary between test runs
+       sb.domainless.prop_helpers._enums = {}
 
     def stop(self):
         # TODO: consider removing this

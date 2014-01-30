@@ -34,6 +34,7 @@ class test_glfsr_source(gr_unittest.TestCase):
     def test_000_make_b(self):
         src = gr.glfsr_source_b(16)
         src.start()
+        time.sleep(1)
         self.assertEquals(src.mask, 0x8016)
         self.assertEquals(src.period, 2**16-1)
 

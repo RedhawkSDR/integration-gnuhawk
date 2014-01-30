@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 #from ossie.utils import sb
 import cmath
+import math
 
 class test_transcendental (gr_unittest.TestCase):
 
@@ -34,7 +35,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_cos_ff (self):
         src_data = [i for i in range(-100, 100)]
-        expected_result = tuple(cmath.cos(i) for i in src_data)
+        expected_result = tuple(math.cos(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('cos', 'float')
         snk = gr.vector_sink_f()
@@ -45,7 +46,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_sin_ff (self):
         src_data = [i for i in range(-100, 100)]
-        expected_result = tuple(cmath.sin(i) for i in src_data)
+        expected_result = tuple(math.sin(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('sin', 'float')
         snk = gr.vector_sink_f()
@@ -56,7 +57,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_tan_ff (self):
         src_data = [i for i in range(-100, 100)]
-        expected_result = tuple(cmath.tan(i) for i in src_data)
+        expected_result = tuple(math.tan(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('tan', 'float')
         snk = gr.vector_sink_f()
@@ -67,7 +68,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_acos_ff (self):
         src_data = [float(i/100) for i in range(-100, 100)]
-        expected_result = tuple(cmath.acos(i) for i in src_data)
+        expected_result = tuple(math.acos(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('acos', 'float')
         snk = gr.vector_sink_f()
@@ -78,7 +79,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_asin_ff (self):
         src_data = [float(i/100) for i in range(-100, 100)]
-        expected_result = tuple(cmath.asin(i) for i in src_data)
+        expected_result = tuple(math.asin(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('asin', 'float')
         snk = gr.vector_sink_f()
@@ -89,7 +90,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_atan_ff (self):
         src_data = [float(i/100) for i in range(-100, 100)]
-        expected_result = tuple(cmath.atan(i) for i in src_data)
+        expected_result = tuple(math.atan(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('atan', 'float')
         snk = gr.vector_sink_f()
@@ -100,7 +101,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_cosh_ff (self):
         src_data = [i for i in range(-5, 5)]
-        expected_result = tuple(cmath.cosh(i) for i in src_data)
+        expected_result = tuple(math.cosh(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('cosh', 'float')
         snk = gr.vector_sink_f()
@@ -111,7 +112,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_sinh_ff (self):
         src_data = [i for i in range(-5, 5)]
-        expected_result = tuple(cmath.sinh(i) for i in src_data)
+        expected_result = tuple(math.sinh(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('sinh', 'float')
         snk = gr.vector_sink_f()
@@ -122,7 +123,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_tanh_ff (self):
         src_data = [i for i in range(-5, 5)]
-        expected_result = tuple(cmath.tanh(i) for i in src_data)
+        expected_result = tuple(math.tanh(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('tanh', 'float')
         snk = gr.vector_sink_f()
@@ -133,7 +134,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_exp_ff (self):
         src_data = [i for i in range(-5, 5)]
-        expected_result = tuple(cmath.exp(i) for i in src_data)
+        expected_result = tuple(math.exp(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('exp', 'float')
         snk = gr.vector_sink_f()
@@ -144,7 +145,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_log_ff (self):
         src_data = [i for i in range(1,100)]
-        expected_result = tuple(cmath.log(i) for i in src_data)
+        expected_result = tuple(math.log(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('log', 'float')
         snk = gr.vector_sink_f()
@@ -155,7 +156,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_log10_ff (self):
         src_data = [i for i in range(1,100)]
-        expected_result = tuple(cmath.log10(i) for i in src_data)
+        expected_result = tuple(math.log10(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('log10', 'float')
         snk = gr.vector_sink_f()
@@ -166,7 +167,7 @@ class test_transcendental (gr_unittest.TestCase):
 
     def test_sqrt_ff (self):
         src_data = [i for i in range(100)]
-        expected_result = tuple(cmath.sqrt(i) for i in src_data)
+        expected_result = tuple(math.sqrt(i) for i in src_data)
         src = gr.vector_source_f(src_data)
         op = gr.transcendental('sqrt', 'float')
         snk = gr.vector_sink_f()
@@ -200,7 +201,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_tan_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -211,7 +212,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_cosh_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -222,7 +223,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_sinh_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -233,7 +234,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_tanh_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -244,7 +245,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_exp_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -255,7 +256,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_log_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -266,7 +267,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_log10_cc (self):
         src_data = [complex(i,i+1) for i in range(-5, 5, 2)]
@@ -277,7 +278,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
     def test_sqrt_cc (self):
         src_data = [complex(i,i+1) for i in range(1, 100, 2)]
@@ -288,7 +289,7 @@ class test_transcendental (gr_unittest.TestCase):
         self.tb.connect(src, op, snk)
         self.tb.run()
         result = snk.data()
-        self.assertFloatTuplesAlmostEqual(expected_result, result, places=5)
+        self.assertComplexTuplesAlmostEqual(expected_result, result, places=5)
 
 if __name__ == '__main__':
     gr_unittest.run(test_transcendental, "test_transcendental")

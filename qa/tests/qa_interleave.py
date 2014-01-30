@@ -842,7 +842,7 @@ class test_interleave_cc_1 (gr_unittest.TestCase):
         self.tb.run ()
         expected_result = tuple (range (lenx))
         result_data = dst.data ()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertComplexTuplesAlmostEqual (expected_result, result_data)
 
 
 
@@ -857,7 +857,7 @@ class test_interleave_cc_1 (gr_unittest.TestCase):
         self.tb.run ()
 
         expected_result0 = tuple (range (0, lenx, 1))
-        self.assertFloatTuplesAlmostEqual (expected_result0, dst0.data ())
+        self.assertComplexTuplesAlmostEqual (expected_result0, dst0.data ())
 
 class test_interleave_cc_2 (gr_unittest.TestCase):
     
@@ -893,7 +893,7 @@ class test_interleave_cc_2 (gr_unittest.TestCase):
         self.tb.run ()
         expected_result = tuple (range (lenx))
         result_data = dst.data ()
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertComplexTuplesAlmostEqual (expected_result, result_data)
 
         
     def test_deint_001 (self):
@@ -911,8 +911,8 @@ class test_interleave_cc_2 (gr_unittest.TestCase):
         expected_result0 = tuple (range (0, lenx, 2))
         expected_result1 = tuple (range (1, lenx, 2))
 
-        self.assertFloatTuplesAlmostEqual (expected_result0, dst0.data())
-        self.assertFloatTuplesAlmostEqual (expected_result1, dst1.data())
+        self.assertComplexTuplesAlmostEqual (expected_result0, dst0.data())
+        self.assertComplexTuplesAlmostEqual (expected_result1, dst1.data())
 
 class test_interleave_cc_3 (gr_unittest.TestCase):
 
@@ -958,7 +958,7 @@ class test_interleave_cc_3 (gr_unittest.TestCase):
         expected_result = tuple (range (lenx))
         result_data = dst.data ()
 
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertComplexTuplesAlmostEqual (expected_result, result_data)
 
     def test_deint_001 (self):
         lenx = 63
@@ -978,9 +978,9 @@ class test_interleave_cc_3 (gr_unittest.TestCase):
         expected_result1 = tuple (range (1, lenx, 3))
         expected_result2 = tuple (range (2, lenx, 3))
 
-        self.assertFloatTuplesAlmostEqual (expected_result0, dst0.data())
-        self.assertFloatTuplesAlmostEqual (expected_result1, dst1.data())
-        self.assertFloatTuplesAlmostEqual (expected_result2, dst2.data ())
+        self.assertComplexTuplesAlmostEqual (expected_result0, dst0.data())
+        self.assertComplexTuplesAlmostEqual (expected_result1, dst1.data())
+        self.assertComplexTuplesAlmostEqual (expected_result2, dst2.data ())
 
 
 class test_interleave_cc_4 (gr_unittest.TestCase):
@@ -1038,7 +1038,7 @@ class test_interleave_cc_4 (gr_unittest.TestCase):
         expected_result = tuple (range (lenx))
         result_data = dst.data ()
 
-        self.assertFloatTuplesAlmostEqual (expected_result, result_data)
+        self.assertComplexTuplesAlmostEqual (expected_result, result_data)
 
     def test_deint_001 (self):
         lenx = 64
@@ -1061,10 +1061,10 @@ class test_interleave_cc_4 (gr_unittest.TestCase):
         expected_result2 = tuple (range (2, lenx, 4))
         expected_result3 = tuple (range (3, lenx, 4))
 
-        self.assertFloatTuplesAlmostEqual (expected_result0, dst0.data())
-        self.assertFloatTuplesAlmostEqual (expected_result1, dst1.data())
-        self.assertFloatTuplesAlmostEqual (expected_result2, dst2.data ())
-        self.assertFloatTuplesAlmostEqual (expected_result3, dst3.data ())
+        self.assertComplexTuplesAlmostEqual (expected_result0, dst0.data())
+        self.assertComplexTuplesAlmostEqual (expected_result1, dst1.data())
+        self.assertComplexTuplesAlmostEqual (expected_result2, dst2.data ())
+        self.assertComplexTuplesAlmostEqual (expected_result3, dst3.data ())
 
 if __name__ == '__main__':
     gr_unittest.run(test_interleave, "test_interleave.xml")
