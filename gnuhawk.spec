@@ -25,7 +25,7 @@
 
 Name:		gnuhawk
 Version:	1.9.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	GNUHAWK is a library for using GNU Radio blocks in REDHAWK
 Prefix:		%{_sdrroot}/dom/deps/gnuhawk
 

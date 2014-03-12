@@ -36,6 +36,12 @@ class GnuhawkComponentMapper(PullComponentMapper):
         cppcomp['mem_align'] = self.mem_align
         return cppcomp
 
+    def hasBulkioProvidesPorts(self, softpkg):
+        for port in softpkg.providesPorts():
+            if 'BULKIO' in port.repid():
+                return True
+        return False
+
     def hasBulkioUsesPorts(self, softpkg):
         for port in softpkg.usesPorts():
             if 'BULKIO' in port.repid():

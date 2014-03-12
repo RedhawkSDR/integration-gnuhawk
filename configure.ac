@@ -17,7 +17,7 @@
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
  
-AC_INIT([gnuhawk], [0.1.0])
+AC_INIT([gnuhawk], [1.9.0])
 AC_PREREQ(2.59)
 
 AM_INIT_AUTOMAKE(nostdinc)
