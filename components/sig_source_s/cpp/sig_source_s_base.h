@@ -142,7 +142,7 @@ class sig_source_s_base : public GnuHawkBlock
         CORBA::Long transfer_size;
 
         // Ports
-        bulkio::OutShortPort *short_ou;
+        bulkio::OutShortPort *short_out;
 
         std::vector< std::string > outputPortOrder;
 

@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "deinterleave_cc_2o.h"
-
 int main(int argc, char* argv[])
 {
     deinterleave_cc_2o_i* deinterleave_cc_2o_servant;

@@ -158,17 +158,21 @@ void sig_source_s_i::createBlock()
 // For each output mapping defined, a call to createOutputSRI will be issued with the associated output index.
 // This default SRI and StreamID will be saved to the mapping and pushed down stream via pushSRI.
 //
-// @param idx : output stream index number to associate the returned SRI object with
+// @param oidx : output stream index number to associate the returned SRI object with
 // @return sri : default SRI object passed down stream over a RedHawk port
 //      
-BULKIO::StreamSRI sig_source_s_i::createOutputSRI( int32_t oidx, int32_t &in_idx)
+BULKIO::StreamSRI sig_source_s_i::createOutputSRI( int32_t oidx)
 {
     //
-    // idx is the stream number that you are returning an SRI context for
+    // oidx is the stream number that you are returning an SRI context for
     //
 
     BULKIO::StreamSRI sri = BULKIO::StreamSRI();
     sri.hversion = 1;
+    if (this->gr_sptr->sampling_freq() > 0.0)
+        sri.xdelta = 1/this->gr_sptr->sampling_freq();
+    else
+        sri.xdelta = 1.0;
     sri.xstart = 0.0;
     sri.xdelta = 1;
     sri.xunits = BULKIO::UNITS_TIME;
@@ -178,7 +182,7 @@ BULKIO::StreamSRI sig_source_s_i::createOutputSRI( int32_t oidx, int32_t &in_idx
     sri.yunits = BULKIO::UNITS_NONE;
     sri.mode = 0;
     std::ostringstream t;
-    t << naming_service_name.c_str() << "_" << in_idx;
+    t << naming_service_name.c_str() << "_" << oidx;
     std::string sid = t.str();
     sri.streamID = CORBA::string_dup(sid.c_str());
 

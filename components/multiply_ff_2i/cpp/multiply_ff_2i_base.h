@@ -24,7 +24,7 @@
 #include <boost/thread.hpp>
 #include <ossie/Resource_impl.h>
 
-#include "bulkio/bulkio.h"
+#include <bulkio/bulkio.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "multiply_ff_2i_GnuHawkBlock.h"

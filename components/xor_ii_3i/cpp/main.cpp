@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "xor_ii_3i.h"
-
 int main(int argc, char* argv[])
 {
     xor_ii_3i_i* xor_ii_3i_servant;

@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "sub_cc_4i.h"
-
 int main(int argc, char* argv[])
 {
     sub_cc_4i_i* sub_cc_4i_servant;

@@ -34,7 +34,7 @@ Prefix: %{_prefix}
 
 Name: streams_to_stream_bb_3i
 Summary: Component %{name}
-Version: 1.0.0
+Version: 1.0.1
 Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components

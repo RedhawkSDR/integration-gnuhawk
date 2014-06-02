@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "pa_2x2_phase_combiner.h"
-
 int main(int argc, char* argv[])
 {
     pa_2x2_phase_combiner_i* pa_2x2_phase_combiner_servant;

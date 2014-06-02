@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "argmax_is_3i.h"
-
 int main(int argc, char* argv[])
 {
     argmax_is_3i_i* argmax_is_3i_servant;

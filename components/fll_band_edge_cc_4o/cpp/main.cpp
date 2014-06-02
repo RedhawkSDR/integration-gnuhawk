@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "fll_band_edge_cc_4o.h"
-
 int main(int argc, char* argv[])
 {
     fll_band_edge_cc_4o_i* fll_band_edge_cc_4o_servant;

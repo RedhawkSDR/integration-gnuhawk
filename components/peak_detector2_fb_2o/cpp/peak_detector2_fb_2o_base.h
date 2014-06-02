@@ -24,10 +24,11 @@
 #include <boost/thread.hpp>
 #include <ossie/Resource_impl.h>
 
-#include "bulkio/bulkio.h"
+#include <bulkio/bulkio.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "peak_detector2_fb_2o_GnuHawkBlock.h"
+#include <sstream>
 
 #define NOOP 0
 #define FINISH -1
@@ -247,7 +248,7 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
         // @param idx : output stream index number to associate the returned SRI object with
         // @return sri : default SRI object passed down stream over a RedHawk port
         //      
-        virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );
+        virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext );
 
         virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx);
 
@@ -416,7 +417,7 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
                 if ( grb && grb->input_signature() )
                     nvlen = grb->input_signature()->sizeof_stream_item(_idx) / SizeOfElement(inMode);
             } catch(...) {
-                //std::cout << "UNABLE TO SET VLEN, BAD INDEX:" << _idx ;
+                LOG_TRACE( peak_detector2_fb_2o_base, "UNABLE TO SET VLEN, BAD INDEX:" << _idx );
             }
 
             if ( nvlen != _vlen && nvlen >= 1 ) {
@@ -463,6 +464,7 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
 
     template < typename IN_PORT_TYPE > struct gr_istream : gr_istream_base {
         IN_PORT_TYPE                       *port;            // RH port object
+        
         std::vector< typename IN_PORT_TYPE::NativeType >      _data;     // buffered data from port
         typename IN_PORT_TYPE::dataTransfer *pkt;            // pointer to last packet read from port
 
@@ -508,11 +510,9 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
             typename IN_PORT_TYPE::dataTransfer *tpkt;
 
             if ( port && _sri ) {
-                //std::cout << "getPacket :  STREAM ID: " << streamID  << std::endl;
                 tpkt = port->getPacket( -1, streamID );
 
                 if ( tpkt == NULL ) {
-                    //std::cout << "getPacket :  NO DATA for STREAM ID: " << streamID  << std::endl;
                     if ( port != NULL && port->blocked() )  retval = 0;
                } else {
                     _data.insert( _data.end(), tpkt->dataBuffer.begin(), tpkt->dataBuffer.end() );
@@ -617,6 +617,7 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
     struct gr_ostream_base {
         GNU_RADIO_BLOCK_PTR                grb;                  // shared pointer ot GR_BLOCK
         int                                _idx;                 // output index (loose association)
+        std::string                        _ext;                 // extension to append to incoming StreamID
         std::string                        streamID;             // Stream Id to send down stream
         BULKIO::StreamSRI                  sri;                  // SRI to send down stream
         bool                               _m_tstamp;            // set to true if we are maintaining outgoing time stamp
@@ -637,8 +638,8 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
         virtual int  write( int32_t n_items, bool eos ) = 0;
         virtual void close() = 0;
 
-        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid  ) :
-            grb(ingrb), _idx(idx), streamID(in_sid), _m_tstamp(false), _eos(false), _nelems(0), _vlen(1)
+        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid, const std::string &ext="" ) :
+            grb(ingrb), _idx(idx), _ext(ext), streamID(in_sid), _m_tstamp(false), _eos(false), _nelems(0), _vlen(1)
         {
             sri.hversion = 1;
             sri.xstart = 0.0;
@@ -689,8 +690,11 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
         //
         void adjustSRI( BULKIO::StreamSRI &inSri, int idx, bool setStreamID=true ) {
             if ( setStreamID ) {
-                streamID = inSri.streamID;
-                sri.streamID = inSri.streamID;
+                std::string s(inSri.streamID);
+                std::ostringstream t;
+                t << s << _ext;
+                streamID = t.str();
+                sri.streamID = t.str().c_str();
             }
             double ret=inSri.xdelta;
             if ( grb ) ret = ret *grb->relative_rate();
@@ -737,10 +741,9 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
                 try {
                     if ( grb && grb->output_signature() )
                     nvlen = grb->output_signature()->sizeof_stream_item(idx) / SizeOfElement(sri.mode);
-                    //std::cout << "_CheckVlen IDX: " << _idx << " NEW/OLD VLEN: " << nvlen << "/" << _vlen << " SPE:" << spe() ;
                     if ( nvlen != _vlen && nvlen >= 1 ) _vlen=nvlen;
                 } catch(...) {
-                    //std::cout << "UNABLE TO SET VLEN, BAD INDEX:" << idx ;
+                    LOG_TRACE( peak_detector2_fb_2o_base, "UNABLE TO SET VLEN, BAD INDEX:" << _idx );
                 }
             }
         }
@@ -833,10 +836,11 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
 
     template < typename OUT_PORT_TYPE > struct gr_ostream : gr_ostream_base {
         OUT_PORT_TYPE                      *port;                // handle to Port object
+        std::string                        _ext;                 // extension to append to incoming StreamID
         std::vector< typename OUT_PORT_TYPE::NativeType >  _data;    // output buffer used by GR_Block
     
-        gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
-            gr_ostream_base(ingrb, idx, mode, in_sid), port(out_port), _data(0)
+        gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid, std::string &ext="" ) :
+            gr_ostream_base(ingrb, idx, mode, in_sid, ext), port(out_port), _ext(ext),_data(0)
         {
         };
     
@@ -898,7 +902,6 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
         int  write( int32_t n_items, bool eos, TimeStamp &ts, bool adjust_ts=false ) {
     
             resize( n_items );
-    
             if ( port ) port->pushPacket( _data, ts, eos, streamID );
     
             if ( adjust_ts ) forwardTimeStamp( n_items, ts );
@@ -918,7 +921,6 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
     
             resize( n_items );
             if ( port ) port->pushPacket( _data, tstamp, eos, streamID );
-    
             if ( adjust_ts ) forwardTimeStamp( n_items );
     
             _eos = eos;
@@ -936,7 +938,6 @@ class peak_detector2_fb_2o_base : public GnuHawkBlock
     
             resize( n_items );
             if ( port ) port->pushPacket( _data, tstamp, eos, streamID );
-    
             if ( _m_tstamp ) forwardTimeStamp( n_items );
     
             _eos = eos;

@@ -33,7 +33,7 @@ Prefix: %{_prefix}
 %define _namespace gnuhawk/gr/source
 Name: sig_source_s
 Summary: Component %{name}
-Version: 1.0.0
+Version: 1.0.1
 Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components

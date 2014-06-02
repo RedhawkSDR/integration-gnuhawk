@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "vector_to_streams_bb_2o.h"
-
 int main(int argc, char* argv[])
 {
     vector_to_streams_bb_2o_i* vector_to_streams_bb_2o_servant;

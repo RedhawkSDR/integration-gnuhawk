@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "bit_timing_loop_ff_2o.h"
-
 int main(int argc, char* argv[])
 {
     bit_timing_loop_ff_2o_i* bit_timing_loop_ff_2o_servant;

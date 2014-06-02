@@ -33,7 +33,7 @@ Prefix: %{_prefix}
 %define _namespace gnuhawk/gr/slicedice
 Name: vector_to_streams_bb_4o
 Summary: Component %{name}
-Version: 1.0.0
+Version: 1.0.1
 Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components

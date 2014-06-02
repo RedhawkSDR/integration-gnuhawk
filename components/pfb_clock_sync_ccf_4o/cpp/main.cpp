@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "pfb_clock_sync_ccf_4o.h"
-
 int main(int argc, char* argv[])
 {
     pfb_clock_sync_ccf_4o_i* pfb_clock_sync_ccf_4o_servant;

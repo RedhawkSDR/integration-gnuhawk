@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "float_to_complex_2i.h"
-
 int main(int argc, char* argv[])
 {
     float_to_complex_2i_i* float_to_complex_2i_servant;

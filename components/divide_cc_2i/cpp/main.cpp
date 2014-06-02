@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "divide_cc_2i.h"
-
 int main(int argc, char* argv[])
 {
     divide_cc_2i_i* divide_cc_2i_servant;

@@ -20,11 +20,15 @@
 pkgconfigdir = $(libdir)/pkgconfig
 dist_pkgconfig_DATA = gnuhawk.pc
 
-xmldir = ${prefix}
+xmldir = $(prefix)
 dist_xml_DATA = gnuhawk.spd.xml
+
+m4dir = $(datadir)/gnuhawk
+dist_m4_DATA = bld/GNUHAWK_PKG.m4
 
 if COMPONENTS
 SUBDIRS = gnuradio/volk include src components qa
 else
 SUBDIRS = gnuradio/volk include src
 endif
+

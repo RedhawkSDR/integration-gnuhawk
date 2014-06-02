@@ -33,7 +33,7 @@ Prefix:         %{_prefix}
 %define _namespace gnuhawk/digital
 
 Name:           fll_band_edge_cc_4o
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        Component %{name}
 

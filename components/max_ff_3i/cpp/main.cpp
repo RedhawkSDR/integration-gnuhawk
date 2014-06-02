@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "max_ff_3i.h"
-
 int main(int argc, char* argv[])
 {
     max_ff_3i_i* max_ff_3i_servant;

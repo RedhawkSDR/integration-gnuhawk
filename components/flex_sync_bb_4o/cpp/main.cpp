@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "flex_sync_bb_4o.h"
-
 int main(int argc, char* argv[])
 {
     flex_sync_bb_4o_i* flex_sync_bb_4o_servant;

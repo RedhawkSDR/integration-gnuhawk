@@ -33,7 +33,7 @@ Prefix:         %{_prefix}
 %define _namespace gnuhawk/digital
 
 Name:           pfb_clock_sync_ccf_4o
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        Component %{name}
 

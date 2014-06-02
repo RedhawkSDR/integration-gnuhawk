@@ -33,7 +33,7 @@ Prefix:         %{_prefix}
 %define _namespace gnuhawk/gr/converter
 
 Name:           complex_to_float_2o
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        Component %{name}
 

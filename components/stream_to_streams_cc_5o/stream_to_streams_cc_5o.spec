@@ -34,7 +34,7 @@ Prefix: %{_prefix}
 
 Name: stream_to_streams_cc_5o
 Summary: Component %{name}
-Version: 1.0.0
+Version: 1.0.1
 Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components

@@ -33,7 +33,7 @@ Prefix:         %{_prefix}
 %define _namespace gnuhawk/gr/math
 
 Name:           multiply_cc_2i
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        Component %{name}
 

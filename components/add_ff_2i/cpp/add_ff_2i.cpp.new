@@ -119,7 +119,6 @@ void add_ff_2i_i::createBlock()
     // 
     // maintainTimestamp( bool onoff );
 
-    setupIOMappings();
 }
 
 //

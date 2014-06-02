@@ -33,7 +33,7 @@ Prefix:         %{_prefix}
 %define _namespace gnuhawk/gr/converter
 
 Name:           short_to_float
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        Component %{name}
 

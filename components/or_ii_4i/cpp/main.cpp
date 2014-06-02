@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "or_ii_4i.h"
-
 int main(int argc, char* argv[])
 {
     or_ii_4i_i* or_ii_4i_servant;

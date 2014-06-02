@@ -196,6 +196,20 @@ void vector_to_streams_ff_4o_base::loadProperties()
 
 }
 
+
+// Destructor
+vector_to_streams_ff_4o_base::~vector_to_streams_ff_4o_base()
+{
+    // Free input streams
+    for (IStreamList::iterator iter = _istreams.begin(); iter != _istreams.end(); ++iter) {
+        delete (*iter);
+    }
+    // Free output streams
+    for (OStreamList::iterator iter = _ostreams.begin(); iter != _ostreams.end(); ++iter) {
+        delete (*iter);
+    }
+}
+
 //
 //  Allow for logging 
 // 
@@ -221,7 +235,6 @@ void vector_to_streams_ff_4o_base::setupIOMappings( )
 {
     int ninput_streams = 0;
     int noutput_streams = 0;
-    std::vector<std::string>::iterator pname;
     std::string sid("");
     int inMode=RealMode;
 
@@ -248,20 +261,20 @@ void vector_to_streams_ff_4o_base::setupIOMappings( )
             if ( ninput_streams == -1 ) gr_sptr->add_read_index();
 
             // setup io signature
-            istream->associate( gr_sptr );
+            (*istream)->associate( gr_sptr );
         }
 
         LOG_DEBUG( vector_to_streams_ff_4o_base, "RESET OUTPUT SIGNATURE SIZE:" << _ostreams.size() );
         OStreamList::iterator ostream;
         for ( int idx=0 ; ostream != _ostreams.end(); idx++, ostream++ ) {
             // need to evaluate new settings...???
-            ostream->associate( gr_sptr );
+            (*ostream)->associate( gr_sptr );
         }
 
         return;
     }
 
-
+    int i = 0;
    //
    // Setup mapping of RH port to GNU RADIO Block input streams
    // For version 1,  we are ignoring the GNU Radio input stream -1 case that allows multiple data 
@@ -269,33 +282,31 @@ void vector_to_streams_ff_4o_base::setupIOMappings( )
    // Stream Identifiers will  be pass along as they are received
    //
     LOG_TRACE( vector_to_streams_ff_4o_base, "setupIOMappings INPUT PORTS: " << inPorts.size() );
-    pname = inputPortOrder.begin();
-    for( int i=0; pname != inputPortOrder.end(); pname++ ) {
+    RH_ProvidesPortMap::iterator p_in;
+    i = 0;
+    // grab ports based on their order in the scd.xml file
+    p_in = inPorts.find("float_in");
+    if ( p_in != inPorts.end() ) {
+        bulkio::InFloatPort *port = dynamic_cast< bulkio::InFloatPort * >(p_in->second);
+        int mode = inMode;
+        sid = "";
 
-        // grab ports based on their order in the scd.xml file
-        RH_ProvidesPortMap::iterator p_in = inPorts.find(*pname);
-        if ( p_in != inPorts.end() ) {
-            bulkio::InFloatPort *port = dynamic_cast< bulkio::InFloatPort * >(p_in->second);
-            int mode = inMode;
-            sid = "";
+        // need to add read index to GNU Radio Block for processing streams when max_input == -1
+        if ( ninput_streams == -1 ) gr_sptr->add_read_index();
 
-            // need to add read index to GNU Radio Block for processing streams when max_input == -1
-            if ( ninput_streams == -1 ) gr_sptr->add_read_index();
-
-            // check if we received SRI during setup
-            BULKIO::StreamSRISequence_var sris = port->activeSRIs();
-            if (  sris->length() > 0 ) {
-                BULKIO::StreamSRI sri = sris[sris->length()-1];
-                mode = sri.mode;
-            }
-            std::vector<int> in;
-            io_mapping.push_back( in );
-            _istreams.push_back( gr_istream< bulkio::InFloatPort > ( port, gr_sptr, i, mode, sid ));
-            LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING INPUT MAP IDX:" << i << " SID:" << sid );
-            // increment port counter
-            i++;
+        // check if we received SRI during setup
+        BULKIO::StreamSRISequence_var sris = port->activeSRIs();
+        if (  sris->length() > 0 ) {
+            BULKIO::StreamSRI sri = sris[sris->length()-1];
+            mode = sri.mode;
         }
-    } 
+        std::vector<int> in;
+        io_mapping.push_back( in );
+        _istreams.push_back( new gr_istream< bulkio::InFloatPort > ( port, gr_sptr, i, mode, sid ));
+        LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING INPUT MAP IDX:" << i << " SID:" << sid );
+        // increment port counter
+        i++;
+    }
 
     //
     // Setup mapping of RH port to GNU RADIO Block input streams
@@ -303,26 +314,80 @@ void vector_to_streams_ff_4o_base::setupIOMappings( )
     // streams over a single connection.  We are mapping a single RH Port to a single GNU Radio stream.
     //
     LOG_TRACE( vector_to_streams_ff_4o_base, "setupIOMappings OutputPorts: " << outPorts.size() );
-    pname = outputPortOrder.begin();
-    for( int i=0; pname != outputPortOrder.end(); pname++ ) {
-
-        // grab ports based on their order in the scd.xml file
-        RH_UsesPortMap::iterator p_out = outPorts.find(*pname);
-        if ( p_out != outPorts.end() ) {
-            bulkio::OutFloatPort *port = dynamic_cast< bulkio::OutFloatPort * >(p_out->second);
-            int idx = -1;
-            BULKIO::StreamSRI sri = createOutputSRI( i, idx );
-            if (idx == -1) idx = i;
-            if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
-            int mode = sri.mode;
-            sid = sri.streamID;
-            _ostreams.push_back( gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid ));
-            LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
-            _ostreams[i].setSRI(sri, i );
-            // increment port counter
-            i++;
-        }
+    RH_UsesPortMap::iterator p_out;
+    i = 0;
+    // grab ports based on their order in the scd.xml file
+    p_out = outPorts.find("float_out_0");
+    if ( p_out != outPorts.end() ) {
+        bulkio::OutFloatPort *port = dynamic_cast< bulkio::OutFloatPort * >(p_out->second);
+        int idx = -1;
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
+        if (idx == -1) idx = i;
+        if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
+        int mode = sri.mode;
+        sid = sri.streamID;
+        _ostreams.push_back( new gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid, ext ));
+        LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
+        _ostreams[i]->setSRI(sri, i );
+        // increment port counter
+        i++;
     }
+
+    // grab ports based on their order in the scd.xml file
+    p_out = outPorts.find("float_out_1");
+    if ( p_out != outPorts.end() ) {
+        bulkio::OutFloatPort *port = dynamic_cast< bulkio::OutFloatPort * >(p_out->second);
+        int idx = -1;
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
+        if (idx == -1) idx = i;
+        if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
+        int mode = sri.mode;
+        sid = sri.streamID;
+        _ostreams.push_back( new gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid, ext ));
+        LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
+        _ostreams[i]->setSRI(sri, i );
+        // increment port counter
+        i++;
+    }
+
+    // grab ports based on their order in the scd.xml file
+    p_out = outPorts.find("float_out_2");
+    if ( p_out != outPorts.end() ) {
+        bulkio::OutFloatPort *port = dynamic_cast< bulkio::OutFloatPort * >(p_out->second);
+        int idx = -1;
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
+        if (idx == -1) idx = i;
+        if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
+        int mode = sri.mode;
+        sid = sri.streamID;
+        _ostreams.push_back( new gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid, ext ));
+        LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
+        _ostreams[i]->setSRI(sri, i );
+        // increment port counter
+        i++;
+    }
+
+    // grab ports based on their order in the scd.xml file
+    p_out = outPorts.find("float_out_3");
+    if ( p_out != outPorts.end() ) {
+        bulkio::OutFloatPort *port = dynamic_cast< bulkio::OutFloatPort * >(p_out->second);
+        int idx = -1;
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
+        if (idx == -1) idx = i;
+        if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
+        int mode = sri.mode;
+        sid = sri.streamID;
+        _ostreams.push_back( new gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid, ext ));
+        LOG_DEBUG( vector_to_streams_ff_4o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
+        _ostreams[i]->setSRI(sri, i );
+        // increment port counter
+        i++;
+    }
+
 }
 
 void vector_to_streams_ff_4o_base::float_in_newStreamCallback( BULKIO::StreamSRI &sri )
@@ -360,10 +425,10 @@ void vector_to_streams_ff_4o_base::processStreamIdChanges()
             istream = _istreams.begin();
             for ( ; istream != _istreams.end(); idx++, istream++ ) {
 
-                if ( istream->port == item->first ) {
+                if ( (*istream)->getPort() == item->first ) {
                     LOG_DEBUG( vector_to_streams_ff_4o_base,  "  SETTING IN_STREAM ID/STREAM_ID :" << idx << "/" << sid  );
-                    istream->sri(true);
-                    istream->spe(mode);
+                    (*istream)->sri(true);
+                    (*istream)->spe(mode);
 
                     LOG_DEBUG( vector_to_streams_ff_4o_base,  "  SETTING  OUT_STREAM ID/STREAM_ID :" << idx << "/" << sid  );
                     setOutputStreamSRI( idx, item->second );
@@ -399,7 +464,7 @@ BULKIO::StreamSRI vector_to_streams_ff_4o_base::createOutputSRI( int32_t oidx ) 
     return sri;
 }
 
-BULKIO::StreamSRI vector_to_streams_ff_4o_base::createOutputSRI( int32_t oidx, int32_t &in_idx)
+BULKIO::StreamSRI vector_to_streams_ff_4o_base::createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext)
 {
     return createOutputSRI( oidx );
 }
@@ -423,8 +488,8 @@ vector_to_streams_ff_4o_base::TimeDuration vector_to_streams_ff_4o_base::getTarg
     double   trate=1.0;
 
     if ( _ostreams.size() > 0 ) {
-        samps= _ostreams[0].nelems();
-        xdelta= _ostreams[0].sri.xdelta;
+        samps= _ostreams[0]->nelems();
+        xdelta= _ostreams[0]->sri.xdelta;
     }
 
     trate = samps*xdelta;
@@ -454,11 +519,11 @@ vector_to_streams_ff_4o_base::TimeDuration vector_to_streams_ff_4o_base::calcThr
     return delta;
 }
 
-template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_streams_ff_4o_base::_transformerServiceFunction( typename  std::vector< gr_istream< IN_PORT_TYPE > > &istreams ,
-    typename  std::vector< gr_ostream< OUT_PORT_TYPE > > &ostreams  )
+int vector_to_streams_ff_4o_base::_transformerServiceFunction( std::vector< gr_istream_base * > &istreams ,
+    std::vector< gr_ostream_base * > &ostreams  )
 {
-    typedef typename std::vector< gr_istream< IN_PORT_TYPE > >   _IStreamList;
-    typedef typename std::vector< gr_ostream< OUT_PORT_TYPE > >  _OStreamList;
+    typedef std::vector< gr_istream_base * >   _IStreamList;
+    typedef std::vector< gr_ostream_base * >  _OStreamList;
 
     boost::mutex::scoped_lock lock(serviceThreadLock);
 
@@ -493,27 +558,27 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
     //
     // Grab available data from input streams
     //
-    typename _OStreamList::iterator ostream;
-    typename _IStreamList::iterator istream = istreams.begin();
+    _OStreamList::iterator ostream;
+    _IStreamList::iterator istream = istreams.begin();
     int nitems=0;
     for ( int idx=0 ; istream != istreams.end() && serviceThread->threadRunning() ; idx++, istream++ ) {
         // note this a blocking read that can cause deadlocks
-        nitems = istream->read();
+        nitems = (*istream)->read();
     
-        if ( istream->overrun() ) {
-            LOG_WARN( vector_to_streams_ff_4o_base, " NOT KEEPING UP WITH STREAM ID:" << istream->streamID );
+        if ( (*istream)->overrun() ) {
+            LOG_WARN( vector_to_streams_ff_4o_base, " NOT KEEPING UP WITH STREAM ID:" << (*istream)->streamID );
         }
 
-        if ( istream->sriChanged() ) {
+        if ( (*istream)->sriChanged() ) {
             // RESOLVE - need to look at how SRI changes can affect Gnu Radio BLOCK state
             LOG_DEBUG( vector_to_streams_ff_4o_base, "SRI CHANGED, STREAMD IDX/ID: " 
-                      << idx << "/" << istream->pkt->streamID );
-            setOutputStreamSRI( idx, istream->pkt->SRI );
+                      << idx << "/" << (*istream)->getPktStreamId() );
+            setOutputStreamSRI( idx, (*istream)->getPktSri() );
         }
     }
 
     LOG_TRACE( vector_to_streams_ff_4o_base, "READ NITEMS: "  << nitems );
-    if ( nitems <= 0 && !_istreams[0].eos() ) {
+    if ( nitems <= 0 && !_istreams[0]->eos() ) {
         return NOOP;
     }
 
@@ -538,13 +603,13 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
                         nitems = gr_sptr->nitems_read( idx );
                     } catch(...){}
       
-                    if ( nitems > istream->nitems() ) {
+                    if ( nitems > (*istream)->nitems() ) {
                         LOG_WARN( vector_to_streams_ff_4o_base,  "WORK CONSUMED MORE DATA THAN AVAILABLE,  READ/AVAILABLE "
-                                 << nitems << "/" << istream->nitems() );
-                        nitems = istream->nitems();
+                                 << nitems << "/" << (*istream)->nitems() );
+                        nitems = (*istream)->nitems();
                     }
-                    istream->consume( nitems );
-                    LOG_TRACE( vector_to_streams_ff_4o_base, " CONSUME READ DATA  ITEMS/REMAIN " << nitems << "/" << istream->nitems());
+                    (*istream)->consume( nitems );
+                    LOG_TRACE( vector_to_streams_ff_4o_base, " CONSUME READ DATA  ITEMS/REMAIN " << nitems << "/" << (*istream)->nitems());
                 }
             }
             gr_sptr->reset_read_index();
@@ -556,7 +621,7 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
             // check for  end of stream
             istream = istreams.begin();
             for ( ; istream != istreams.end() ; istream++) {
-                if ( istream->eos() ) {
+                if ( (*istream)->eos() ) {
                     eos=true;
                 }
             }
@@ -572,7 +637,7 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
         for ( ; istream != istreams.end() ; istream++ ) {
             int idx=std::distance( istreams.begin(), istream );
             LOG_DEBUG( vector_to_streams_ff_4o_base, " CLOSING INPUT STREAM IDX:" << idx );
-            istream->close();
+            (*istream)->close();
         }
 
         // close remaining output streams
@@ -580,7 +645,7 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
         for ( ; eos && ostream != ostreams.end(); ostream++ ) {
             int idx=std::distance( ostreams.begin(), ostream );
             LOG_DEBUG( vector_to_streams_ff_4o_base, " CLOSING OUTPUT STREAM IDX:" << idx );
-            ostream->close();
+            (*ostream)->close();
         }
     }
 
@@ -599,22 +664,22 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
     }
 }
 
-template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_streams_ff_4o_base::_forecastAndProcess( bool &eos, typename  std::vector< gr_istream< IN_PORT_TYPE > > &istreams ,
-                                 typename  std::vector< gr_ostream< OUT_PORT_TYPE > > &ostreams  )
+int vector_to_streams_ff_4o_base::_forecastAndProcess( bool &eos, std::vector< gr_istream_base * > &istreams ,
+                                 std::vector< gr_ostream_base * > &ostreams  )
 {
-    typedef typename std::vector< gr_istream< IN_PORT_TYPE > >   _IStreamList;
-    typedef typename std::vector< gr_ostream< OUT_PORT_TYPE > >  _OStreamList;
+    typedef std::vector< gr_istream_base * >   _IStreamList;
+    typedef std::vector< gr_ostream_base * >  _OStreamList;
 
-    typename _OStreamList::iterator ostream;
-    typename _IStreamList::iterator istream = istreams.begin();
+    _OStreamList::iterator ostream;
+    _IStreamList::iterator istream = istreams.begin();
     int nout = 0;
     bool dataReady = false;
     if ( !eos ) {
         uint64_t max_items_avail = 0;
         for ( int idx=0 ; istream != istreams.end() && serviceThread->threadRunning() ; idx++, istream++ ) {
             LOG_TRACE( vector_to_streams_ff_4o_base, "GET MAX ITEMS: STREAM:"<< idx << " NITEMS/SCALARS:" << 
-                       istream->nitems() << "/" << istream->_data.size() );
-            max_items_avail = std::max( istream->nitems(), max_items_avail );
+                       (*istream)->nitems() << "/" << (*istream)->nelems() );
+            max_items_avail = std::max( (*istream)->nitems(), max_items_avail );
         }
 
         if ( max_items_avail == 0  ) {
@@ -632,7 +697,7 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
         } else {
             istream = istreams.begin();
             for ( int i=0; istream != istreams.end(); i++, istream++ ) {
-                int t_noutput_items = gr_sptr->fixed_rate_ninput_to_noutput( istream->nitems() );
+                int t_noutput_items = gr_sptr->fixed_rate_ninput_to_noutput( (*istream)->nitems() );
                 if ( gr_sptr->output_multiple_set() ) {
                     t_noutput_items = round_up(t_noutput_items, gr_sptr->output_multiple());
                 }
@@ -667,12 +732,12 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
             for ( int idx=0 ; noutput_items > 0 && istream != istreams.end(); idx++, istream++ ) {
                 // check if buffer has enough elements
                 _input_ready[idx] = false;
-                if ( istream->nitems() >= (uint64_t)_ninput_items_required[idx] ) {
+                if ( (*istream)->nitems() >= (uint64_t)_ninput_items_required[idx] ) {
                     _input_ready[idx] = true;
                     dr_cnt++;
                 }
-                LOG_TRACE( vector_to_streams_ff_4o_base, "ISTREAM DATACHECK NELMS/NITEMS/REQ/READY:" <<   istream->nelems() << 
-                          "/" << istream->nitems() << "/" << _ninput_items_required[idx] << "/" << _input_ready[idx]);
+                LOG_TRACE( vector_to_streams_ff_4o_base, "ISTREAM DATACHECK NELMS/NITEMS/REQ/READY:" <<   (*istream)->nelems() << 
+                          "/" << (*istream)->nitems() << "/" << _ninput_items_required[idx] << "/" << _input_ready[idx]);
             }
     
             if ( dr_cnt < istreams.size() ) {
@@ -689,7 +754,7 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
 
         // check if data is ready...
         if ( !dataReady ) {
-            LOG_TRACE( vector_to_streams_ff_4o_base, "DATA CHECK - NOT ENOUGH DATA  AVAIL/REQ:" <<   _istreams[0].nitems() << 
+            LOG_TRACE( vector_to_streams_ff_4o_base, "DATA CHECK - NOT ENOUGH DATA  AVAIL/REQ:" <<   _istreams[0]->nitems() << 
                       "/" << _ninput_items_required[0] );
             return -1;
         }
@@ -714,17 +779,17 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
                 ritems = gr_sptr->nitems_read( idx );
             } catch(...){
                 // something bad has happened, we are missing an input stream
-                LOG_ERROR( vector_to_streams_ff_4o_base, "MISSING INPUT STREAM FOR GR BLOCK, STREAM ID:" <<   istream->streamID );
+                LOG_ERROR( vector_to_streams_ff_4o_base, "MISSING INPUT STREAM FOR GR BLOCK, STREAM ID:" <<   (*istream)->streamID );
                 return -2;
             } 
     
-            nitems = istream->nitems() - ritems;
+            nitems = (*istream)->nitems() - ritems;
             LOG_TRACE( vector_to_streams_ff_4o_base,  " ISTREAM: IDX:" << idx  << " ITEMS AVAIL/READ/REQ " << nitems << "/" 
                        << ritems << "/" << _ninput_items_required[idx] );
             if ( nitems >= _ninput_items_required[idx] && nitems > 0 ) {
                 //remove eos checks ...if ( nitems < _ninput_items_required[idx] ) nitems=0;
                 _ninput_items.push_back( nitems );
-                _input_items.push_back( (const void *) (istream->read_pointer(ritems)) );
+                _input_items.push_back( (*istream)->read_pointer(ritems) );
             }
         }
 
@@ -733,8 +798,8 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
         //
         ostream = ostreams.begin();
         for( ; ostream != ostreams.end(); ostream++ ) {
-            ostream->resize(noutput_items);
-            _output_items.push_back((void*)(ostream->write_pointer()) );
+            (*ostream)->resize(noutput_items);
+            _output_items.push_back( (*ostream)->write_pointer() );
         }
 
         nout=0;
@@ -757,27 +822,32 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
         noutput_items = nout;
         LOG_TRACE( vector_to_streams_ff_4o_base, " WORK RETURNED: NOUT : " << nout << " EOS:" << eos);
         ostream = ostreams.begin();
-        typename IN_PORT_TYPE::dataTransfer *pkt=NULL;
+
         for ( int idx=0 ; ostream != ostreams.end(); idx++, ostream++ ) {
 
-            pkt=NULL;
+            bool gotPkt = false;
+            TimeStamp pktTs;
             int inputIdx = idx;
             if ( (size_t)(inputIdx) >= istreams.size() ) {
                 for ( inputIdx= istreams.size()-1; inputIdx > -1; inputIdx--) {
-                    if ( istreams[inputIdx].pkt != NULL ) {
-                        pkt = istreams[inputIdx].pkt;
+                    if ( not istreams[inputIdx]->pktNull() ) {
+                        gotPkt = true;
+                        pktTs = istreams[inputIdx]->getPktTimeStamp();
                         break;
                     }
                 }
             } else {
-                pkt = istreams[inputIdx].pkt;
+                pktTs = istreams[inputIdx]->getPktTimeStamp();
+                if ( not istreams[inputIdx]->pktNull() ){
+                    gotPkt = true;
+                }
             }
 
-            LOG_TRACE( vector_to_streams_ff_4o_base,  "PUSHING DATA   ITEMS/STREAM_ID " << ostream->nitems() << "/" << ostream->streamID );    
+            LOG_TRACE( vector_to_streams_ff_4o_base,  "PUSHING DATA   ITEMS/STREAM_ID " << (*ostream)->nitems() << "/" << (*ostream)->streamID );    
             if ( _maintainTimeStamp ) {
 
                 // set time stamp for output samples based on input time stamp
-                if ( ostream->nelems() == 0 )  {
+                if ( (*ostream)->nelems() == 0 )  {
 #ifdef TEST_TIME_STAMP
       LOG_DEBUG( vector_to_streams_ff_4o_base, "SEED - TS SRI:  xdelta:" << std::setprecision(12) << ostream->sri.xdelta );
       LOG_DEBUG( vector_to_streams_ff_4o_base, "OSTREAM WRITE:   maint:" << _maintainTimeStamp );
@@ -787,24 +857,24 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
       LOG_DEBUG( vector_to_streams_ff_4o_base, "                 whole:" <<  std::setprecision(10) << ostream->tstamp.twsec );
       LOG_DEBUG( vector_to_streams_ff_4o_base, "SEED - TS         frac:" <<  std::setprecision(12) << ostream->tstamp.tfsec );
 #endif
-                    ostream->setTimeStamp( pkt->T, _maintainTimeStamp );
+                    (*ostream)->setTimeStamp( pktTs, _maintainTimeStamp );
                 }
 
                 // write out samples, and set next time stamp based on xdelta and  noutput_items
-                ostream->write ( noutput_items, eos );
+                (*ostream)->write ( noutput_items, eos );
             } else {
 // use incoming packet's time stamp to forward
-                if ( pkt ) {
+                if ( gotPkt ) {
 #ifdef TEST_TIME_STAMP
       LOG_DEBUG( vector_to_streams_ff_4o_base, "OSTREAM  SRI:  items/xdelta:" << noutput_items << "/" << std::setprecision(12) << ostream->sri.xdelta );
       LOG_DEBUG( vector_to_streams_ff_4o_base, "PKT - TS         maint:" << _maintainTimeStamp );
-      LOG_DEBUG( vector_to_streams_ff_4o_base, "                  mode:" <<  pkt->T.tcmode );
-      LOG_DEBUG( vector_to_streams_ff_4o_base, "                status:" <<  pkt->T.tcstatus );
-      LOG_DEBUG( vector_to_streams_ff_4o_base, "                offset:" <<  pkt->T.toff );
-      LOG_DEBUG( vector_to_streams_ff_4o_base, "                 whole:" <<  std::setprecision(10) << pkt->T.twsec );
-      LOG_DEBUG( vector_to_streams_ff_4o_base, "PKT - TS          frac:" <<  std::setprecision(12) << pkt->T.tfsec );
+      LOG_DEBUG( vector_to_streams_ff_4o_base, "                  mode:" <<  pktTs.tcmode );
+      LOG_DEBUG( vector_to_streams_ff_4o_base, "                status:" <<  pktTs.tcstatus );
+      LOG_DEBUG( vector_to_streams_ff_4o_base, "                offset:" <<  pktTs.toff );
+      LOG_DEBUG( vector_to_streams_ff_4o_base, "                 whole:" <<  std::setprecision(10) << pktTs.twsec );
+      LOG_DEBUG( vector_to_streams_ff_4o_base, "PKT - TS          frac:" <<  std::setprecision(12) << pktTs.tfsec );
 #endif
-                    ostream->write( noutput_items, eos, pkt->T  );
+                    (*ostream)->write( noutput_items, eos, pktTs  );
                 } else {
 #ifdef TEST_TIME_STAMP
       LOG_DEBUG( vector_to_streams_ff_4o_base, "OSTREAM  SRI:  items/xdelta:" << noutput_items << "/" << std::setprecision(12) << ostream->sri.xdelta );
@@ -816,7 +886,7 @@ template <  typename IN_PORT_TYPE, typename OUT_PORT_TYPE > int vector_to_stream
       LOG_DEBUG( vector_to_streams_ff_4o_base, "OSTREAM TOD       frac:" <<  std::setprecision(12) << ostream->tstamp.tfsec );
 #endif
                     // use time of day as time stamp
-                    ostream->write( noutput_items, eos,  _maintainTimeStamp );
+                    (*ostream)->write( noutput_items, eos,  _maintainTimeStamp );
                 }
             }
 

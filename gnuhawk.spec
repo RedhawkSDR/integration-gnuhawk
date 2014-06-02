@@ -25,7 +25,7 @@
 
 Name:		gnuhawk
 Version:	1.9.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	GNUHAWK is a library for using GNU Radio blocks in REDHAWK
 Prefix:		%{_sdrroot}/dom/deps/gnuhawk
 
@@ -57,8 +57,6 @@ make %{?_smp_mflags}
 %install
 rm -rf --preserve-root %{buildroot}
 make install-strip DESTDIR=%{buildroot}
-mkdir -p %{buildroot}%{_prefix}/share/gnuhawk
-cp bld/GNUHAWK_PKG.m4 %{buildroot}%{_prefix}/share/gnuhawk
 
 
 %clean
@@ -76,7 +74,7 @@ rm -rf --preserve-root %{buildroot}
 %{_prefix}/lib/libgnuhawk.so*
 %{_includedir}
 %{_prefix}/gnuhawk.spd.xml
-%{_prefix}/share/gnuhawk/GNUHAWK_PKG.m4
+%{_prefix}/share/gnuhawk
 
 
 %changelog

@@ -51,11 +51,11 @@ void sig_source_s_base::construct()
     setThrottle(true);
 
     PortableServer::ObjectId_var oid;
-    short_ou = new bulkio::OutShortPort("short_ou");
-    oid = ossie::corba::RootPOA()->activate_object(short_ou);
+    short_out = new bulkio::OutShortPort("short_out");
+    oid = ossie::corba::RootPOA()->activate_object(short_out);
 
-    registerOutPort(short_ou, short_ou->_this());
-    outputPortOrder.push_back("short_ou");
+    registerOutPort(short_out, short_out->_this());
+    outputPortOrder.push_back("short_out");
 
 }
 
@@ -136,7 +136,7 @@ void sig_source_s_base::releaseObject() throw (CORBA::SystemException, CF::LifeC
     releaseInPorts();
     releaseOutPorts();
 
-    delete(short_ou);
+    delete(short_out);
 
     Resource_impl::releaseObject();
 }

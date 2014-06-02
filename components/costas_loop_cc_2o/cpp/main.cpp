@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "costas_loop_cc_2o.h"
-
 int main(int argc, char* argv[])
 {
     costas_loop_cc_2o_i* costas_loop_cc_2o_servant;

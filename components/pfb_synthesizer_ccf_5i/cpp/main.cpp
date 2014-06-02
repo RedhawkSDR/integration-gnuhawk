@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "pfb_synthesizer_ccf_5i.h"
-
 int main(int argc, char* argv[])
 {
     pfb_synthesizer_ccf_5i_i* pfb_synthesizer_ccf_5i_servant;

@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "agc2_cc.h"
-
 int main(int argc, char* argv[])
 {
     agc2_cc_i* agc2_cc_servant;

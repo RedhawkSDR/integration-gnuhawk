@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "stream_to_streams_cc_5o.h"
-
 int main(int argc, char* argv[])
 {
     stream_to_streams_cc_5o_i* stream_to_streams_cc_5o_servant;

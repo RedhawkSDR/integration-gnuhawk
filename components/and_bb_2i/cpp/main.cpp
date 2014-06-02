@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "and_bb_2i.h"
-
 int main(int argc, char* argv[])
 {
     and_bb_2i_i* and_bb_2i_servant;

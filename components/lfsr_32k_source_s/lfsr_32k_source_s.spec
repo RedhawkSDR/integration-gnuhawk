@@ -34,7 +34,7 @@ Prefix: %{_prefix}
 
 Name: lfsr_32k_source_s
 Summary: Component %{name}
-Version: 1.0.0
+Version: 1.0.1
 Release: 1%{?dist}
 License: None
 Group: REDHAWK/Components

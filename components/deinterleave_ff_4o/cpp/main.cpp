@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "deinterleave_ff_4o.h"
-
 int main(int argc, char* argv[])
 {
     deinterleave_ff_4o_i* deinterleave_ff_4o_servant;

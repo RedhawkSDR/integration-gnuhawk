@@ -119,7 +119,6 @@ void filter_delay_fc_2i_i::createBlock()
     // 
     // maintainTimestamp( bool onoff );
 
-    setupIOMappings();
 }
 
 //

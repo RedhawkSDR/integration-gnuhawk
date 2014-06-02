@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "encode_ccsds_27_bb.h"
-
 int main(int argc, char* argv[])
 {
     encode_ccsds_27_bb_i* encode_ccsds_27_bb_servant;

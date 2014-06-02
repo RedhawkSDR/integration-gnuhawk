@@ -24,7 +24,7 @@
 #include <boost/thread.hpp>
 #include <ossie/Resource_impl.h>
 
-#include "bulkio/bulkio.h"
+#include <bulkio/bulkio.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "or_bb_4i_GnuHawkBlock.h"
@@ -126,6 +126,8 @@ class or_bb_4i_base : public GnuHawkBlock
         void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
 
         void initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException);
+
+        ~or_bb_4i_base();
 
         void loadProperties();
 
@@ -281,8 +283,8 @@ class or_bb_4i_base : public GnuHawkBlock
         virtual void  setOutputStreamSRI( int streamIdx, BULKIO::StreamSRI &in_sri, bool sendSRI=true, bool setStreamID=true ) {
             for (int i = 0; i < (int)io_mapping[streamIdx].size(); i++){
                 int o_idx = io_mapping[streamIdx][i];
-                _ostreams[o_idx].adjustSRI(in_sri, o_idx, setStreamID );
-                if ( sendSRI ) _ostreams[o_idx].pushSRI();
+                _ostreams[o_idx]->adjustSRI(in_sri, o_idx, setStreamID );
+                if ( sendSRI ) _ostreams[o_idx]->pushSRI();
             }
         }
 
@@ -295,8 +297,8 @@ class or_bb_4i_base : public GnuHawkBlock
         virtual void  setOutputStreamSRI( BULKIO::StreamSRI &in_sri , bool sendSRI = true, bool setStreamID = true ) {
             OStreamList::iterator ostream=_ostreams.begin();
             for( int o_idx=0;  ostream != _ostreams.end(); o_idx++, ostream++ ) {
-                ostream->adjustSRI(in_sri, o_idx, setStreamID );
-                if ( sendSRI )  ostream->pushSRI();
+                (*ostream)->adjustSRI(in_sri, o_idx, setStreamID );
+                if ( sendSRI )  (*ostream)->pushSRI();
             }
         }
 
@@ -312,32 +314,42 @@ class or_bb_4i_base : public GnuHawkBlock
     // The mapping items are stored in a vector and maintain by setIOMappings and notifySRI methods, and
     // the service function when "end of stream" happens.
     //
-    template < typename IN_PORT_TYPE > struct gr_istream {
-        IN_PORT_TYPE                       *port;            // RH port object
+    struct gr_istream_base {
         GNU_RADIO_BLOCK_PTR                grb;              // shared pointer to our gr_block
         int                                _idx;             // index of stream in gr_block
         std::string                        streamID;         // redhawk stream id
-        std::vector< typename IN_PORT_TYPE::NativeType >      _data;     // buffered data from port
         int                                _spe;             // scalars per element
         int                                _vlen;            // vector length in items, the gr_block process data 
         int                                _hlen;            // history length in items, the gr_blocks expects
         bool                               _eos;             // if EOS was received from port
         bool                               _sri;             // that we received an SRI call
-        typename IN_PORT_TYPE::dataTransfer *pkt;            // pointer to last packet read from port
 
-        gr_istream( IN_PORT_TYPE *in_port, GNU_RADIO_BLOCK_PTR in_grb, int idx, int mode, std::string &sid ) :
-        port(in_port), grb(in_grb), _idx(idx), streamID(sid), _data(0), _spe(1), _vlen(1), _hlen(1), _eos(false), _sri(true), pkt(NULL)
+        // Functions for child to implement
+        virtual int SizeOfElement( int mode) = 0;
+        virtual uint64_t nelems () = 0;
+        virtual int read( int64_t ritems=-1 ) = 0;
+        virtual bool overrun() = 0;
+        virtual bool sriChanged() = 0;
+        virtual void *read_pointer( int32_t items ) = 0;
+        virtual void consume( int32_t n_items ) = 0;
+        virtual void consume_elements( int32_t inNelems ) = 0;
+        virtual void close() = 0;
+
+        virtual void resizeData(int newSize) = 0;
+        virtual void * getPort() = 0;
+        virtual std::string getPktStreamId() = 0;
+        virtual BULKIO::StreamSRI& getPktSri() = 0;
+        virtual bool pktNull() = 0;
+        virtual TimeStamp getPktTimeStamp() = 0;
+
+        gr_istream_base( GNU_RADIO_BLOCK_PTR in_grb, int idx, int mode, std::string &sid ) :
+        grb(in_grb), _idx(idx), streamID(sid), _spe(1), _vlen(1), _hlen(1), _eos(false), _sri(true)
         {
-            _spe = ScalarsPerElement(mode);
-            _check(mode, true);
         };
 
-        gr_istream( IN_PORT_TYPE *in_port, GNU_RADIO_BLOCK_PTR in_grb, int idx,  std::string &sid ) :
-        port(in_port), grb(in_grb), _idx(idx), streamID(sid), _data(0), _spe(1), _vlen(1), _hlen(1), _eos(false), _sri(false), pkt(NULL)
+        gr_istream_base( GNU_RADIO_BLOCK_PTR in_grb, int idx,  std::string &sid ) :
+        grb(in_grb), _idx(idx), streamID(sid), _spe(1), _vlen(1), _hlen(1), _eos(false), _sri(false)
         {
-            int mode=0;
-            _spe = ScalarsPerElement(mode);
-            _check(mode, true);
         };
 
         //
@@ -355,20 +367,6 @@ class or_bb_4i_base : public GnuHawkBlock
         static inline int ScalarsPerElement( BULKIO::StreamSRI &sri ) {
             return ScalarsPerElement( sri.mode );
         };
-
-        //
-        // Return the size of an element (sample) in bytes
-        //
-        static inline int SizeOfElement(int mode ) {
-            return sizeof( typename IN_PORT_TYPE::NativeType)*ScalarsPerElement( mode);
-        };
-
-        //
-        // Return the size of an element (sample) in bytes
-        //
-        static inline int SizeOfElement( BULKIO::StreamSRI &sri ) {
-            return sizeof( typename IN_PORT_TYPE::NativeType)*ScalarsPerElement(sri);
-        }
 
         //
         // return scalars per element
@@ -422,9 +420,9 @@ class or_bb_4i_base : public GnuHawkBlock
             bool     newSpe=false;
             try {
                 if ( grb && grb->input_signature() )
-                    nvlen = grb->input_signature()->sizeof_stream_item(_idx) / ( spe *  sizeof( typename IN_PORT_TYPE::NativeType));
+                    nvlen = grb->input_signature()->sizeof_stream_item(_idx) / SizeOfElement(inMode);
             } catch(...) {
-                //std::cout << "UNABLE TO SET VLEN, BAD INDEX:" << _idx ;
+                LOG_TRACE( or_bb_4i_base, "UNABLE TO SET VLEN, BAD INDEX:" << _idx );
             }
 
             if ( nvlen != _vlen && nvlen >= 1 ) {
@@ -442,7 +440,7 @@ class or_bb_4i_base : public GnuHawkBlock
                 int32_t new_hlen = ( grb->history()-1)* ( _vlen * _spe );
                 if ( (old_hlen != new_hlen)  && ( new_hlen > -1 ) ) {
                     _hlen = grb->history();
-                    _data.resize( new_hlen );
+                    resizeData( new_hlen );
                 }
             }
         }
@@ -464,39 +462,73 @@ class or_bb_4i_base : public GnuHawkBlock
             return tmp;
         }
 
+        uint64_t  itemsToScalars( uint64_t N ) {
+            return  N*_vlen*_spe;
+        };
+    };
+
+    template < typename IN_PORT_TYPE > struct gr_istream : gr_istream_base {
+        IN_PORT_TYPE                       *port;            // RH port object
+        
+        std::vector< typename IN_PORT_TYPE::NativeType >      _data;     // buffered data from port
+        typename IN_PORT_TYPE::dataTransfer *pkt;            // pointer to last packet read from port
+
+        gr_istream( IN_PORT_TYPE *in_port, GNU_RADIO_BLOCK_PTR in_grb, int idx, int mode, std::string &sid ) :
+        gr_istream_base(in_grb, idx, mode, sid), port(in_port), _data(0), pkt(NULL)
+        {
+            _spe = ScalarsPerElement(mode);
+            _check(mode, true);
+        };
+
+        gr_istream( IN_PORT_TYPE *in_port, GNU_RADIO_BLOCK_PTR in_grb, int idx,  std::string &sid ) :
+        gr_istream_base(in_grb, idx, sid), port(in_port), _data(0), pkt(NULL)
+        {
+            int mode=0;
+            _spe = ScalarsPerElement(mode);
+            _check(mode, true);
+        };
+
+        //
+        // Return the size of an element (sample) in bytes
+        //
+        inline int SizeOfElement(int mode ) {
+            return sizeof( typename IN_PORT_TYPE::NativeType)*ScalarsPerElement( mode);
+        };
+
+        //
+        // Return the size of an element (sample) in bytes
+        //
+        static inline int SizeOfElement( BULKIO::StreamSRI &sri ) {
+            return sizeof( typename IN_PORT_TYPE::NativeType)*ScalarsPerElement(sri);
+        }
+
         inline uint64_t nelems () {
             uint64_t tmp = _data.size();
             if ( _spe > 0 ) tmp /= _spe;
             return tmp;
         }
 
-        uint64_t  itemsToScalars( uint64_t N ) {
-            return  N*_vlen*_spe;
-        };
-
         // RESOLVE: need to allow for requests of certain size, and blocking and timeouts
         int   read( int64_t ritems=-1 ) {
-      
+
             int retval = -1;
             typename IN_PORT_TYPE::dataTransfer *tpkt;
 
             if ( port && _sri ) {
-                //std::cout << "getPacket :  STREAM ID: " << streamID  << std::endl;
                 tpkt = port->getPacket( -1, streamID );
-    
+
                 if ( tpkt == NULL ) {
-                    //std::cout << "getPacket :  NO DATA for STREAM ID: " << streamID  << std::endl;
                     if ( port != NULL && port->blocked() )  retval = 0;
                } else {
                     _data.insert( _data.end(), tpkt->dataBuffer.begin(), tpkt->dataBuffer.end() );
                     if ( tpkt->sriChanged ) {
                         spe(tpkt->SRI.mode);
                     }
-  
+
                     // resolve need to keep time stamp accurate for first sample of data.... we could loose this if we
                     // end having residual data left in the buffer when output_multiple and vlen are used
                     // by the gr_block - read and consume_elements need refactoring
-          
+
                     _eos = tpkt->EOS;
                     if ( pkt !=  NULL )  delete pkt;
                     pkt = tpkt;
@@ -515,14 +547,30 @@ class or_bb_4i_base : public GnuHawkBlock
             return ( pkt && pkt->sriChanged );
         }
 
-        typename IN_PORT_TYPE::NativeType *read_pointer( int32_t items ) {
+        inline std::string getPktStreamId() {
+            return pkt->streamID;
+        }
+
+        inline BULKIO::StreamSRI& getPktSri() {
+            return pkt->SRI;
+        }
+
+        inline bool pktNull() {
+            return pkt == NULL;
+        }
+
+        inline TimeStamp getPktTimeStamp() {
+            return pkt->T;
+        }
+
+        void *read_pointer( int32_t items ) {
             uint32_t idx = itemsToScalars(items);
             if ( idx < _data.size() ) 
-                return &_data[ idx ];
+                return (void*) &_data[ idx ];
             else
-                return &_data[0];
+                return (void*) &_data[0];
         }
-      
+
         // compress data buffer for requested number of items
         void consume( int32_t n_items ) {
             if ( n_items > 0 ) {
@@ -552,6 +600,14 @@ class or_bb_4i_base : public GnuHawkBlock
                 pkt=NULL;
             }
         }
+
+        void resizeData(int new_hlen) {
+            _data.resize( new_hlen );
+        }
+
+        void * getPort(){
+            return (void*) port;
+        }
     };
 
     // gr_ostream
@@ -563,21 +619,31 @@ class or_bb_4i_base : public GnuHawkBlock
     // Items in the vector are maintain by setIOMappings, notifySRI and the
     // the service function when "end of stream" happens
     //
-    template < typename OUT_PORT_TYPE > struct gr_ostream {
-        OUT_PORT_TYPE                      *port;                // handle to Port object
+    struct gr_ostream_base {
         GNU_RADIO_BLOCK_PTR                grb;                  // shared pointer ot GR_BLOCK
         int                                _idx;                 // output index (loose association)
         std::string                        streamID;             // Stream Id to send down stream
         BULKIO::StreamSRI                  sri;                  // SRI to send down stream
         bool                               _m_tstamp;            // set to true if we are maintaining outgoing time stamp
         BULKIO::PrecisionUTCTime           tstamp;               // time stamp to use for pushPacket calls
-        std::vector< typename OUT_PORT_TYPE::NativeType >  _data;    // output buffer used by GR_Block
         bool                               _eos;                        // if EOS was sent
         uint64_t                           _nelems;                     // number of elements in that have been pushed down stream
         int                                _vlen;                      // vector length in items, to allocate output buffer for GR_BLOCK
-    
-        gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
-            port(out_port), grb(ingrb), _idx(idx), streamID(in_sid), _m_tstamp(false), _data(0), _eos(false), _nelems(0), _vlen(1)
+
+        // Functions for child to implement
+        virtual int SizeOfElement( int mode) = 0;
+        virtual void pushSRI() = 0;
+        virtual void pushSRI( BULKIO::StreamSRI &inSri ) = 0;
+        virtual uint64_t  nelems() = 0;
+        virtual void resize( int32_t n_items ) = 0;
+        virtual void *write_pointer() = 0;
+        virtual int  write( int32_t n_items, bool eos, TimeStamp &ts, bool adjust_ts=false ) = 0;
+        virtual int  write( int32_t n_items, bool eos, bool adjust_ts ) = 0;
+        virtual int  write( int32_t n_items, bool eos ) = 0;
+        virtual void close() = 0;
+
+        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid  ) :
+            grb(ingrb), _idx(idx), streamID(in_sid), _m_tstamp(false), _eos(false), _nelems(0), _vlen(1)
         {
             sri.hversion = 1;
             sri.xstart = 0.0;
@@ -590,13 +656,13 @@ class or_bb_4i_base : public GnuHawkBlock
             sri.mode = mode;
             sri.streamID = streamID.c_str();
             // RESOLVE sri.blocking=0;   to block or not
-    
+
             tstamp.tcmode = BULKIO::TCM_CPU;
             tstamp.tcstatus = (short)1;
             tstamp.toff = 0.0;
             setTimeStamp();
-        };
-    
+        }
+
         //
         // translate scalars per element for incoming data
         //    mode == 0 : real, mode == 1 : complex
@@ -612,21 +678,7 @@ class or_bb_4i_base : public GnuHawkBlock
         static inline int ScalarsPerElement( BULKIO::StreamSRI &sri ) {
             return ScalarsPerElement( sri.mode );
         };
-    
-        //
-        // Return the size of an element (sample) in bytes
-        //
-        static inline int SizeOfElement(int mode ) {
-            return sizeof( typename OUT_PORT_TYPE::NativeType)*ScalarsPerElement( mode);
-        };
-    
-        //
-        // Return the size of an element (sample) in bytes
-        //
-        static inline int SizeOfElement( BULKIO::StreamSRI &sri ) {
-            return sizeof( typename OUT_PORT_TYPE::NativeType)*ScalarsPerElement(sri);
-        };
-    
+
         //
         // Establish and SRI context for this output stream
         //
@@ -636,7 +688,7 @@ class or_bb_4i_base : public GnuHawkBlock
             // check if history, spe and vlen need to be adjusted
             _check(idx);
         };
-    
+
         //
         // Only adjust stream id and output rate for SRI object
         //
@@ -649,6 +701,161 @@ class or_bb_4i_base : public GnuHawkBlock
             if ( grb ) ret = ret *grb->relative_rate();
             sri.xdelta = ret;
             _check(idx);
+        };
+
+        //
+        // Set our stream ID ...
+        //
+        void setStreamID( std::string &sid ) {
+            streamID=sid;
+        };
+
+        //
+        // Return the number of scalars per element (sample) that we use
+        //
+        inline int spe() {
+            return ScalarsPerElement(sri.mode);
+        }
+
+        //
+        // return the state if EOS was pushed down stream
+        //
+        inline bool eos () {
+            return _eos;
+        }
+
+        //
+        // return the vector length to process data by the GR_BLOCK
+        //
+        inline int vlen() {
+            return _vlen;
+        }
+
+        inline bool eos ( bool inEos ) {
+            _eos=inEos;
+            return _eos;
+        }
+
+        void _check( int idx ) {
+            if ( grb ) {
+                int nvlen=1;
+                try {
+                    if ( grb && grb->output_signature() )
+                    nvlen = grb->output_signature()->sizeof_stream_item(idx) / SizeOfElement(sri.mode);
+                    if ( nvlen != _vlen && nvlen >= 1 ) _vlen=nvlen;
+                } catch(...) {
+                    LOG_TRACE( or_bb_4i_base, "UNABLE TO SET VLEN, BAD INDEX:" << _idx );
+                }
+            }
+        }
+    
+        //
+        // establish and assocation with a new GR_BLOCK
+        //
+        void associate( GNU_RADIO_BLOCK_PTR newblock ) {
+            grb = newblock;
+            _check( _idx );
+        }
+
+        //
+        // return the number of items in the output buffer
+        //
+        inline uint64_t nitems () {
+            uint64_t tmp=nelems();
+            if ( _vlen > 0 ) tmp /= _vlen;
+            return tmp;
+        }
+
+        //
+        // return the number of scalars used for N number of items
+        //
+        inline uint64_t itemsToScalars( uint64_t N ) {
+            return  N*_vlen*spe();
+        };
+
+        //
+        // return the number of output elements sent down stream
+        //
+        inline uint64_t  oelems() {
+            return _nelems;
+        };
+
+        //
+        // return the number of output items sent down stream
+        //
+        inline uint64_t  oitems() {
+            uint64_t tmp = _nelems;
+            if ( _vlen > 0 ) tmp /= _vlen;
+            return tmp;
+        };
+
+        //
+        // Turn time stamp calculations on or off
+        //
+        void setAutoAdjustTime( bool onoff ) {
+            _m_tstamp = onoff;
+        };
+
+        //
+        // sets time stamp value to be time of day
+        //
+        void setTimeStamp( ) {
+            struct timeval tmp_time;
+            struct timezone tmp_tz;
+            gettimeofday(&tmp_time, &tmp_tz);
+            tstamp.twsec = tmp_time.tv_sec;
+            tstamp.tfsec = tmp_time.tv_usec / 1e6;
+        };
+
+        //
+        // set time stamp value for the stream to a specific value, turns on
+        // stream's monitoring of time stamp
+        //
+        void setTimeStamp( TimeStamp &inTimeStamp, bool adjust_ts=true ) {
+            _m_tstamp = adjust_ts;
+            tstamp = inTimeStamp;
+        };
+
+        void forwardTimeStamp( int32_t noutput_items, TimeStamp &ts ) {
+            double twsec = ts.twsec;
+            double tfsec = ts.tfsec;
+            double sdelta=sri.xdelta;
+            sdelta  = sdelta * noutput_items*_vlen;
+            double new_time = (twsec+tfsec)+sdelta;
+            ts.tfsec = std::modf( new_time, &ts.twsec );
+        };
+
+        void forwardTimeStamp( int32_t noutput_items ) {
+            double twsec = tstamp.twsec;
+            double tfsec = tstamp.tfsec;
+            double sdelta=sri.xdelta;
+            sdelta  = sdelta * noutput_items*_vlen;
+            double new_time = (twsec+tfsec)+sdelta;
+            tstamp.tfsec = std::modf( new_time, &tstamp.twsec );
+        };
+    };
+
+    template < typename OUT_PORT_TYPE > struct gr_ostream : gr_ostream_base {
+        OUT_PORT_TYPE                      *port;                // handle to Port object
+        std::vector< typename OUT_PORT_TYPE::NativeType >  _data;    // output buffer used by GR_Block
+    
+        gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
+            gr_ostream_base(ingrb, idx, mode, in_sid), port(out_port), _data(0)
+        {
+        };
+    
+        //
+        // Return the size of an element (sample) in bytes
+        //
+        inline int SizeOfElement(int mode ) {
+            return sizeof( typename OUT_PORT_TYPE::NativeType)*ScalarsPerElement( mode);
+        };
+    
+        //
+        // Return the size of an element (sample) in bytes
+        //
+        static inline int SizeOfElement( BULKIO::StreamSRI &sri ) {
+            return sizeof( typename OUT_PORT_TYPE::NativeType)*ScalarsPerElement(sri);
         };
     
         //
@@ -666,70 +873,6 @@ class or_bb_4i_base : public GnuHawkBlock
         };
     
         //
-        // Set our stream ID ...
-        //
-        void setStreamID( std::string &sid ) {
-            streamID=sid;
-        };
-    
-        //
-        // Return the number of scalars per element (sample) that we use
-        //
-        inline int spe() {
-            return ScalarsPerElement(sri.mode);
-        }
-    
-        //
-        // return the state if EOS was pushed down stream
-        //
-        inline bool eos () {
-            return _eos;
-        }
-    
-        //
-        // return the vector length to process data by the GR_BLOCK
-        //
-        inline int vlen() {
-            return _vlen;
-        }
-    
-        inline bool eos ( bool inEos ) {
-            _eos=inEos;
-            return _eos;
-        }
-    
-        void _check( int idx ) {
-            if ( grb ) {
-                int nvlen=1;
-                try {
-                    if ( grb && grb->output_signature() )
-                    nvlen = grb->output_signature()->sizeof_stream_item(idx) / (spe() *  sizeof( typename OUT_PORT_TYPE::NativeType));
-                    //std::cout << "_CheckVlen IDX: " << _idx << " NEW/OLD VLEN: " << nvlen << "/" << _vlen << " SPE:" << spe() ;
-                    if ( nvlen != _vlen && nvlen >= 1 ) _vlen=nvlen;
-                } catch(...) {
-                    //std::cout << "UNABLE TO SET VLEN, BAD INDEX:" << idx ;
-                }
-            }
-        }
-    
-        //
-        // establish and assocation with a new GR_BLOCK
-        //
-        void associate( GNU_RADIO_BLOCK_PTR newblock ) {
-            grb = newblock;
-            _check( _idx );
-        }
-    
-        //
-        // return the number of items in the output buffer
-        //
-        inline uint64_t nitems () {
-            uint64_t tmp=nelems();
-            if ( _vlen > 0 ) tmp /= _vlen;
-            return tmp;
-        }
-    
-        //
         // return the number of elements (samples) in the output buffer
         //
         inline uint64_t  nelems() {
@@ -737,38 +880,7 @@ class or_bb_4i_base : public GnuHawkBlock
             if ( spe() > 0 ) tmp /= spe();
             return tmp;
         };
-    
-    
-        //
-        // return the number of scalars used for N number of items
-        //
-        inline uint64_t itemsToScalars( uint64_t N ) {
-            return  N*_vlen*spe();
-        };
-    
-        //
-        // return the number of output elements sent down stream
-        //
-        inline uint64_t  oelems() {
-            return _nelems;
-        };
-    
-        //
-        // return the number of output items sent down stream
-        //
-        inline uint64_t  oitems() {
-            uint64_t tmp = _nelems;
-            if ( _vlen > 0 ) tmp /= _vlen;
-            return tmp;
-        };
-    
-        //
-        // Turn time stamp calculations on or off
-        //
-        void setAutoAdjustTime( bool onoff ) {
-            _m_tstamp = onoff;
-        };
-    
+   
         //
         // resize the output buffer to N number of items
         //
@@ -778,48 +890,10 @@ class or_bb_4i_base : public GnuHawkBlock
             }
         }
     
-        typename OUT_PORT_TYPE::NativeType *write_pointer(){
+        void *write_pointer(){
             // push ostream's buffer address onto list of output buffers
-            return &(_data[0]);
+            return (void*) &(_data[0]);
         }
-    
-        //
-        // sets time stamp value to be time of day
-        //
-        void setTimeStamp( ) {
-            struct timeval tmp_time;
-            struct timezone tmp_tz;
-            gettimeofday(&tmp_time, &tmp_tz);
-            tstamp.twsec = tmp_time.tv_sec;
-            tstamp.tfsec = tmp_time.tv_usec / 1e6;
-        };
-    
-        //
-        // set time stamp value for the stream to a specific value, turns on
-        // stream's monitoring of time stamp
-        //
-        void setTimeStamp( TimeStamp &inTimeStamp, bool adjust_ts=true ) {
-            _m_tstamp = adjust_ts;
-            tstamp = inTimeStamp;
-        };
-    
-        void forwardTimeStamp( int32_t noutput_items, TimeStamp &ts ) {
-            double twsec = ts.twsec;
-            double tfsec = ts.tfsec;
-            double sdelta=sri.xdelta;
-            sdelta  = sdelta * noutput_items*_vlen;
-            double new_time = (twsec+tfsec)+sdelta;
-            ts.tfsec = std::modf( new_time, &ts.twsec );
-        };
-    
-        void forwardTimeStamp( int32_t noutput_items ) {
-            double twsec = tstamp.twsec;
-            double tfsec = tstamp.tfsec;
-            double sdelta=sri.xdelta;
-            sdelta  = sdelta * noutput_items*_vlen;
-            double new_time = (twsec+tfsec)+sdelta;
-            tstamp.tfsec = std::modf( new_time, &tstamp.twsec );
-        };
     
         //
         // write data to output ports using the provided time stamp and adjust the time
@@ -828,7 +902,6 @@ class or_bb_4i_base : public GnuHawkBlock
         int  write( int32_t n_items, bool eos, TimeStamp &ts, bool adjust_ts=false ) {
     
             resize( n_items );
-    
             if ( port ) port->pushPacket( _data, ts, eos, streamID );
     
             if ( adjust_ts ) forwardTimeStamp( n_items, ts );
@@ -848,7 +921,6 @@ class or_bb_4i_base : public GnuHawkBlock
     
             resize( n_items );
             if ( port ) port->pushPacket( _data, tstamp, eos, streamID );
-    
             if ( adjust_ts ) forwardTimeStamp( n_items );
     
             _eos = eos;
@@ -866,7 +938,6 @@ class or_bb_4i_base : public GnuHawkBlock
     
             resize( n_items );
             if ( port ) port->pushPacket( _data, tstamp, eos, streamID );
-    
             if ( _m_tstamp ) forwardTimeStamp( n_items );
     
             _eos = eos;
@@ -881,44 +952,26 @@ class or_bb_4i_base : public GnuHawkBlock
             _eos = false;
             _m_tstamp=false;
         };
-    
-    };
-
-    //
-    // template Typedefs work around
-    //
-    template < typename T > class _IStream {
-        private:
-            _IStream(void) {};
-        public:
-            typedef typename std::vector< gr_istream< T > > List;
-    };
-
-    template < typename T > class _OStream {
-        private:
-            _OStream(void) {};
-        public:
-            typedef typename std::vector< gr_ostream< T > > List;
     };
 
     typedef  gr_vector_const_void_star                GR_IN_BUFFERS;
     typedef  gr_vector_void_star                      GR_OUT_BUFFERS;
     typedef  gr_vector_int                            GR_BUFFER_LENGTHS;
 
-    template < typename IN_PORT_TYPE >   int  _analyzerServiceFunction( typename  std::vector< gr_istream< IN_PORT_TYPE > > &istreams );
-    template < typename IN_PORT_TYPE >   int  _forecastAndProcess( bool &eos, std::vector< gr_istream< IN_PORT_TYPE > > &istreams );
+    int  _analyzerServiceFunction( std::vector< gr_istream_base * > &istreams );
+    int  _forecastAndProcess( bool &eos, std::vector< gr_istream_base * > &istreams );
 
-    template < typename OUT_PORT_TYPE >  int  _generatorServiceFunction( std::vector< gr_ostream< OUT_PORT_TYPE > >  &ostreams );
+    int  _generatorServiceFunction( std::vector< gr_ostream_base * >  &ostreams );
 
-    template < typename IN_PORT_TYPE, typename OUT_PORT_TYPE >  int  _transformerServiceFunction( std::vector< gr_istream< IN_PORT_TYPE > > &istreams,
-                                                                         std::vector< gr_ostream< OUT_PORT_TYPE > > &ostreams ); 
-    template < typename IN_PORT_TYPE, typename OUT_PORT_TYPE >  int  _forecastAndProcess( bool &eos, std::vector< gr_istream< IN_PORT_TYPE > > &istreams,
-                                                                         std::vector< gr_ostream< OUT_PORT_TYPE > > &ostreams ); 
+    int  _transformerServiceFunction( std::vector< gr_istream_base * > &istreams,
+                                                                     std::vector< gr_ostream_base * > &ostreams ); 
+    int  _forecastAndProcess( bool &eos, std::vector< gr_istream_base * > &istreams,
+                                                                     std::vector< gr_ostream_base * > &ostreams ); 
 
-    typedef std::deque< std::pair< bulkio::InOctetPort *, BULKIO::StreamSRI > >  SRIQueue;
-    typedef _IStream< bulkio::InOctetPort >::List    IStreamList;
+    typedef std::deque< std::pair< void*, BULKIO::StreamSRI > >  SRIQueue;
+    typedef std::vector< gr_istream_base * >    IStreamList;
 
-    typedef _OStream< bulkio::OutOctetPort >::List   OStreamList;
+    typedef std::vector< gr_ostream_base * >   OStreamList;
 
 
     // cache variables to transferring data to/from a GNU Radio Block

@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "argmax_fs_4i.h"
-
 int main(int argc, char* argv[])
 {
     argmax_fs_4i_i* argmax_fs_4i_servant;

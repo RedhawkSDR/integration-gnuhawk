@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "clock_recovery_mm_cc_2o.h"
-
 int main(int argc, char* argv[])
 {
     clock_recovery_mm_cc_2o_i* clock_recovery_mm_cc_2o_servant;

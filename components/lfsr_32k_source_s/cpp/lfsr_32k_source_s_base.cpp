@@ -145,6 +145,16 @@ void lfsr_32k_source_s_base::loadProperties()
 {
 }
 
+
+// Destructor
+lfsr_32k_source_s_base::~lfsr_32k_source_s_base()
+{
+    // Free output streams
+    for (OStreamList::iterator iter = _ostreams.begin(); iter != _ostreams.end(); ++iter) {
+        delete (*iter);
+    }
+}
+
 //
 //  Allow for logging 
 // 
@@ -170,7 +180,6 @@ void lfsr_32k_source_s_base::setupIOMappings( )
 {
     int ninput_streams = 0;
     int noutput_streams = 0;
-    std::vector<std::string>::iterator pname;
     std::string sid("");
 
     if ( !validGRBlock() ) return;
@@ -189,40 +198,39 @@ void lfsr_32k_source_s_base::setupIOMappings( )
         OStreamList::iterator ostream;
         for ( int idx=0 ; ostream != _ostreams.end(); idx++, ostream++ ) {
             // need to evaluate new settings...???
-            ostream->associate( gr_sptr );
+            (*ostream)->associate( gr_sptr );
         }
 
         return;
     }
 
-
+    int i = 0;
     //
     // Setup mapping of RH port to GNU RADIO Block input streams
     // For version 1,  we are ignoring the GNU Radio output stream -1 case that allows multiple data 
     // streams over a single connection.  We are mapping a single RH Port to a single GNU Radio stream.
     //
     LOG_TRACE( lfsr_32k_source_s_base, "setupIOMappings OutputPorts: " << outPorts.size() );
-    pname = outputPortOrder.begin();
-    for( int i=0; pname != outputPortOrder.end(); pname++ ) {
-
-        // grab ports based on their order in the scd.xml file
-        RH_UsesPortMap::iterator p_out = outPorts.find(*pname);
-        if ( p_out != outPorts.end() ) {
-            bulkio::OutShortPort *port = dynamic_cast< bulkio::OutShortPort * >(p_out->second);
-            int idx = -1;
-            BULKIO::StreamSRI sri = createOutputSRI( i, idx );
-            if (idx == -1) idx = i;
-            if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
-            int mode = sri.mode;
-            sid = sri.streamID;
-            _ostreams.push_back( gr_ostream< bulkio::OutShortPort > ( port, gr_sptr, i, mode, sid ));
-            LOG_DEBUG( lfsr_32k_source_s_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
-            _ostreams[i].setSRI(sri, i );
-            _ostreams[i].pushSRI();
-            // increment port counter
-            i++;
-        }
+    RH_UsesPortMap::iterator p_out;
+    i = 0;
+    // grab ports based on their order in the scd.xml file
+    p_out = outPorts.find("short_out");
+    if ( p_out != outPorts.end() ) {
+        bulkio::OutShortPort *port = dynamic_cast< bulkio::OutShortPort * >(p_out->second);
+        int idx = -1;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx );
+        if (idx == -1) idx = i;
+        if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
+        int mode = sri.mode;
+        sid = sri.streamID;
+        _ostreams.push_back( new gr_ostream< bulkio::OutShortPort > ( port, gr_sptr, i, mode, sid ));
+        LOG_DEBUG( lfsr_32k_source_s_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
+        _ostreams[i]->setSRI(sri, i );
+        _ostreams[i]->pushSRI();
+        // increment port counter
+        i++;
     }
+
 }
 
 BULKIO::StreamSRI lfsr_32k_source_s_base::createOutputSRI( int32_t oidx ) {
@@ -269,8 +277,8 @@ lfsr_32k_source_s_base::TimeDuration lfsr_32k_source_s_base::getTargetDuration()
     double   trate=1.0;
 
     if ( _ostreams.size() > 0 ) {
-        samps= _ostreams[0].nelems();
-        xdelta= _ostreams[0].sri.xdelta;
+        samps= _ostreams[0]->nelems();
+        xdelta= _ostreams[0]->sri.xdelta;
     }
 
     trate = samps*xdelta;
@@ -304,10 +312,10 @@ lfsr_32k_source_s_base::TimeDuration lfsr_32k_source_s_base::calcThrottle( TimeM
   DATA GENERATOR TEMPLATE Service Function for GR_BLOCK PATTERN
 */
 
-template < typename OUT_PORT_TYPE > int lfsr_32k_source_s_base::_generatorServiceFunction( typename  std::vector< gr_ostream< OUT_PORT_TYPE > > &ostreams ) 
+int lfsr_32k_source_s_base::_generatorServiceFunction( std::vector< gr_ostream_base * > &ostreams ) 
 {
 
-    typedef typename std::vector< gr_ostream< OUT_PORT_TYPE > >  _OStreamList;
+    typedef std::vector< gr_ostream_base * >  _OStreamList;
 
     boost::mutex::scoped_lock lock(serviceThreadLock);
 
@@ -329,7 +337,7 @@ template < typename OUT_PORT_TYPE > int lfsr_32k_source_s_base::_generatorServic
     _input_items.resize(0);
     _output_items.resize( 0 );
 
-    typename _OStreamList::iterator  ostream;
+    _OStreamList::iterator  ostream;
     noutput_items = gr_pagesize();
 
     // find transfer length for this block... 
@@ -352,8 +360,8 @@ template < typename OUT_PORT_TYPE > int lfsr_32k_source_s_base::_generatorServic
     ostream = ostreams.begin();
     for( ; ostream != ostreams.end(); ostream++ ) {
       // push ostream's buffer address onto list of output buffers
-      ostream->resize(noutput_items);
-      _output_items.push_back((void*)(ostream->write_pointer()) );
+      (*ostream)->resize(noutput_items);
+      _output_items.push_back( (*ostream)->write_pointer() );
     }
 
     // call the work function
@@ -374,17 +382,17 @@ template < typename OUT_PORT_TYPE > int lfsr_32k_source_s_base::_generatorServic
         ostream = ostreams.begin();
         for ( ; ostream != ostreams.end(); ostream++ ) {
             LOG_TRACE( lfsr_32k_source_s_base, "PUSHING DATA   NOUT/NITEMS/OITEMS/STREAM_ID " << numOut << 
-                      "/" << ostream->nitems()  << "/" << ostream->oitems() << "/" << ostream->streamID );
+                      "/" << (*ostream)->nitems()  << "/" << (*ostream)->oitems() << "/" << (*ostream)->streamID );
 #ifdef TEST_TIME_STAMP
-      LOG_DEBUG( lfsr_32k_source_s_base, "OSTREAM SRI:    xdelta:" << std::setprecision(12) << ostream->sri.xdelta );
+      LOG_DEBUG( lfsr_32k_source_s_base, "OSTREAM SRI:    xdelta:" << std::setprecision(12) << (*ostream)->sri.xdelta );
       LOG_DEBUG( lfsr_32k_source_s_base, "OSTREAM WRITE:   maint:" << _maintainTimeStamp );
-      LOG_DEBUG( lfsr_32k_source_s_base, "                  mode:" <<  ostream->tstamp.tcmode );
-      LOG_DEBUG( lfsr_32k_source_s_base, "                status:" <<  ostream->tstamp.tcstatus );
-      LOG_DEBUG( lfsr_32k_source_s_base, "                offset:" <<  ostream->tstamp.toff );
-      LOG_DEBUG( lfsr_32k_source_s_base, "                 whole:" <<  std::setprecision(10) << ostream->tstamp.twsec );
-      LOG_DEBUG( lfsr_32k_source_s_base, "                  frac:" <<  std::setprecision(12) << ostream->tstamp.tfsec );
+      LOG_DEBUG( lfsr_32k_source_s_base, "                  mode:" <<  (*ostream)->tstamp.tcmode );
+      LOG_DEBUG( lfsr_32k_source_s_base, "                status:" <<  (*ostream)->tstamp.tcstatus );
+      LOG_DEBUG( lfsr_32k_source_s_base, "                offset:" <<  (*ostream)->tstamp.toff );
+      LOG_DEBUG( lfsr_32k_source_s_base, "                 whole:" <<  std::setprecision(10) << (*ostream)->tstamp.twsec );
+      LOG_DEBUG( lfsr_32k_source_s_base, "                  frac:" <<  std::setprecision(12) << (*ostream)->tstamp.tfsec );
 #endif
-            ostream->write( numOut, eos, _maintainTimeStamp );
+            (*ostream)->write( numOut, eos, _maintainTimeStamp );
         }
         if (eos) {
             sentEOS = true;
@@ -392,7 +400,7 @@ template < typename OUT_PORT_TYPE > int lfsr_32k_source_s_base::_generatorServic
         // close stream and reset counters  
         ostream = ostreams.begin(); 
         for( ; eos && ostream != ostreams.end(); ostream++ ) {
-            ostream->close();
+            (*ostream)->close();
         }
 
         if (eos) {

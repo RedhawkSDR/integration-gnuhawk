@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "lfsr_32k_source_s.h"
-
 int main(int argc, char* argv[])
 {
     lfsr_32k_source_s_i* lfsr_32k_source_s_servant;

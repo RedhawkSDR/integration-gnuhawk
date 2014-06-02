@@ -30,7 +30,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <supportsinterface repid="IDL:CF/PropertySet:1.0" supportsname="PropertySet"/>
     <supportsinterface repid="IDL:CF/TestableObject:1.0" supportsname="TestableObject"/>
     <ports>
-      <uses repid="IDL:BULKIO/dataShort:1.0" usesname="short_ou">
+      <uses repid="IDL:BULKIO/dataShort:1.0" usesname="short_out">
         <porttype type="data"/>
       </uses>
     </ports>

@@ -17,7 +17,7 @@
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-AC_INIT(stream_to_streams_bb_2o, 1.0.0)
+AC_INIT(stream_to_streams_bb_2o, 1.0.1)
 AM_INIT_AUTOMAKE(nostdinc)
 
 AC_PROG_CC

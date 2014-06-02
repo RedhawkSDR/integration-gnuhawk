@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "filter_delay_fc_2i.h"
-
 int main(int argc, char* argv[])
 {
     filter_delay_fc_2i_i* filter_delay_fc_2i_servant;

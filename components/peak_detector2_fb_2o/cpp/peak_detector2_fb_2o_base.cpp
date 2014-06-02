@@ -320,12 +320,13 @@ void peak_detector2_fb_2o_base::setupIOMappings( )
     if ( p_out != outPorts.end() ) {
         bulkio::OutOctetPort *port = dynamic_cast< bulkio::OutOctetPort * >(p_out->second);
         int idx = -1;
-        BULKIO::StreamSRI sri = createOutputSRI( i, idx );
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
         if (idx == -1) idx = i;
         if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
         int mode = sri.mode;
         sid = sri.streamID;
-        _ostreams.push_back( new gr_ostream< bulkio::OutOctetPort > ( port, gr_sptr, i, mode, sid ));
+        _ostreams.push_back( new gr_ostream< bulkio::OutOctetPort > ( port, gr_sptr, i, mode, sid, ext ));
         LOG_DEBUG( peak_detector2_fb_2o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
         _ostreams[i]->setSRI(sri, i );
         // increment port counter
@@ -337,12 +338,13 @@ void peak_detector2_fb_2o_base::setupIOMappings( )
     if ( p_out != outPorts.end() ) {
         bulkio::OutFloatPort *port = dynamic_cast< bulkio::OutFloatPort * >(p_out->second);
         int idx = -1;
-        BULKIO::StreamSRI sri = createOutputSRI( i, idx );
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
         if (idx == -1) idx = i;
         if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
         int mode = sri.mode;
         sid = sri.streamID;
-        _ostreams.push_back( new gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid ));
+        _ostreams.push_back( new gr_ostream< bulkio::OutFloatPort > ( port, gr_sptr, i, mode, sid, ext ));
         LOG_DEBUG( peak_detector2_fb_2o_base, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
         _ostreams[i]->setSRI(sri, i );
         // increment port counter
@@ -425,7 +427,7 @@ BULKIO::StreamSRI peak_detector2_fb_2o_base::createOutputSRI( int32_t oidx ) {
     return sri;
 }
 
-BULKIO::StreamSRI peak_detector2_fb_2o_base::createOutputSRI( int32_t oidx, int32_t &in_idx)
+BULKIO::StreamSRI peak_detector2_fb_2o_base::createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext)
 {
     return createOutputSRI( oidx );
 }

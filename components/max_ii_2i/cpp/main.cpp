@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "max_ii_2i.h"
-
 int main(int argc, char* argv[])
 {
     max_ii_2i_i* max_ii_2i_servant;

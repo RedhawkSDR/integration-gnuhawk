@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "streams_to_stream_bb_2i.h"
-
 int main(int argc, char* argv[])
 {
     streams_to_stream_bb_2i_i* streams_to_stream_bb_2i_servant;

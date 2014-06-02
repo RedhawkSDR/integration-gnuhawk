@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "deinterleave_bb_4o.h"
-
 int main(int argc, char* argv[])
 {
     deinterleave_bb_4o_i* deinterleave_bb_4o_servant;

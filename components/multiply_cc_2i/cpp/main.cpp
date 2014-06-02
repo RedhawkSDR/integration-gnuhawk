@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "multiply_cc_2i.h"
-
 int main(int argc, char* argv[])
 {
     multiply_cc_2i_i* multiply_cc_2i_servant;

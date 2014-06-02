@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "xor_bb_2i.h"
-
 int main(int argc, char* argv[])
 {
     xor_bb_2i_i* xor_bb_2i_servant;

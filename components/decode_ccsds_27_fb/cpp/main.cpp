@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "decode_ccsds_27_fb.h"
-
 int main(int argc, char* argv[])
 {
     decode_ccsds_27_fb_i* decode_ccsds_27_fb_servant;

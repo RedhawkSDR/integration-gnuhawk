@@ -52,7 +52,7 @@ class sig_source_s_i : public sig_source_s_base
         // @param idx : output stream index number to associate the returned SRI object with
         // @return sri : default SRI object passed down stream over a RedHawk port
         //      
-        BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );
+        BULKIO::StreamSRI  createOutputSRI( int32_t oidx);
         void changedSamplingFreq(const std::string &id);
 };
 

@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "peak_detector2_fb_2o.h"
-
 int main(int argc, char* argv[])
 {
     peak_detector2_fb_2o_i* peak_detector2_fb_2o_servant;
