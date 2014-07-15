@@ -203,6 +203,14 @@ void deinterleave_bb_4o_base::loadProperties()
                 "external",
                 "configure");
 
+    addProperty(stream_id_map,
+                "stream_id_map",
+                "stream_id_map",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
 }
 
 

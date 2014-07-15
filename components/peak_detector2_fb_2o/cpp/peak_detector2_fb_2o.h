@@ -28,6 +28,7 @@ class peak_detector2_fb_2o_i : public peak_detector2_fb_2o_base
     public:
         peak_detector2_fb_2o_i(const char *uuid, const char *label);
         ~peak_detector2_fb_2o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

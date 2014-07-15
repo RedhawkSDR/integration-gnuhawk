@@ -40,8 +40,8 @@ Group: REDHAWK/Components
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 
-Requires: redhawk >= 1.9
-BuildRequires: redhawk-devel >= 1.9
+Requires: redhawk >= 1.10
+BuildRequires: redhawk-devel >= 1.10
 BuildRequires: autoconf automake libtool
 
 # Interface requirements

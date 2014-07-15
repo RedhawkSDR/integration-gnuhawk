@@ -21,7 +21,7 @@
 %{!?_sdrroot:    %define _sdrroot    /var/redhawk/sdr}
 
 Name:		gnuhawk-components
-Version:	1.9.0
+Version:	1.10.0
 Release:	0.1%{?dist}
 Summary:	A set of GNU Radio blocks built for use in REDHAWK
 Prefix:		%{_sdrroot}
@@ -30,7 +30,7 @@ Group:		Applications/Engineering
 License:	GPLv3+
 Source:		%{name}-%{version}.tar.gz
 
-BuildRequires:	redhawk-devel >= 1.9
+BuildRequires:	redhawk-devel >= 1.10
 BuildRequires:	cmake
 BuildRequires:	gnuhawk = %{version}-%{release}
 BuildRequires:	fftw-devel bulkioInterfaces gsl-devel

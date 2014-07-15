@@ -1,47 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "properties.dtd">
 <!--
-This file is protected by Copyright. Please refer to the COPYRIGHT file 
+This file is protected by Copyright. Please refer to the COPYRIGHT file.
 distributed with this source distribution.
 
 This file is part of GNUHAWK.
 
-GNUHAWK is free software: you can redistribute it and/or modify is under the 
-terms of the GNU General Public License as published by the Free Software 
-Foundation, either version 3 of the License, or (at your option) any later 
+GNUHAWK is free software: you can redistribute it and/or modify is under the.
+terms of the GNU General Public License as published by the Free Software.
+Foundation, either version 3 of the License, or (at your option) any later.
 version.
 
-GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY.
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A.
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with 
+You should have received a copy of the GNU General Public License along with.
 this program.  If not, see http://www.gnu.org/licenses/.
 -->
 
-<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
-  <simple id="samples_per_symbol" mode="readwrite" type="float">
-    <description>(float) Number of samples per symbol of signal</description>
-    <value>4.0</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="rolloff" mode="readwrite" type="float">
-    <description>(float) Rolloff factor of signal</description>
-    <value>0.35</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="filter_size" mode="readwrite" type="long">
-    <description>(int)   Size (in taps) of the filter</description>
-    <value>45</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="bandwidth" mode="readwrite" type="float">
-    <description> (float) Loop bandwidth</description>
-    <value>0.0628318</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
+    <simple complex="false" type="float" id="samples_per_symbol" mode="readwrite">
+        <description>(float) Number of samples per symbol of signal</description>
+        <value>4.0</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="rolloff" mode="readwrite">
+        <description>(float) Rolloff factor of signal</description>
+        <value>0.35</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="long" id="filter_size" mode="readwrite">
+        <description>(int)   Size (in taps) of the filter</description>
+        <value>45</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="bandwidth" mode="readwrite">
+        <description> (float) Loop bandwidth</description>
+        <value>0.0628318</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <structsequence id="stream_id_map" name="stream_id_map" mode="readwrite">
+        <description>port_name: name of port.
+                                  stream_id: renames ports stream ID,
+                                  enter a custom ID or use the following arguments
+                                  %C evaluates to the component name in the waveform
+                                  %SID evalutes to the incoming ports stream ID
+                                  %D evaluates to the port index</description>
+        <struct id="stream_id_struct" name="stream_id_struct" mode="readwrite">
+            <simple complex="false" type="string" id="port_name" name="port_name" mode="readwrite">
+                <kind kindtype="configure"/>
+                <action type="external"/>
+            </simple>
+            <simple complex="false" type="string" id="stream_id" name="stream_id" mode="readwrite">
+                <kind kindtype="configure"/>
+                <action type="external"/>
+            </simple>
+            <configurationkind kindtype="configure"/>
+        </struct>
+    </structsequence>
 </properties>

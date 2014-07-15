@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "equalizer_ff_2i2o.h"
-
 int main(int argc, char* argv[])
 {
     equalizer_ff_2i2o_i* equalizer_ff_2i2o_servant;

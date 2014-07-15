@@ -28,6 +28,7 @@ class complex_to_float_2o_i : public complex_to_float_2o_base
     public:
         complex_to_float_2o_i(const char *uuid, const char *label);
         ~complex_to_float_2o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "pfb_channelizer_ccf_5i5o.h"
-
 int main(int argc, char* argv[])
 {
     pfb_channelizer_ccf_5i5o_i* pfb_channelizer_ccf_5i5o_servant;

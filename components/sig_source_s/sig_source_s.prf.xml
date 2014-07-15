@@ -40,7 +40,7 @@ this program.  If not, see http://www.gnu.org/licenses/.
     <kind kindtype="configure"/>
     <action type="external"/>
   </simple>
-  <simple id="offset" mode="readwrite" name="offset" type="double">
+  <simple id="offset" mode="readwrite" name="offset" type="float">
     <value>0</value>
     <kind kindtype="configure"/>
     <action type="external"/>

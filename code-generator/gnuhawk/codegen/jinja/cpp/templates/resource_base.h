@@ -25,6 +25,7 @@
 //% set inputType = component.inputType
 //% set outputType = component.outputType
 //% set mem_align = component.mem_align
+//% set hasMultiOut = component.hasmultioutports
 
 /*{% block license %}*/
 ${component.cppLicense}
@@ -37,6 +38,7 @@ ${component.cppLicense}
 ${super()}
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "${prefix}_GnuHawkBlock.h"
+#include <sstream>
 /*{% endblock %}*/
 
 /*######## inherit processThreadConstructor from redhawk base template ###########*/
@@ -46,39 +48,13 @@ ${super()}
 /*######## inherit processThreadUpdateDelay from redhawk base template ###########*/
 /*######## inherit processThreadPrivateVars from redhawk base template ###########*/
 
-/*{% block processThreadRun %}*/
-        // manage calls to target's service function
-        void run() {
-            int state = NORMAL;
-            while (_thread_running and (state != FINISH)) {
-                state = target->serviceFunction();
-                if (state == NOOP) {
-                    boost::this_thread::sleep( boost::posix_time::microseconds( _udelay ) );
-                } else {
-                    boost::this_thread::yield();
-                }
-            }
-        };
-/*{% endblock %}*/
-
-/*{% block publicProcessThreadExtensions %}*/
-        void stop() {
-            _thread_running = false;
-            if ( _mythread ) _mythread->interrupt();
-        };
-
-        bool threadRunning() { return _thread_running; };
-/*{% endblock %}*/
-
 /*{% block classPrototype %}*/
-class ${component.baseclass.name} : public GnuHawkBlock
+class ${component.baseclass.name} : public GnuHawkBlock, ThreadedComponent
 /*{% endblock %}*/
 
 /*######## inherit cfResource prototypes from redhawk base template ###########*/
 
 /*{% block basePublicFunctions %}*/
-        ~${component.baseclass.name}();
-
         void loadProperties();
 /*{% endblock %}*/
 
@@ -93,6 +69,7 @@ ${super()}
 /*{% endblock %}*/
 
 /*{% block extensions %}*/
+        void construct();
     protected:
         static       const        int                 RealMode=0;
         static       const        int                 ComplexMode=1;
@@ -192,7 +169,7 @@ ${super()}
         // @param idx : output stream index number to associate the returned SRI object with
         // @return sri : default SRI object passed down stream over a RedHawk port
         //      
-        virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );
+        virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext );
 
         virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx);
 
@@ -228,7 +205,11 @@ ${super()}
         virtual void  setOutputStreamSRI( int streamIdx, BULKIO::StreamSRI &in_sri, bool sendSRI=true, bool setStreamID=true ) {
             for (int i = 0; i < (int)io_mapping[streamIdx].size(); i++){
                 int o_idx = io_mapping[streamIdx][i];
+/*{% if  hasMultiOut %}*/
+                _ostreams[o_idx]->adjustSRI(in_sri, o_idx, stream_id_map, outPorts, setStreamID, naming_service_name );
+/*{% else %}*/
                 _ostreams[o_idx]->adjustSRI(in_sri, o_idx, setStreamID );
+/*{% endif %}*/
                 if ( sendSRI ) _ostreams[o_idx]->pushSRI();
             }
         }
@@ -242,7 +223,11 @@ ${super()}
         virtual void  setOutputStreamSRI( BULKIO::StreamSRI &in_sri , bool sendSRI = true, bool setStreamID = true ) {
             OStreamList::iterator ostream=_ostreams.begin();
             for( int o_idx=0;  ostream != _ostreams.end(); o_idx++, ostream++ ) {
+/*{% if hasMultiOut %}*/
+                (*ostream)->adjustSRI(in_sri, o_idx, stream_id_map, outPorts, setStreamID, naming_service_name );
+/*{% else %}*/
                 (*ostream)->adjustSRI(in_sri, o_idx, setStreamID );
+/*{% endif %}*/
                 if ( sendSRI )  (*ostream)->pushSRI();
             }
         }
@@ -593,6 +578,7 @@ ${super()}
     struct gr_ostream_base {
         GNU_RADIO_BLOCK_PTR                grb;                  // shared pointer ot GR_BLOCK
         int                                _idx;                 // output index (loose association)
+        std::string                        _ext;                 // extension to append to incoming StreamID
         std::string                        streamID;             // Stream Id to send down stream
         BULKIO::StreamSRI                  sri;                  // SRI to send down stream
         bool                               _m_tstamp;            // set to true if we are maintaining outgoing time stamp
@@ -613,8 +599,8 @@ ${super()}
         virtual int  write( int32_t n_items, bool eos ) = 0;
         virtual void close() = 0;
 
-        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid  ) :
-            grb(ingrb), _idx(idx), streamID(in_sid), _m_tstamp(false), _eos(false), _nelems(0), _vlen(1)
+        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid, const std::string &ext="" ) :
+            grb(ingrb), _idx(idx), _ext(ext), streamID(in_sid), _m_tstamp(false), _eos(false), _nelems(0), _vlen(1)
         {
             sri.hversion = 1;
             sri.xstart = 0.0;
@@ -663,11 +649,47 @@ ${super()}
         //
         // Only adjust stream id and output rate for SRI object
         //
+/*{% if hasMultiOut %}*/
+        void adjustSRI( BULKIO::StreamSRI &inSri, int idx, const std::vector<stream_id_struct_struct> &stream_id_map, PortSupplier_impl::RH_UsesPortMap& outPorts, bool setStreamID=true, const std::string &stream_tag="" ) {
+            if ( setStreamID ) {
+                std::vector<std::string> outPortNames;
+                for (RH_UsesPortMap::iterator port = outPorts.begin(); port != outPorts.end(); ++port ) {
+                    outPortNames.push_back(port->first);
+                }
+                std::string s(inSri.streamID);
+                std::ostringstream t;
+                if (stream_id_map.size() != 0) {
+                    for(int i = 0; i < (int)stream_id_map.size(); i++) {
+                        if (outPortNames[idx] == stream_id_map[i].port_name) {
+                            std::string stream = stream_id_map[i].stream_id;
+                            t << inSri.streamID << "_";
+                            stream = boost::replace_all_copy( stream, "%SID", t.str() );
+                            stream = boost::replace_all_copy( stream, "%C", stream_tag + "_" );
+                            t.str("");
+                            t << idx << "_";
+                            stream = boost::replace_all_copy( stream, "%D", t.str() );
+                            streamID = stream;
+                            sri.streamID = stream.c_str();
+                         }
+                    }
+                    outPortNames.clear();
+                }
+                else {
+                    t << s << _ext;
+                    streamID = t.str();
+                    sri.streamID = t.str().c_str();
+                }
+            }
+/*{%else %}*/
         void adjustSRI( BULKIO::StreamSRI &inSri, int idx, bool setStreamID=true ) {
             if ( setStreamID ) {
-                streamID = inSri.streamID;
-                sri.streamID = inSri.streamID;
+                std::string s(inSri.streamID);
+                std::ostringstream t;
+                t << s << _ext;
+                streamID = t.str();
+                sri.streamID = t.str().c_str();
             }
+/*{% endif %}*/
             double ret=inSri.xdelta;
             if ( grb ) ret = ret *grb->relative_rate();
             sri.xdelta = ret;
@@ -808,14 +830,15 @@ ${super()}
 
     template < typename OUT_PORT_TYPE > struct gr_ostream : gr_ostream_base {
         OUT_PORT_TYPE                      *port;                // handle to Port object
+        std::string                        _ext;                 // extension to append to incoming StreamID
 /*{% if mem_align %}*/        
         std::vector< typename OUT_PORT_TYPE::NativeType, GR_MemAlign< typename OUT_PORT_TYPE::NativeType > >  _data;    // output buffer used by GR_Block
 /*{% else %}*/
         std::vector< typename OUT_PORT_TYPE::NativeType >  _data;    // output buffer used by GR_Block
 /*{% endif %}*/
     
-        gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
-            gr_ostream_base(ingrb, idx, mode, in_sid), port(out_port), _data(0)
+        gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid, std::string &ext="" ) :
+            gr_ostream_base(ingrb, idx, mode, in_sid, ext), port(out_port), _ext(ext),_data(0)
         {
         };
     

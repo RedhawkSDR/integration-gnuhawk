@@ -18,6 +18,7 @@
  * this program.  If not, see http://www.gnu.org/licenses/.
  #*/
 //% set className = component.userclass.name
+//% set hasMultiOut = component.hasmultioutport 
 
 ${component.cppLicense}
 
@@ -110,7 +111,26 @@ ${component.cppLicense}
 ${className}::${className}(const char *uuid, const char *label) :
 ${component.baseclass.name}(uuid, label)
 {
+/*{% if hasMultiOut %}*/
+    setPropertyChangeListener("stream_id_map", this, &${className}::streamIDChanged);
+/*{% endif %}*/
 }
+
+/*{% if hasMultiOut %}*/
+void ${className}::streamIdChanged(const std::string& id) {
+}
+/*{% for port in component.port if port is uses %}*/
+   RH_ProvidesPortMap::iterator in_port;
+   in_port = inPorts.find("port.cppname");
+   bulkio::InFloatPort *port = dynamic_cast<   bulkio::InFloatPort * >(in_port->second);
+   BULKIO::StreamSRISequence_var sris = port->activeSRIs();
+   if (sris->length() > 0 ) {
+     BULKIO::StreamSRI sri = sris[sris->length()-1];
+     setOutputStreamSRI(sri);
+   }
+/*{% endfor %}*/
+}
+/*{% endif %}*/
 
 ${className}::~${className}()
 {
@@ -165,15 +185,17 @@ void ${className}::createBlock()
 // For each output mapping defined, a call to createOutputSRI will be issued with the associated output index.
 // This default SRI and StreamID will be saved to the mapping and pushed down stream via pushSRI.
 //
-// @param idx : output stream index number to associate the returned SRI object with
+// @param oidx : output stream index number to associate the returned SRI object with
+// @param in_idx : input stream index number to associate the returned SRI object with
+// @param ext : extension to append to incoming StreamID
 // @return sri : default SRI object passed down stream over a RedHawk port
 //      
-BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx, int32_t &in_idx)
+BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext)
 {
     //
-    // idx is the stream number that you are returning an SRI context for
+    // oidx is the stream number that you are returning an SRI context for
     //
-
+    in_idx = 0;
     BULKIO::StreamSRI sri = BULKIO::StreamSRI();
     sri.hversion = 1;
     sri.xstart = 0.0;
@@ -185,9 +207,12 @@ BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx, int32_t &in_idx)
     sri.yunits = BULKIO::UNITS_NONE;
     sri.mode = 0;
     std::ostringstream t;
-    t << naming_service_name.c_str() << "_" << in_idx;
+    t << naming_service_name.c_str() << "_" << oidx;
     std::string sid = t.str();
     sri.streamID = CORBA::string_dup(sid.c_str());
+    std::ostringstream t1;
+    t1 << "_" << oidx;
+    ext = t1.str();
 
     // NOTE: For non 1 to 1 port mappings, user needs to specify in_idx
 

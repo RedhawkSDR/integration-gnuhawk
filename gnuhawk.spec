@@ -24,8 +24,8 @@
 %define _prefix    %{_sdrroot}/dom/deps/gnuhawk
 
 Name:		gnuhawk
-Version:	1.9.0
-Release:	3%{?dist}
+Version:	1.10.0
+Release:	1%{?dist}
 Summary:	GNUHAWK is a library for using GNU Radio blocks in REDHAWK
 Prefix:		%{_sdrroot}/dom/deps/gnuhawk
 
@@ -33,9 +33,9 @@ Group:		Applications/Engineering
 License:	GPLv3+
 Source:		%{name}-%{version}.tar.gz
 
-BuildRequires:	redhawk-devel >= 1.9
+BuildRequires:	redhawk-devel >= 1.10
 BuildRequires:	cmake fftw-devel python-cheetah gsl-devel
-Requires:	redhawk >= 1.9
+Requires:	redhawk >= 1.10
 Requires:	fftw gsl
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot

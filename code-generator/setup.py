@@ -31,7 +31,7 @@ class filtered_install_lib(install_lib):
         return install_lib.byte_compile(self,files)
 
 setup(name='gnuhawk-codegen',
-      version='1.9.0',
+      version='1.10.0',
       scripts=['gnuhawk-codegen'],
       cmdclass={'install_lib':filtered_install_lib},
       packages=['gnuhawk',

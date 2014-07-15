@@ -28,6 +28,7 @@ class vector_to_streams_ff_4o_i : public vector_to_streams_ff_4o_base
     public:
         vector_to_streams_ff_4o_i(const char *uuid, const char *label);
         ~vector_to_streams_ff_4o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

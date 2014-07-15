@@ -198,6 +198,14 @@ void deinterleave_cc_3o_base::loadProperties()
                 "external",
                 "configure");
 
+    addProperty(stream_id_map,
+                "stream_id_map",
+                "stream_id_map",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
 }
 
 

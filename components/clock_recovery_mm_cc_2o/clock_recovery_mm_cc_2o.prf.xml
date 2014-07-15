@@ -1,49 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "properties.dtd">
 <!--
-This file is protected by Copyright. Please refer to the COPYRIGHT file 
+This file is protected by Copyright. Please refer to the COPYRIGHT file.
 distributed with this source distribution.
 
 This file is part of GNUHAWK.
 
-GNUHAWK is free software: you can redistribute it and/or modify is under the 
-terms of the GNU General Public License as published by the Free Software 
-Foundation, either version 3 of the License, or (at your option) any later 
+GNUHAWK is free software: you can redistribute it and/or modify is under the.
+terms of the GNU General Public License as published by the Free Software.
+Foundation, either version 3 of the License, or (at your option) any later.
 version.
 
-GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY.
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A.
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with 
+You should have received a copy of the GNU General Public License along with.
 this program.  If not, see http://www.gnu.org/licenses/.
 -->
 
-<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
-  <simple id="omega" mode="readwrite" name="omega" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="gain_omega" mode="readwrite" name="gain_omega" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="mu" mode="readwrite" name="mu" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="gain_mu" mode="readwrite" name="gain_mu" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="omega_relative_limit" mode="readwrite" name="omega_relative_limit" type="float">
-    <value>0.001</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="verbose" mode="readwrite" name="verbose" type="boolean">
-    <value>False</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
+    <simple complex="false" type="float" id="omega" name="omega" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="gain_omega" name="gain_omega" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="mu" name="mu" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="gain_mu" name="gain_mu" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="omega_relative_limit" name="omega_relative_limit" mode="readwrite">
+        <value>0.001</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="boolean" id="verbose" name="verbose" mode="readwrite">
+        <value>False</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <structsequence id="stream_id_map" name="stream_id_map" mode="readwrite">
+        <description>port_name: name of port.
+                                  stream_id: renames ports stream ID,
+                                  enter a custom ID or use the following arguments
+                                  %C evaluates to the component name in the waveform
+                                  %SID evalutes to the incoming ports stream ID
+                                  %D evaluates to the port index</description>
+        <struct id="stream_id_struct" name="stream_id_struct" mode="readwrite">
+            <simple complex="false" type="string" id="port_name" name="port_name" mode="readwrite">
+                <kind kindtype="configure"/>
+                <action type="external"/>
+            </simple>
+            <simple complex="false" type="string" id="stream_id" name="stream_id" mode="readwrite">
+                <kind kindtype="configure"/>
+                <action type="external"/>
+            </simple>
+            <configurationkind kindtype="configure"/>
+        </struct>
+    </structsequence>
 </properties>

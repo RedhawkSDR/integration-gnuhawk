@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "fs_checker_ff_2i2o.h"
-
 int main(int argc, char* argv[])
 {
     fs_checker_ff_2i2o_i* fs_checker_ff_2i2o_servant;

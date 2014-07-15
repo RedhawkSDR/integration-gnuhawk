@@ -175,6 +175,14 @@ void complex_to_float_2o_base::loadProperties()
                 "external",
                 "configure");
 
+    addProperty(stream_id_map,
+                "stream_id_map",
+                "stream_id_map",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
 }
 
 

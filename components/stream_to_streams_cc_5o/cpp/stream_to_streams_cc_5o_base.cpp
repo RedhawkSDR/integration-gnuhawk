@@ -199,6 +199,14 @@ void stream_to_streams_cc_5o_base::loadProperties()
                 "external",
                 "configure");
 
+    addProperty(stream_id_map,
+                "stream_id_map",
+                "stream_id_map",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
 }
 
 

@@ -28,6 +28,7 @@ class stream_to_streams_ii_3o_i : public stream_to_streams_ii_3o_base
     public:
         stream_to_streams_ii_3o_i(const char *uuid, const char *label);
         ~stream_to_streams_ii_3o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

@@ -28,6 +28,7 @@ class deinterleave_ff_3o_i : public deinterleave_ff_3o_base
     public:
         deinterleave_ff_3o_i(const char *uuid, const char *label);
         ~deinterleave_ff_3o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

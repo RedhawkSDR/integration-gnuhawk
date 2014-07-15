@@ -28,6 +28,7 @@ class flex_sync_bb_4o_i : public flex_sync_bb_4o_base
     public:
         flex_sync_bb_4o_i(const char *uuid, const char *label);
         ~flex_sync_bb_4o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

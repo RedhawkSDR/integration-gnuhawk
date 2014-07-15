@@ -28,6 +28,7 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "argmax_fs_3i_GnuHawkBlock.h"
+#include <sstream>
 
 #define NOOP 0
 #define FINISH -1
@@ -247,7 +248,7 @@ class argmax_fs_3i_base : public GnuHawkBlock
         // @param idx : output stream index number to associate the returned SRI object with
         // @return sri : default SRI object passed down stream over a RedHawk port
         //      
-        virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );
+        virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx);
 
         virtual BULKIO::StreamSRI  createOutputSRI( int32_t oidx);
 
@@ -642,7 +643,7 @@ class argmax_fs_3i_base : public GnuHawkBlock
         virtual int  write( int32_t n_items, bool eos ) = 0;
         virtual void close() = 0;
 
-        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid  ) :
+        gr_ostream_base( GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
             grb(ingrb), _idx(idx), streamID(in_sid), _m_tstamp(false), _eos(false), _nelems(0), _vlen(1)
         {
             sri.hversion = 1;
@@ -840,7 +841,7 @@ class argmax_fs_3i_base : public GnuHawkBlock
         std::vector< typename OUT_PORT_TYPE::NativeType >  _data;    // output buffer used by GR_Block
     
         gr_ostream( OUT_PORT_TYPE *out_port, GNU_RADIO_BLOCK_PTR ingrb, int idx, int mode, std::string &in_sid ) :
-            gr_ostream_base(ingrb, idx, mode, in_sid), port(out_port), _data(0)
+            gr_ostream_base(ingrb, idx, mode, in_sid), port(out_port),_data(0)
         {
         };
     

@@ -17,7 +17,7 @@
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
  
-AC_INIT([gnuhawk], [1.9.0])
+AC_INIT([gnuhawk], [1.10.0])
 AC_PREREQ(2.59)
 
 AM_INIT_AUTOMAKE(nostdinc)
@@ -40,7 +40,7 @@ OSSIE_SDRROOT_AS_PREFIX([dom/deps/gnuhawk])
 AM_CONDITIONAL([ARCH_64], test $gr_libdir_suffix = "64")
 
 CHECK_VECTOR_IMPL
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.10 omniORB4 >= 4.0.0])
 
 # Require FFTW3
 PKG_CHECK_MODULES([FFTW], [fftw3f >= 3.0])

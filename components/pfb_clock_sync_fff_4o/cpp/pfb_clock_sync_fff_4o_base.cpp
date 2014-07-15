@@ -268,6 +268,14 @@ void pfb_clock_sync_fff_4o_base::loadProperties()
                 "external",
                 "configure");
 
+    addProperty(stream_id_map,
+                "stream_id_map",
+                "stream_id_map",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
 }
 
 

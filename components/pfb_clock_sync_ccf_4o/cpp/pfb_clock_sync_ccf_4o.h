@@ -28,6 +28,7 @@ class pfb_clock_sync_ccf_4o_i : public pfb_clock_sync_ccf_4o_base
    public:
       pfb_clock_sync_ccf_4o_i(const char *uuid, const char *label);
       ~pfb_clock_sync_ccf_4o_i();
+        void streamIdChanged(const std::string& id);
 
     //
     // createBlock

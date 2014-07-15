@@ -18,11 +18,11 @@
  * this program.  If not, see http://www.gnu.org/licenses/.
  */
 
+
 #include <iostream>
 #include "ossie/ossieSupport.h"
 
 #include "argmax_ss_1i.h"
-
 int main(int argc, char* argv[])
 {
     argmax_ss_1i_i* argmax_ss_1i_servant;

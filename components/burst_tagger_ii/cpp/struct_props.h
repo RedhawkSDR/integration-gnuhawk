@@ -107,7 +107,8 @@ typedef GR_StructProperty<true_tag_struct> true_tag_struct_GR_StructProperty;
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<true_tag_struct> (true_tag_struct& value)
 {
-    return new true_tag_struct_GR_StructProperty(value);
+    PropertyWrapper<true_tag_struct>* impl = PropertyWrapperFactory::Create(value);
+    return new true_tag_struct_GR_StructProperty(impl);
 }
 
 struct false_tag_struct {
@@ -187,7 +188,8 @@ typedef GR_StructProperty<false_tag_struct> false_tag_struct_GR_StructProperty;
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<false_tag_struct> (false_tag_struct& value)
 {
-    return new false_tag_struct_GR_StructProperty(value);
+    PropertyWrapper<false_tag_struct>* impl = PropertyWrapperFactory::Create(value);
+    return new false_tag_struct_GR_StructProperty(impl);
 }
 
 

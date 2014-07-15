@@ -19,7 +19,8 @@
  #*/
 //% set includeGuard = component.prefix.upper() + '_IMPL_H'
 //% set className = component.userclass.name
-
+//% set hasMultiOut = component.hasmultioutport 
+//
 ${component.cppLicense}
 
 #ifndef ${includeGuard}
@@ -32,6 +33,9 @@ class ${className} : public ${component.baseclass.name}
     public:
         ${className}(const char *uuid, const char *label);
         ~${className}();
+/*{% if hasMultiOut %}*/
+        void streamIdChanged(const std::string& id);
+/*{% endif %}*/
 
         //
         // createBlock
@@ -54,10 +58,12 @@ class ${className} : public ${component.baseclass.name}
         // The subclass is responsible for overriding behavior of this method. The index provide matches
         // the stream index number that will be use by the GR Block object
         //
-        // @param idx : output stream index number to associate the returned SRI object with
+        // @param oidx : output stream index number to associate the returned SRI object with
+        // @param in_idx : input stream index number to associate the returned SRI object with
+        // @param ext : extension to append to incoming StreamID
         // @return sri : default SRI object passed down stream over a RedHawk port
         //      
-        BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );
+        BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext );
 /*{% endif %}*/
 };
 

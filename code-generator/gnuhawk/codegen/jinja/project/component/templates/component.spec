@@ -25,8 +25,8 @@
 #{$ endblock $}
 
 #{$ block requireExtensions $}
-Requires: gnuhawk >= 1.9
-BuildRequires: gnuhawk >= 1.9
+Requires: gnuhawk >= 1.10
+BuildRequires: gnuhawk >= 1.10
 BuildRequires: fftw-devel
 #{$ endblock $}
 

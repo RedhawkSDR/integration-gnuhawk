@@ -35,17 +35,17 @@ Prefix: %{_prefix}
 Name: interleave_cc_1i
 Summary: Component %{name}
 Version: 1.0.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: None
 Group: REDHAWK/Components
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 
-Requires: redhawk >= 1.9
-BuildRequires: redhawk-devel >= 1.9
+Requires: redhawk >= 1.10
+BuildRequires: redhawk-devel >= 1.10
 BuildRequires: autoconf automake libtool
-Requires: gnuhawk >= 1.9
-BuildRequires: gnuhawk >= 1.9
+Requires: gnuhawk >= 1.10
+BuildRequires: gnuhawk >= 1.10
 BuildRequires: fftw-devel
 %if 0%{?rhel} == 5
 BuildRequires: gsl-devel

@@ -134,7 +134,6 @@ void decode_ccsds_27_fb_i::createBlock()
 //
 // @param oidx : output stream index number to associate the returned SRI object with
 // @param in_idx : input stream index number to associate the returned SRI object with
-// @param in_idx : input stream index number to associate the returned SRI object with
 // @return sri : default SRI object passed down stream over a RedHawk port
 //      
 BULKIO::StreamSRI decode_ccsds_27_fb_i::createOutputSRI( int32_t oidx, int32_t &in_idx)

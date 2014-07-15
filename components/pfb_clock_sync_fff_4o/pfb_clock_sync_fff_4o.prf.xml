@@ -1,71 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "properties.dtd">
 <!--
-This file is protected by Copyright. Please refer to the COPYRIGHT file 
+This file is protected by Copyright. Please refer to the COPYRIGHT file.
 distributed with this source distribution.
 
 This file is part of GNUHAWK.
 
-GNUHAWK is free software: you can redistribute it and/or modify is under the 
-terms of the GNU General Public License as published by the Free Software 
-Foundation, either version 3 of the License, or (at your option) any later 
+GNUHAWK is free software: you can redistribute it and/or modify is under the.
+terms of the GNU General Public License as published by the Free Software.
+Foundation, either version 3 of the License, or (at your option) any later.
 version.
 
-GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY 
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY.
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A.
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with 
+You should have received a copy of the GNU General Public License along with.
 this program.  If not, see http://www.gnu.org/licenses/.
 -->
 
-<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
-  <simple id="sps" mode="readwrite" name="sps" type="double">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="gain" mode="readwrite" name="gain" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simplesequence id="taps" mode="readwrite" name="taps" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simplesequence>
-  <simple id="filter_size" mode="readwrite" name="filter_size" type="ulong">
-    <value>32</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="init_phase" mode="readwrite" name="init_phase" type="float">
-    <value>0</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="max_rate_deviation" mode="readwrite" name="max_rate_deviation" type="float">
-    <value>1.5</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="osps" mode="readwrite" name="osps" type="long">
-    <value>1</value>
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="damping_factor" mode="readwrite" name="damping_factor" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="alpha" mode="readwrite" name="alpha" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="beta" mode="readwrite" name="beta" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
-  <simple id="clock_rate" mode="readwrite" name="clock_rate" type="float">
-    <kind kindtype="configure"/>
-    <action type="external"/>
-  </simple>
+    <simple complex="false" type="double" id="sps" name="sps" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="gain" name="gain" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="ulong" id="filter_size" name="filter_size" mode="readwrite">
+        <value>32</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="init_phase" name="init_phase" mode="readwrite">
+        <value>0</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="max_rate_deviation" name="max_rate_deviation" mode="readwrite">
+        <value>1.5</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="long" id="osps" name="osps" mode="readwrite">
+        <value>1</value>
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="damping_factor" name="damping_factor" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="alpha" name="alpha" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="beta" name="beta" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simple complex="false" type="float" id="clock_rate" name="clock_rate" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simple>
+    <simplesequence complex="false" type="float" id="taps" name="taps" mode="readwrite">
+        <kind kindtype="configure"/>
+        <action type="external"/>
+    </simplesequence>
+    <structsequence id="stream_id_map" name="stream_id_map" mode="readwrite">
+        <description>port_name: name of port.
+                                  stream_id: renames ports stream ID,
+                                  enter a custom ID or use the following arguments
+                                  %C evaluates to the component name in the waveform
+                                  %SID evalutes to the incoming ports stream ID
+                                  %D evaluates to the port index</description>
+        <struct id="stream_id_struct" name="stream_id_struct" mode="readwrite">
+            <simple complex="false" type="string" id="port_name" name="port_name" mode="readwrite">
+                <kind kindtype="configure"/>
+                <action type="external"/>
+            </simple>
+            <simple complex="false" type="string" id="stream_id" name="stream_id" mode="readwrite">
+                <kind kindtype="configure"/>
+                <action type="external"/>
+            </simple>
+            <configurationkind kindtype="configure"/>
+        </struct>
+    </structsequence>
 </properties>

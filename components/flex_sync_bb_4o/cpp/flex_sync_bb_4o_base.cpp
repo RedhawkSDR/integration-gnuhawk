@@ -176,6 +176,14 @@ void flex_sync_bb_4o_base::releaseObject() throw (CORBA::SystemException, CF::Li
 
 void flex_sync_bb_4o_base::loadProperties()
 {
+    addProperty(stream_id_map,
+                "stream_id_map",
+                "stream_id_map",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
 }
 
 

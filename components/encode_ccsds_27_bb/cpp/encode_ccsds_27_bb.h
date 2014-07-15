@@ -49,9 +49,7 @@ class encode_ccsds_27_bb_i : public encode_ccsds_27_bb_base
         // The subclass is responsible for overriding behavior of this method. The index provide matches
         // the stream index number that will be use by the GR Block object
         //
-        // @param oidx : output stream index number to associate the returned SRI object with
-                // @param in_idx : input stream index number to associate the returned SRI object with
-                // @param in_idx : input stream index number to associate the returned SRI object with
+        // @param idx : output stream index number to associate the returned SRI object with
         // @return sri : default SRI object passed down stream over a RedHawk port
         //      
         BULKIO::StreamSRI  createOutputSRI( int32_t oidx, int32_t &in_idx );

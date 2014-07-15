@@ -28,6 +28,7 @@ class fll_band_edge_cc_4o_i : public fll_band_edge_cc_4o_base
    public:
       fll_band_edge_cc_4o_i(const char *uuid, const char *label);
       ~fll_band_edge_cc_4o_i();
+        void streamIdChanged(const std::string& id);
 
     //
     // createBlock

@@ -51,7 +51,7 @@
 //    void component_class_i::createBlock()
 //    {
 //        ...
-//        this->setPropertyChangeListener("property_x", this, &component_class_i::setterForPropertyX);
+//        this->    setPropertyChangeListener("property_x", this, &component_class_i::setterForPropertyX);
 //        ...
 //    }
 
@@ -76,12 +76,24 @@
 stream_to_streams_ii_2o_i::stream_to_streams_ii_2o_i(const char *uuid, const char *label) :
 stream_to_streams_ii_2o_base(uuid, label)
 {
+    setPropertyChangeListener ("stream_id_map" , this, &stream_to_streams_ii_2o_i::streamIdChanged );
 }
 
 stream_to_streams_ii_2o_i::~stream_to_streams_ii_2o_i()
 {
 }
 
+void stream_to_streams_ii_2o_i::streamIdChanged(const std::string& id)
+{ 
+   RH_ProvidesPortMap::iterator in_port;
+   in_port = inPorts.find("long_in");
+   bulkio::InFloatPort *port = dynamic_cast<   bulkio::InFloatPort * >(in_port->second);
+   BULKIO::StreamSRISequence_var sris = port->activeSRIs();
+   if (sris->length() > 0 ) {
+     BULKIO::StreamSRI sri = sris[sris->length()-1];
+     setOutputStreamSRI(sri);
+   }
+} 
 
 // createBlock
 //
@@ -94,7 +106,6 @@ stream_to_streams_ii_2o_i::~stream_to_streams_ii_2o_i()
 void stream_to_streams_ii_2o_i::createBlock()
 {
     //
-    // gr_sptr = xxx_make_xxx( args );
     //
 
     try{
@@ -129,8 +140,8 @@ void stream_to_streams_ii_2o_i::createBlock()
 //
 // createOutputSRI
 //
-// For each output mapping defined, a call to createOutputSRI will be issued with the associated output index.
-// This default SRI and StreamID will be saved to the mapping and pushed down stream via pushSRI.
+// For each output map ping defined, a call to createOutputSRI will be issued with the associated output index.
+// This default SRI and StreamID will be saved to the map ping and pushed down stream via pushSRI.
 //
 // @param oidx : output stream index number to associate the returned SRI object with
 // @param in_idx : input stream index number to associate the returned SRI object with

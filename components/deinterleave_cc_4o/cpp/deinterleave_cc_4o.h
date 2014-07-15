@@ -28,6 +28,7 @@ class deinterleave_cc_4o_i : public deinterleave_cc_4o_base
     public:
         deinterleave_cc_4o_i(const char *uuid, const char *label);
         ~deinterleave_cc_4o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

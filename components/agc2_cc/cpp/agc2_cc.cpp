@@ -139,7 +139,7 @@ BULKIO::StreamSRI agc2_cc_i::createOutputSRI( int32_t oidx, int32_t &in_idx)
   // oidx is the stream number that you are returning an SRI context for
   //
 
-    in_idx = 0;
+  in_idx = 0;
   BULKIO::StreamSRI sri = BULKIO::StreamSRI();
   sri.hversion = 1;
   sri.xstart = 0.0;

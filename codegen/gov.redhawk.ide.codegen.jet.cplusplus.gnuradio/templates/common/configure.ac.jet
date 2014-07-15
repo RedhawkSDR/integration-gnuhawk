@@ -88,7 +88,7 @@ skeleton="../generator.skeleton"
         if (match.find()) {
             String interfaceNamespace = match.group(1);
             if ("BULKIO".equals(interfaceNamespace)) {
-                ifaceNameAndVer.put("bulkio", " >= 1.8");
+                ifaceNameAndVer.put("bulkio", " >= 1.10");
             } else if ("REDHAWK".equals(interfaceNamespace)) {
                 ifaceNameAndVer.put("redhawk", " >= 1.2.0");
             } else if (! "CF".equals(interfaceNamespace)) {
@@ -128,7 +128,7 @@ OSSIE_SDRROOT_AS_PREFIX
 
 # Dependencies
 export PKG_CONFIG_PATH="${SDRROOT}/dom/deps/gnuhawk/lib64/pkgconfig:${SDRROOT}/dom/deps/gnuhawk/lib/pkgconfig:<%=additionalPkg%>$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig"
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0 gnuhawk >= 0.1.0 ])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.10 omniORB4 >= 4.0.0 gnuhawk >= 0.1.0 ])
 <%
     boolean first = true;
     for (String interfaceNamespace : ifaceNameAndVer.keySet()) {

@@ -34,7 +34,7 @@ Prefix:         %{_prefix}
 
 Name:           fir_filter_scc
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Component %{name}
 
 Group:          REDHAWK/Components
@@ -42,10 +42,10 @@ License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 1.9
-Requires:       redhawk >= 1.9
-Requires: gnuhawk >= 1.9
-BuildRequires: gnuhawk >= 1.9
+BuildRequires:  redhawk-devel >= 1.10
+Requires:       redhawk >= 1.10
+Requires: gnuhawk >= 1.10
+BuildRequires: gnuhawk >= 1.10
 BuildRequires: fftw-devel
 %if 0%{?rhel} == 5
 BuildRequires: gsl-devel

@@ -38,7 +38,7 @@ def bkup_component_cpp( cdir, bkdir=None ):
     return cppdir, bkupdir
 
 
-def regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install ):
+def regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install, make_only ):
     print "COMPONENT ["+comp+"] SRC DIR:" + os.path.join(gnuhawk_root, dname )
     # start regen process
     target = os.path.join( gnuhawk_root,dname,comp)
@@ -67,45 +67,48 @@ def regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_alig
         # resolve: relative directories are appended to comp/cpp/<dir>
         cppdir=os.path.join(target,"cpp",gendir)
         print "\t["+comp+"] Changing CPP directory to:" + str(cppdir)
-    #check if component needs mem_align to provide different code generation
-    if comp in mem_align_comps or mem_align_comps_only:
-        codegen = 'gnuhawk-codegen -fa '+gendir_cmd+comp+'.spd.xml'
-        print "MEM ALIGN: " + codegen
-    else:
-        codegen = 'gnuhawk-codegen -f '+gendir_cmd+comp+'.spd.xml'
-    print "\t["+comp+"] Regenerating Code:" + codegen
-    (status,output) = commands.getstatusoutput(codegen)
-    if status != 0:
-        print "=========="
-        print status
-        print "----------"
-        print output
-        print "**********"
-        print "Failed to Regenerate Code",comp
-        return -1
 
-    os.chdir(cppdir)
-    # reapply namespace
-    fp = open('Makefile.am', 'r')
-    new_Makefile = fp.read()
-    fp.close()
-    if namespace != '':
-        new_Makefile = new_Makefile.replace('GR_NAMESPACE =\n',namespace)
-        fp = open('Makefile.am', 'w')
-        new_Makefile = fp.write(new_Makefile)
+    #generate code    
+    if not make_only:
+        #check if component needs mem_align to provide different code generation
+        if comp in mem_align_comps or mem_align_comps_only:
+            codegen = 'gnuhawk-codegen -fa '+gendir_cmd+comp+'.spd.xml'
+            print "MEM ALIGN: " + codegen
+        else:
+            codegen = 'gnuhawk-codegen -f '+gendir_cmd+comp+'.spd.xml'
+        print "\t["+comp+"] Regenerating Code:" + codegen
+        (status,output) = commands.getstatusoutput(codegen)
+        if status != 0:
+            print "=========="
+            print status
+            print "----------"
+            print output
+            print "**********"
+            print "Failed to Regenerate Code",comp
+            return -1
+
+        os.chdir(cppdir)
+        # reapply namespace
+        fp = open('Makefile.am', 'r')
+        new_Makefile = fp.read()
         fp.close()
+        if namespace != '':
+            new_Makefile = new_Makefile.replace('GR_NAMESPACE =\n',namespace)
+            fp = open('Makefile.am', 'w')
+            new_Makefile = fp.write(new_Makefile)
+            fp.close()
 
-    ## swap old component header/cpp and gnuhawk block definition
-    shutil.copyfile( comp+'.cpp', comp+'.cpp.new' )
-    shutil.copyfile( comp+'.h',  comp+'.h.new')
-    shutil.copyfile( comp+'_GnuHawkBlock.h', comp+'_GnuHawkBlock.h.new')
+        ## swap old component header/cpp and gnuhawk block definition
+        shutil.copyfile( comp+'.cpp', comp+'.cpp.new' )
+        shutil.copyfile( comp+'.h',  comp+'.h.new')
+        shutil.copyfile( comp+'_GnuHawkBlock.h', comp+'_GnuHawkBlock.h.new')
     
-    shutil.copyfile( bkupdir+'/'+comp+'.cpp', cppdir+'/'+comp+'.cpp')
-    shutil.copyfile( bkupdir+'/'+comp+'.h', cppdir+'/'+comp+'.h')
-    shutil.copyfile( bkupdir+'/'+comp+'_GnuHawkBlock.h', cppdir+'/'+comp+'_GnuHawkBlock.h')
-    shutil.copyfile( bkupdir+'/'+'reconf', cppdir+'/'+'reconf')
-    shutil.copyfile( bkupdir+'/'+'Makefile.am', cppdir+'/'+'Makefile.am')
-    shutil.copyfile( bkupdir+'/'+'configure.ac', cppdir+'/'+'configure.ac')
+        shutil.copyfile( bkupdir+'/'+comp+'.cpp', cppdir+'/'+comp+'.cpp')
+        shutil.copyfile( bkupdir+'/'+comp+'.h', cppdir+'/'+comp+'.h')
+        shutil.copyfile( bkupdir+'/'+comp+'_GnuHawkBlock.h', cppdir+'/'+comp+'_GnuHawkBlock.h')
+        shutil.copyfile( bkupdir+'/'+'reconf', cppdir+'/'+'reconf')
+        shutil.copyfile( bkupdir+'/'+'Makefile.am', cppdir+'/'+'Makefile.am')
+        shutil.copyfile( bkupdir+'/'+'configure.ac', cppdir+'/'+'configure.ac')
 
     if not gen_only:
         os.chdir(cppdir)
@@ -137,7 +140,7 @@ def regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_alig
             print "----------"
             print output
             print "**********"
-            print "Failed to compile",compi
+            print "Failed to compile",comp
             print "make clean"
             return -1
         (status,output) = commands.getstatusoutput('make -j')
@@ -177,7 +180,8 @@ def regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_alig
         if status != 0:
             print "failed to remove .new"
             return -1
-        """   
+        """ 
+    """
     os.chdir(target)
     (stutus,output) = commands.getstatusoutput('rm -rf bkup.cpp')
     if status != 0:
@@ -188,7 +192,7 @@ def regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_alig
         print "**********"
         print "Failed to delete bkup.cpp",comp
         return -1
-
+    """
     os.chdir(gnuhawk_root)
 
     if ignore_components_file:
@@ -213,6 +217,7 @@ parser.add_option("-a", "--memory align", action="store_true", dest="mem_align_c
 parser.add_option("-g", "--generate only", action="store_true", dest="gen_only")
 parser.add_option("-i", "--install", action="store_true", dest="install")
 parser.add_option("-c", type="string", action="store",dest="single_component",default='')
+parser.add_option("-m", "--make only", action="store_true",dest="make_only")
 ##parser.add_option("--gendir",type="string",action="store",dest="gendir",default=None,help="output directory to save generated source")
 (options,args) = parser.parse_args()
 ignore_components_file = options.ignore_components_file
@@ -222,6 +227,7 @@ gen_only = options.gen_only
 install = options.install
 gen_components_file = options.gen_components_file
 single_component = options.single_component
+make_only = options.make_only
 #
 # list of files to ignore and any subdirectories to traverse...
 #
@@ -263,13 +269,13 @@ lang = '-Dlang=C++'
 gnuhawk_root=os.getcwd()
 for dname in gnuhawkComponentDirs:
     if single_component and dname == "components":
-        if regen_component(gnuhawk_root,dname,single_component,ignore_components_file,mem_align_comps,mem_align_comps_only,gen_only,install) < 0:
+        if regen_component(gnuhawk_root,dname,single_component,ignore_components_file,mem_align_comps,mem_align_comps_only,gen_only,install,make_only) < 0:
             sys.exit(-1)
     
     elif gen_components_file and dname == "components":
         for comp in gen_components:
             print "gen_components file " + comp
-            if regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install ) < 0 :
+            if regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install,make_only ) < 0 :
                 sys.exit(-1)
 
 
@@ -277,7 +283,7 @@ for dname in gnuhawkComponentDirs:
         #mem_align_comps=['add_ff_2i']
         for comp in mem_align_comps:
             print "MEM_ALIGN: ", comp
-            if regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install ) < 0 :
+            if regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install,make_only ) < 0 :
                 sys.exit(-1)
 
     elif not mem_align_comps_only and not gen_components_file and not single_component:
@@ -300,6 +306,6 @@ for dname in gnuhawkComponentDirs:
                 print "Skipping FILE:" + str(comp)
                 continue
           
-            if regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install ) < 0 :
+            if regen_component( gnuhawk_root, dname, comp, ignore_components_file, mem_align_comps, mem_align_comps_only,gen_only, install,make_only ) < 0 :
                 sys.exit(-1)
 

@@ -526,9 +526,6 @@ class short_to_float_base : public GnuHawkBlock
                     retval=nitems();
                 }    
             }
-           for(int i = 0; i < _data.size(); i++){
-                std::cout << "get data: " << i << ": " << _data[i] << std::endl;
-            }
 
             return retval;
         }
@@ -900,9 +897,7 @@ class short_to_float_base : public GnuHawkBlock
  
             typename OUT_PORT_TYPE::NativeSequenceType nst(_data.begin(),_data.end() );
             if ( port ) port->pushPacket( nst, ts, eos, streamID );
-            for(int i = 0; i < _data.size(); i++){
-                std::cout << "push data: " << i << ": " << _data[i] << std::endl;
-            }
+    
             if ( adjust_ts ) forwardTimeStamp( n_items, ts );
     
             _eos = eos;
@@ -922,9 +917,7 @@ class short_to_float_base : public GnuHawkBlock
             typename OUT_PORT_TYPE::NativeSequenceType nst(_data.begin(),_data.end() );
             if ( port ) port->pushPacket( nst, tstamp, eos, streamID );
             if ( adjust_ts ) forwardTimeStamp( n_items );
-            for(int i = 0; i < _data.size(); i++){
-                std::cout << "push data: " << i << ": " << _data[i] << std::endl;
-            }
+    
             _eos = eos;
             _nelems += (n_items*_vlen);
             return n_items;
@@ -942,9 +935,7 @@ class short_to_float_base : public GnuHawkBlock
             typename OUT_PORT_TYPE::NativeSequenceType nst(_data.begin(),_data.end() );
             if ( port ) port->pushPacket( nst, tstamp, eos, streamID );
             if ( _m_tstamp ) forwardTimeStamp( n_items );
-            for(int i = 0; i < _data.size(); i++){
-                std::cout << "push data: " << i << ": " << _data[i] << std::endl;
-            }
+    
             _eos = eos;
             _nelems += n_items*_vlen;
             return n_items;

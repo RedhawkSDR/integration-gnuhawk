@@ -58,7 +58,7 @@ public class ConfigureAcTemplate
   protected final String TEXT_1 = "#" + NL + "# This file is protected by Copyright. Please refer to the COPYRIGHT file " + NL + "# distributed with this source distribution." + NL + "# " + NL + "# This file is part of GNUHAWK." + NL + "# " + NL + "# GNUHAWK is free software: you can redistribute it and/or modify is under the " + NL + "# terms of the GNU General Public License as published by the Free Software " + NL + "# Foundation, either version 3 of the License, or (at your option) any later " + NL + "# version." + NL + "# " + NL + "# GNUHAWK is distributed in the hope that it will be useful, but WITHOUT ANY " + NL + "# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR " + NL + "# A PARTICULAR PURPOSE.  See the GNU General Public License for more details." + NL + "" + NL + "# You should have received a copy of the GNU General Public License along with " + NL + "# this program.  If not, see http://www.gnu.org/licenses/." + NL + "#" + NL + "AC_INIT(";
   protected final String TEXT_2 = ", ";
   protected final String TEXT_3 = ")" + NL + "AM_INIT_AUTOMAKE(nostdinc)" + NL + "" + NL + "AC_PROG_CC" + NL + "AC_PROG_CXX" + NL + "AC_PROG_INSTALL" + NL + "" + NL + "AC_CORBA_ORB" + NL + "OSSIE_CHECK_OSSIE" + NL + "OSSIE_SDRROOT_AS_PREFIX" + NL + "" + NL + "# Dependencies" + NL + "export PKG_CONFIG_PATH=\"${SDRROOT}/dom/deps/gnuhawk/lib64/pkgconfig:${SDRROOT}/dom/deps/gnuhawk/lib/pkgconfig:";
-  protected final String TEXT_4 = "$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig\"" + NL + "PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0 gnuhawk >= 0.1.0 ])";
+  protected final String TEXT_4 = "$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig\"" + NL + "PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.10 omniORB4 >= 4.0.0 gnuhawk >= 0.1.0 ])";
   protected final String TEXT_5 = NL + "PKG_CHECK_MODULES([INTERFACEDEPS], [";
   protected final String TEXT_6 = "Interfaces";
   protected final String TEXT_7 = " ";
@@ -144,7 +144,7 @@ public class ConfigureAcTemplate
         if (match.find()) {
             String interfaceNamespace = match.group(1);
             if ("BULKIO".equals(interfaceNamespace)) {
-                ifaceNameAndVer.put("bulkio", " >= 1.8");
+                ifaceNameAndVer.put("bulkio", " >= 1.10");
             } else if ("REDHAWK".equals(interfaceNamespace)) {
                 ifaceNameAndVer.put("redhawk", " >= 1.2.0");
             } else if (! "CF".equals(interfaceNamespace)) {

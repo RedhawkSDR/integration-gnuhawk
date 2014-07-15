@@ -39,7 +39,8 @@ typedef GR_StructProperty<${struct['cpptype']}> ${struct['cpptype']}_GR_StructPr
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<${struct['cpptype']}> (${struct['cpptype']}& value)
 {
-    return new ${struct['cpptype']}_GR_StructProperty(value);
+    PropertyWrapper<${struct['cpptype']}>* impl = PropertyWrapperFactory::Create(value);
+    return new ${struct['cpptype']}_GR_StructProperty(impl);
 }
 
 /*{% endfor %}*/

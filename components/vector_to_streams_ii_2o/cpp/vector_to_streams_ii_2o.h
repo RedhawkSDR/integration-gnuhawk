@@ -28,6 +28,7 @@ class vector_to_streams_ii_2o_i : public vector_to_streams_ii_2o_base
     public:
         vector_to_streams_ii_2o_i(const char *uuid, const char *label);
         ~vector_to_streams_ii_2o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

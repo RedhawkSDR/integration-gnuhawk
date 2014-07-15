@@ -169,12 +169,11 @@ BULKIO::StreamSRI sig_source_s_i::createOutputSRI( int32_t oidx)
 
     BULKIO::StreamSRI sri = BULKIO::StreamSRI();
     sri.hversion = 1;
+    sri.xstart = 0.0;
     if (this->gr_sptr->sampling_freq() > 0.0)
         sri.xdelta = 1/this->gr_sptr->sampling_freq();
     else
         sri.xdelta = 1.0;
-    sri.xstart = 0.0;
-    sri.xdelta = 1;
     sri.xunits = BULKIO::UNITS_TIME;
     sri.subsize = 0;
     sri.ystart = 0.0;

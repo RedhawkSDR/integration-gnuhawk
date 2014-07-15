@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "vector_source_i.h"
-
 int main(int argc, char* argv[])
 {
     vector_source_i_i* vector_source_i_servant;

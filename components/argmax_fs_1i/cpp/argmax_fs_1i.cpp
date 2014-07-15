@@ -76,10 +76,22 @@
 argmax_fs_1i_i::argmax_fs_1i_i(const char *uuid, const char *label) :
 argmax_fs_1i_base(uuid, label)
 {
+    setPropertyChangeListener("stream_id_map", this, &argmax_fs_1i_i::streamIdChanged);
 }
 
 argmax_fs_1i_i::~argmax_fs_1i_i()
 {
+}
+
+void argmax_fs_1i_i::streamIdChanged(const std::string& id) {
+   RH_ProvidesPortMap::iterator in_port;
+   in_port = inPorts.find("float_in");
+   bulkio::InFloatPort *port = dynamic_cast<   bulkio::InFloatPort * >(in_port->second);
+   BULKIO::StreamSRISequence_var sris = port->activeSRIs();
+   if (sris->length() > 0 ) {
+     BULKIO::StreamSRI sri = sris[sris->length()-1];
+     setOutputStreamSRI(sri);
+   }
 }
 
 
@@ -125,18 +137,21 @@ void argmax_fs_1i_i::createBlock()
 //
 // createOutputSRI
 //
-// For each output mapping defined, a call to createOutputSRI will be issued with the associated output index.
-// This default SRI and StreamID will be saved to the mapping and pushed down stream via pushSRI.
+// For each output map ping defined, a call to createOutputSRI will be issued with the associated output index.
+// This default SRI and StreamID will be saved to the map ping and pushed down stream via pushSRI.
 //
-// @param idx : output stream index number to associate the returned SRI object with
+// @param oidx : output stream index number to associate the returned SRI object with
+// @param in_idx : input stream index number to associate the returned SRI object with
+// @param ext : extension to append to incoming StreamID
 // @return sri : default SRI object passed down stream over a RedHawk port
 //      
-BULKIO::StreamSRI argmax_fs_1i_i::createOutputSRI( int32_t idx)
+BULKIO::StreamSRI argmax_fs_1i_i::createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext)
 {
     //
-    // idx is the stream number that you are returning an SRI context for
+    // oidx is the  stream number that you are returning an SRI context for
     //
 
+    in_idx = 0;
     BULKIO::StreamSRI sri = BULKIO::StreamSRI();
     sri.hversion = 1;
     sri.xstart = 0.0;
@@ -148,10 +163,14 @@ BULKIO::StreamSRI argmax_fs_1i_i::createOutputSRI( int32_t idx)
     sri.yunits = BULKIO::UNITS_NONE;
     sri.mode = 0;
     std::ostringstream t;
-    t << naming_service_name.c_str() << "_" << idx;
+    t << naming_service_name.c_str() << "_" << oidx;
     std::string sid = t.str();
+
     sri.streamID = CORBA::string_dup(sid.c_str());
+    std::ostringstream t1;
+    t1 << "_" << oidx;
+    ext = t1.str();
+
   
     return sri;
 }
-

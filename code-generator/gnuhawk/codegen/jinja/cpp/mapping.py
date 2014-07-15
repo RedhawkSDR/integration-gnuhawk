@@ -34,6 +34,7 @@ class GnuhawkComponentMapper(PullComponentMapper):
         cppcomp['shellLicense'] = self.shellLicense()
         cppcomp['gnuType'] = self.gnuType
         cppcomp['mem_align'] = self.mem_align
+        cppcomp['hasmultioutports'] = self.hasMultiOutPorts(softpkg)
         return cppcomp
 
     def hasBulkioProvidesPorts(self, softpkg):
@@ -45,6 +46,12 @@ class GnuhawkComponentMapper(PullComponentMapper):
     def hasBulkioUsesPorts(self, softpkg):
         for port in softpkg.usesPorts():
             if 'BULKIO' in port.repid():
+                return True
+        return False
+
+    def hasMultiOutPorts(self, softpkg):
+        for prop in softpkg.getStructSequenceProperties():
+            if prop.name() == "stream_id_map":
                 return True
         return False
 

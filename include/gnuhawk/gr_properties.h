@@ -23,205 +23,85 @@
 
 #include <ossie/Resource_impl.h>
 #include <boost/scoped_ptr.hpp>
-
-// This code should be moved to the REDHAWK core framework, in CorbaUtils.h
-namespace ossie {
-    namespace corba {
-
-        template <class T, class SeqT>
-        inline bool vector_extract (const CORBA::Any& _a, std::vector<T>& _s)
-        {
-            SeqT* seq;
-            if (_a >>= seq) {
-                size_t length = seq->length();
-                if (length == 0) {
-                    _s.clear();
-                } else {
-                    T* begin = &(*seq)[0];
-                    _s.assign(begin, begin+length);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        template <class T, class SeqT>
-        inline void vector_insert (CORBA::Any& _a, const std::vector<T>& _s)
-        {
-            SeqT seq(_s.size(), _s.size(), (T*)&_s[0], 0);
-            _a <<= seq;
-        }
-
-        inline bool element_convert(bool in) {
-            return in;
-        }
-
-        inline char element_convert(CORBA::Char in) {
-            return in;
-        }
-
-        inline CORBA::Char element_convert(char in) {
-            return in;
-        }
-
-        inline std::string element_convert(_CORBA_String_element in) {
-            return static_cast<const char*>(in);
-        }
-        
-        inline const char* element_convert(const std::string& in) {
-            return in.c_str();
-        }
-        
-        template <class T, class SeqT>
-        inline bool vector_extract_convert (const CORBA::Any& _a, std::vector<T>& _s)
-        {
-            SeqT* seq;
-            if (_a >>= seq) {
-                _s.resize(seq->length());
-                for (size_t ii = 0; ii < _s.size(); ++ii) {
-                    _s[ii] = element_convert((*seq)[ii]);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        template <class T, class SeqT>
-        inline void vector_insert_convert (CORBA::Any& _a, const std::vector<T>& _s)
-        {
-            SeqT seq;
-            seq.length(_s.size());
-            for (size_t ii = 0; ii < _s.size(); ++ii) {
-                seq[ii] = element_convert(_s[ii]);
-            }
-            _a <<= seq;
-        }
-
-        /*
-         * Vector functions for complex sequence
-         * a -> seq_p -> v
-         * any -> CORBA sequence type -> std::vector<simple type>
-         */
-        template<>
-        inline bool vector_extract<std::complex<float>, CF::complexFloatSeq>
-             (const CORBA::Any& _a, std::vector<std::complex<float> >& _s)
-        {
-            CF::complexFloatSeq* seq;
-            if (_a >>= seq) {
-                // any -> CORBA sequence type worked
-                _s.resize(seq->length());
-                if ( _s.size() > 0 )  {
-                    // CORBA sequence -> std::vector<simple type>
-                    memcpy(&_s[0], &(*seq)[0], seq->length()*sizeof(std::complex<float>));
-                }
-                return true;
-            } else {
-                // Something went wrong with any -> CORBA sequence type.  Abort.
-                return false;
-            }
-        }
-
-        template<>
-        inline void vector_insert<std::complex<float>, CF::complexFloatSeq>
-            (CORBA::Any& _a, const std::vector<std::complex<float> >& _s)
-	 {
-            CF::complexFloatSeq::_var_type seq = new CF::complexFloatSeq(_s.size(), 
-                                         _s.size(),
-                                        (CF::complexFloat*)&_s[0],
-                                        0);  
-            _a <<= seq;
-        } 
-
-
-    } // namespace ossie
-} //namespace corba
-
-#define ANY_VECTOR_OPERATORS(T,SEQ)                                 \
-inline bool operator >>= (const CORBA::Any& _a, std::vector<T>& _s) \
-{                                                                   \
-    return ossie::corba::vector_extract<T,SEQ>(_a, _s);             \
-}                                                                   \
-inline void operator <<= (CORBA::Any& _a, const std::vector<T>& _s) \
-{                                                                   \
-    ossie::corba::vector_insert<T,SEQ>(_a, _s);                     \
-}                                                                   \
-
-ANY_VECTOR_OPERATORS(CORBA::Octet, CORBA::OctetSeq);
-ANY_VECTOR_OPERATORS(CORBA::Short, CORBA::ShortSeq);
-ANY_VECTOR_OPERATORS(CORBA::UShort, CORBA::UShortSeq);
-ANY_VECTOR_OPERATORS(CORBA::Long, CORBA::LongSeq);
-ANY_VECTOR_OPERATORS(CORBA::ULong, CORBA::ULongSeq);
-ANY_VECTOR_OPERATORS(CORBA::LongLong, CORBA::LongLongSeq);
-ANY_VECTOR_OPERATORS(CORBA::ULongLong, CORBA::ULongLongSeq);
-ANY_VECTOR_OPERATORS(CORBA::Float, CORBA::FloatSeq);
-ANY_VECTOR_OPERATORS(CORBA::Double, CORBA::DoubleSeq);
-ANY_VECTOR_OPERATORS(std::complex<float>, CF::complexFloatSeq);
-#undef ANY_VECTOR_OPERATORS
-
-#define ANY_VECTOR_CONVERT_OPERATORS(T,SEQ)                         \
-inline bool operator >>= (const CORBA::Any& _a, std::vector<T>& _s) \
-{                                                                   \
-    return ossie::corba::vector_extract_convert<T,SEQ>(_a, _s);     \
-}                                                                   \
-inline void operator <<= (CORBA::Any& _a, const std::vector<T>& _s) \
-{                                                                   \
-    ossie::corba::vector_insert_convert<T,SEQ>(_a, _s);             \
-}
-
-ANY_VECTOR_CONVERT_OPERATORS(bool,CORBA::BooleanSeq);
-ANY_VECTOR_CONVERT_OPERATORS(char,CORBA::CharSeq);
-ANY_VECTOR_CONVERT_OPERATORS(std::string,CORBA::StringSeq);
-
-#undef ANY_VECTOR_CONVERT_OPERATORS
-// End core framework section
+#include <iostream>
 
 template <typename T>
-class GR_PropertyWrapper : public PropertyWrapper< T >
+//class GR_PropertyWrapper : public PropertyWrapper< T >
+class GR_PropertyWrapper : public PropertyInterface
 {
 public:
     typedef T value_type;
-    typedef PropertyWrapper<T> super;
-
+    typedef PropertyInterface    super;
+    PropertyWrapper<T>*  impl_;
+    CORBA::Any* value_;
+    
     virtual void getValue (CORBA::Any& outValue)
     {
-        const value_type& tmp_value = this->getValue();
-        if (super::enableNil_ && super::isNil_) {
-            outValue = CORBA::Any();
-        } else {
-            toAny(tmp_value, outValue);
+
+        if (p_getValueCallback) {
+            value_type retval = (*p_getValueCallback)();
+            if (retval != impl_->getValue()) {
+                impl_->setValue(retval);
+
+            }
         }
+        return impl_->getValue(outValue);
     }
 
     virtual const value_type& getValue (void)
     {
         if (p_getValueCallback) {
             value_type retval = (*p_getValueCallback)();
-            if (retval != super::value_) {
-                super::setValue(retval);
+            if (retval != impl_->getValue()) {
+                impl_->setValue(retval);
+
             }
         }
-        return super::value_;
+        return impl_->getValue();
     }
 
     virtual void setValue (const CORBA::Any& newValue)
     {
-        value_type value;
-        if (fromAny(newValue, value)) {
-            super::isNil_ = false;
-            setValue(value);
-        } else {
-            super::isNil_ = super::enableNil_;
+        impl_->setValue(newValue);
+        if (p_setValueCallback) {
+            const value_type &retval = impl_->getValue();
+            (*p_setValueCallback)(retval);
         }
     }
 
-    virtual void setValue (const value_type& newValue)
-    {
-        super::setValue(newValue);
-        if (p_setValueCallback) {
-            (*p_setValueCallback)(newValue);
-        }
+
+
+    virtual short int compare(const CORBA::Any& a){
+        return impl_->compare(a);
     }
-    
+    virtual void increment(const CORBA::Any& a){ 
+        if (p_getValueCallback) {
+            value_type retval = (*p_getValueCallback)();
+            if (retval != impl_->getValue()) {
+                impl_->setValue(retval);
+            }
+        }
+        impl_->increment(a);
+    }
+    virtual void decrement(const CORBA::Any& a){
+        if (p_getValueCallback) {
+            value_type retval = (*p_getValueCallback)();
+            if (retval != impl_->getValue()) {
+                impl_->setValue(retval);
+            }
+        }
+        impl_->decrement(a);
+    }
+    virtual bool allocate(const CORBA::Any& a){
+      return impl_->allocate(a);
+    }
+    virtual void deallocate(const CORBA::Any& a){
+      impl_->deallocate(a);
+    }
+    virtual const std::string getNativeType()const{
+      return impl_->getNativeType();
+    }
+   
     class GetValueCallback
     {
     public:
@@ -351,8 +231,14 @@ public:
     }
 
 protected:
-    GR_PropertyWrapper (value_type& value) :
-        super(value)
+    GR_PropertyWrapper (PropertyWrapper<T> *impl) : 
+        PropertyInterface(ossie::corba::TypeCode<value_type>()),
+        impl_(impl)
+    {
+    }
+    GR_PropertyWrapper (SequenceProperty<T> *impl) : 
+        PropertyInterface(ossie::corba::TypeCode< std::vector< value_type > >()),
+        impl_(impl)
     {
     }
     friend class GR_PropertyWrapperFactory;
@@ -381,50 +267,29 @@ public:
 
     virtual short compare (const CORBA::Any& a)
     {
-        if (super::isNil_) {
-            if (a.type()->kind() == (CORBA::tk_null)) {
-                return 0;
-            }
-            return 1;
-        }
-
-        value_type tmp;
-        if (fromAny(a, tmp)) {
-            if (tmp < super::value_) {
-                return -1;
-            }
-            if (tmp == super::value_) {
-                return 0;
-            }
-            return 1;
-        } else {
-            return 1;
-        }
+        return super::impl_->compare(a);
     }
 
-    virtual void increment (const CORBA::Any& a)
-    {
-        if (!super::isNil_) {
-            value_type tmp;
-            if (fromAny(a, tmp)) {
-                super::value_ += tmp;
-            }
-        }
+    virtual void increment (const CORBA::Any& a){
+        super::impl_->increment(a);
+    }
+    virtual void decrement (const CORBA::Any& a){
+        super::impl_->decrement(a);
+    }
+    virtual bool allocate (const CORBA::Any& a){
+      return super::impl_->allocate(a);
+    }
+    virtual void deallocate (const CORBA::Any& a){
+      return super::impl_->deallocate(a);
+    }
+    virtual const std::string getNativeType()const{
+      return super::impl_->getNativeType();
     }
 
-    virtual void decrement (const CORBA::Any& a)
-    {
-        if (!super::isNil_) {
-            value_type tmp;
-            if (fromAny(a, tmp)) {
-                super::value_ -= tmp;
-            }
-        }
-    }
 
 protected:
-    GR_NumericPropertyWrapper (value_type& value) :
-        super(value)
+    GR_NumericPropertyWrapper (PropertyWrapper<T> *impl) :
+        super(impl)
     {
     };
 
@@ -440,29 +305,45 @@ public:
 
     virtual short compare (const CORBA::Any& a)
     {
-        if (super::isNil_) {
-            if (a.type()->kind() == (CORBA::tk_null)) {
-                return 0;
-            }
-            return 1;
-        }
-
-        value_type tmp;
-        if (fromAny(a, tmp)) {
-            if (tmp != super::value_) {
-                return 1;
-            }
-            return 0;
-        } else {
-            return 1;
-        }
+        return super::impl_->compare(a);
     }
+
 protected:
-    GR_StructProperty (value_type& value) :
-        super(value)
+    GR_StructProperty (PropertyWrapper<T>* impl) :
+        super(impl)
+ 
     {
         super::type = CORBA::_tc_TypeCode;
     }
+
+    friend class GR_PropertyWrapperFactory;
+};
+
+template <typename T>
+class GR_StructSequenceProperty : public GR_PropertyWrapper<std::vector<T> >
+{
+public:
+    typedef T elem_type;
+    typedef std::vector<elem_type> value_type;
+    typedef  GR_PropertyWrapper<value_type> super;
+
+    // This definition exists strictly because pre-1.10 code generators define
+    // an explicit specialization of this method; it may be removed when source
+    // compatibility with 1.9 and older is no longer required.
+    virtual short compare (const CORBA::Any& a)
+    {
+        return super::compare(a);
+    }
+
+protected:
+
+    GR_StructSequenceProperty (PropertyWrapper<std::vector<T> >* impl) :
+        super(impl)
+ 
+    {
+       super::type = CORBA::_tc_TypeCode;
+    }
+ 
 
     friend class GR_PropertyWrapperFactory;
 };
@@ -493,21 +374,23 @@ public:
     template <typename T>
     static PropertyInterface* Create (T& value)
     {
-        return new GR_StructProperty< T >(value);
+        PropertyWrapper<T>* impl = PropertyWrapperFactory::Create(value);
+        return new GR_PropertyWrapper<T>(impl);
     }
 
-    template <typename T>
+   template <typename T>
     static PropertyInterface* Create (std::vector< T >& value)
     {
-      return new StructSequenceProperty<T>(value);
+     PropertyWrapper<std::vector<T> >* impl = PropertyWrapperFactory::Create< T >(value);
+     return new  GR_StructSequenceProperty<T>(impl);
+      
     }
-
-
 private:
     // This class should never be instantiated.
     GR_PropertyWrapperFactory();
 
 };
+
 
 typedef GR_PropertyWrapper<std::string> GR_StringProperty;
 typedef GR_PropertyWrapper<bool> GR_BooleanProperty;
@@ -525,141 +408,167 @@ typedef GR_NumericPropertyWrapper<CORBA::Double> GR_DoubleProperty;
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<std::string> (std::string& value)
 {
-  return new GR_StringProperty(value);
+    PropertyWrapper<std::string>* impl = PropertyWrapperFactory::Create(value);
+    return new GR_StringProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<bool> (bool& value)
 {
-    return new GR_BooleanProperty(value);
+    PropertyWrapper<bool>* impl = PropertyWrapperFactory::Create(value);
+    return new GR_BooleanProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<char> (char& value)
 {
-    return new GR_CharProperty(value);
+    PropertyWrapper<char>* impl = PropertyWrapperFactory::Create(value);
+    return new GR_CharProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Octet> (CORBA::Octet& value)
 {
-  return new GR_OctetProperty(value);
+    PropertyWrapper<CORBA::Octet>* impl = PropertyWrapperFactory::Create(value);
+    return new GR_OctetProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Short> (CORBA::Short& value)
 {
-  return new GR_ShortProperty(value);
+  PropertyWrapper<CORBA::Short>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_ShortProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::UShort> (CORBA::UShort& value)
 {
-  return new GR_UShortProperty(value);
+  PropertyWrapper<CORBA::UShort>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_UShortProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Long> (CORBA::Long& value)
 {
-  return new GR_LongProperty(value);
+  PropertyWrapper<CORBA::Long>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_LongProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::ULong> (CORBA::ULong& value)
 {
-  return new GR_ULongProperty(value);
+  PropertyWrapper<CORBA::ULong>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_ULongProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Float> (CORBA::Float& value)
 {
-  return new GR_FloatProperty(value);
+  PropertyWrapper<CORBA::Float>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_FloatProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Double> (CORBA::Double& value)
 {
-  return new GR_DoubleProperty(value);
+  PropertyWrapper<CORBA::Double>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_DoubleProperty(impl);
 }
 
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<std::string> (std::vector<std::string>& value)
 {
-    return new GR_StringSeqProperty(value);
+    SequenceProperty<std::string>* impl = PropertyWrapperFactory::Create(value);
+    return new GR_StringSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<bool> (std::vector<bool>& value)
 {
-  return new GR_BooleanSeqProperty(value);
+  SequenceProperty<bool>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_BooleanSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<char> (std::vector<char>& value)
 {
-  return new GR_CharSeqProperty(value);
+  SequenceProperty<char>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_CharSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Octet> (std::vector<CORBA::Octet>& value)
 {
-  return new GR_OctetSeqProperty(value);
+  SequenceProperty<CORBA::Octet>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_OctetSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Short> (std::vector<CORBA::Short>& value)
 {
-  return new GR_ShortSeqProperty(value);
+  SequenceProperty<CORBA::Short>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_ShortSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::UShort> (std::vector<CORBA::UShort>& value)
 {
-  return new GR_UShortSeqProperty(value);
+  SequenceProperty<CORBA::UShort>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_UShortSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Long> (std::vector<CORBA::Long>& value)
 {
-  return new GR_LongSeqProperty(value);
+  SequenceProperty<CORBA::Long>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_LongSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::ULong> (std::vector<CORBA::ULong>& value)
 {
-  return new GR_ULongSeqProperty(value);
+  SequenceProperty<CORBA::ULong>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_ULongSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::LongLong> (std::vector<CORBA::LongLong>& value)
 {
-  return new GR_LongLongSeqProperty(value);
+  SequenceProperty<CORBA::LongLong>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_LongLongSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::ULongLong> (std::vector<CORBA::ULongLong>& value)
 {
-  return new GR_ULongLongSeqProperty(value);
+  SequenceProperty<CORBA::ULongLong>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_ULongLongSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Float> (std::vector<CORBA::Float>& value)
 {
-  return new GR_FloatSeqProperty(value);
+  SequenceProperty<CORBA::Float>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_FloatSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<CORBA::Double> (std::vector<CORBA::Double>& value)
 {
-  return new GR_DoubleSeqProperty(value);
+  SequenceProperty<CORBA::Double>* impl = PropertyWrapperFactory::Create(value);
+  return new GR_DoubleSeqProperty(impl);
 }
 
 template <>
 inline PropertyInterface* GR_PropertyWrapperFactory::Create<std::complex<float> > (
     std::vector<std::complex<float> >& inputVector)
 {
-    return new GR_ComplexFloatSeqProperty(inputVector);
+    SequenceProperty<std::complex<float> >* impl = PropertyWrapperFactory::Create(inputVector);
+    return new GR_ComplexFloatSeqProperty(impl);
 }
+
 #endif
+
+
 

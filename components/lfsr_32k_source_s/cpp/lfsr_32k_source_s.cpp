@@ -134,14 +134,16 @@ void lfsr_32k_source_s_i::createBlock()
 //
 // @param oidx : output stream index number to associate the returned SRI object with
 // @param in_idx : input stream index number to associate the returned SRI object with
+// @param in_idx : input stream index number to associate the returned SRI object with
 // @return sri : default SRI object passed down stream over a RedHawk port
 //      
 BULKIO::StreamSRI lfsr_32k_source_s_i::createOutputSRI( int32_t oidx, int32_t &in_idx)
 {
     //
-    // ooidx is the stream number that you are returning an SRI context for
+    // oidx is the stream number that you are returning an SRI context for
     //
 
+    in_idx = 0;
     in_idx = 0;
     BULKIO::StreamSRI sri = BULKIO::StreamSRI();
     sri.hversion = 1;

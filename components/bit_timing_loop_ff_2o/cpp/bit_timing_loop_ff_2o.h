@@ -28,6 +28,7 @@ class bit_timing_loop_ff_2o_i : public bit_timing_loop_ff_2o_base
     public:
         bit_timing_loop_ff_2o_i(const char *uuid, const char *label);
         ~bit_timing_loop_ff_2o_i();
+        void streamIdChanged(const std::string& id);
 
         //
         // createBlock

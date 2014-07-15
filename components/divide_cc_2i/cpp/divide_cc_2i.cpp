@@ -141,7 +141,6 @@ BULKIO::StreamSRI divide_cc_2i_i::createOutputSRI( int32_t oidx, int32_t &in_idx
     //
     // oidx is the stream number that you are returning an SRI context for
     //
-
     in_idx = 0;
     BULKIO::StreamSRI sri = BULKIO::StreamSRI();
     sri.hversion = 1;

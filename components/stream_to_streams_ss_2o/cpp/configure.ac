@@ -17,7 +17,7 @@
 # this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-AC_INIT(stream_to_streams_ss_2o, 1.0.1)
+AC_INIT(stream_to_streams_ss_2o, 1.0.2)
 AM_INIT_AUTOMAKE(nostdinc)
 
 AC_PROG_CC
@@ -30,8 +30,8 @@ OSSIE_SDRROOT_AS_PREFIX
 
 GNUHAWK_PKG_CONFIG([${GHAWK_DIR}])
 
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.8 omniORB4 >= 4.0.0 ] )
-PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 1.0 bulkioInterfaces >= 1.9])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 1.10 omniORB4 >= 4.0.0 ] )
+PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 1.0 bulkioInterfaces >= 1.10])
 
 OSSIE_ENABLE_LOG4CXX
 AX_BOOST_BASE([1.41])

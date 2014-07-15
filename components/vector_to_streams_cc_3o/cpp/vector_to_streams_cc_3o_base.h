@@ -25,6 +25,7 @@
 #include <ossie/Resource_impl.h>
 
 #include <bulkio/bulkio.h>
+#include "struct_props.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "vector_to_streams_cc_3o_GnuHawkBlock.h"
@@ -139,6 +140,7 @@ class vector_to_streams_cc_3o_base : public GnuHawkBlock
         // Member variables exposed as properties
         CORBA::Long item_size;
         CORBA::Long nstreams;
+        std::vector<stream_id_struct_struct> stream_id_map;
 
         // Ports
         bulkio::InFloatPort *complex_in;
@@ -278,7 +280,7 @@ class vector_to_streams_cc_3o_base : public GnuHawkBlock
         virtual void  setOutputStreamSRI( int streamIdx, BULKIO::StreamSRI &in_sri, bool sendSRI=true, bool setStreamID=true ) {
             for (int i = 0; i < (int)io_mapping[streamIdx].size(); i++){
                 int o_idx = io_mapping[streamIdx][i];
-                _ostreams[o_idx]->adjustSRI(in_sri, o_idx, setStreamID );
+                _ostreams[o_idx]->adjustSRI(in_sri, o_idx, stream_id_map, outPorts, setStreamID, naming_service_name );
                 if ( sendSRI ) _ostreams[o_idx]->pushSRI();
             }
         }
@@ -292,7 +294,7 @@ class vector_to_streams_cc_3o_base : public GnuHawkBlock
         virtual void  setOutputStreamSRI( BULKIO::StreamSRI &in_sri , bool sendSRI = true, bool setStreamID = true ) {
             OStreamList::iterator ostream=_ostreams.begin();
             for( int o_idx=0;  ostream != _ostreams.end(); o_idx++, ostream++ ) {
-                (*ostream)->adjustSRI(in_sri, o_idx, setStreamID );
+                (*ostream)->adjustSRI(in_sri, o_idx, stream_id_map, outPorts, setStreamID, naming_service_name );
                 if ( sendSRI )  (*ostream)->pushSRI();
             }
         }
@@ -688,13 +690,35 @@ class vector_to_streams_cc_3o_base : public GnuHawkBlock
         //
         // Only adjust stream id and output rate for SRI object
         //
-        void adjustSRI( BULKIO::StreamSRI &inSri, int idx, bool setStreamID=true ) {
+        void adjustSRI( BULKIO::StreamSRI &inSri, int idx, const std::vector<stream_id_struct_struct> &stream_id_map, PortSupplier_impl::RH_UsesPortMap& outPorts, bool setStreamID=true, const std::string &stream_tag="" ) {
             if ( setStreamID ) {
+                std::vector<std::string> outPortNames;
+                for (RH_UsesPortMap::iterator port = outPorts.begin(); port != outPorts.end(); ++port ) {
+                    outPortNames.push_back(port->first);
+                }
                 std::string s(inSri.streamID);
                 std::ostringstream t;
-                t << s << _ext;
-                streamID = t.str();
-                sri.streamID = t.str().c_str();
+                if (stream_id_map.size() != 0) {
+                    for(int i = 0; i < (int)stream_id_map.size(); i++) {
+                        if (outPortNames[idx] == stream_id_map[i].port_name) {
+                            std::string stream = stream_id_map[i].stream_id;
+                            t << inSri.streamID << "_";
+                            stream = boost::replace_all_copy( stream, "%SID", t.str() );
+                            stream = boost::replace_all_copy( stream, "%C", stream_tag + "_" );
+                            t.str("");
+                            t << idx << "_";
+                            stream = boost::replace_all_copy( stream, "%D", t.str() );
+                            streamID = stream;
+                            sri.streamID = stream.c_str();
+                         }
+                    }
+                outPortNames.clear();
+                }
+                else {
+                    t << s << _ext;
+                    streamID = t.str();
+                    sri.streamID = t.str().c_str();
+                }
             }
             double ret=inSri.xdelta;
             if ( grb ) ret = ret *grb->relative_rate();

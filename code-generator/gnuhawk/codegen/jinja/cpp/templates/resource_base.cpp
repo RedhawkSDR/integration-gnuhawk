@@ -34,21 +34,17 @@ ${component.cppLicense}
 /*{% block componentConstructor %}*/
 ${className}::${className}(const char *uuid, const char *label) :
     GnuHawkBlock(uuid, label),
-    serviceThread(0),
     noutput_items(0),
     _maintainTimeStamp(false),
     _throttle(false)
 {
     construct();
 }
-/*{% endblock %}*/
 
-/*{% block construct %}*/
 void ${className}::construct()
 {
     Resource_impl::_started = false;
     loadProperties();
-    serviceThread = 0;
 /*{% if hasOutput %}*/
     sentEOS = false;
 /*{% endif %}*/
@@ -138,12 +134,9 @@ void ${className}::stop() throw (CORBA::SystemException, CF::Resource::StopError
 }
 /*{% endblock %}*/
 
-/*{% block extensions %}*/
-
 /*{% if hasInput or hasOutput %}*/
+/*{% block destructorBody %}*/
 // Destructor
-${className}::~${className}()
-{
 /*{% if hasInput %}*/
     // Free input streams
     for (IStreamList::iterator iter = _istreams.begin(); iter != _istreams.end(); ++iter) {
@@ -156,9 +149,11 @@ ${className}::~${className}()
         delete (*iter);
     }
 /*{% endif %}*/
-}
 
+/*{% endblock %}*/
 /*{% endif %}*/
+
+/*{% block extensions %}*/
 //
 //  Allow for logging 
 // 
@@ -299,12 +294,13 @@ void ${className}::setupIOMappings( )
     if ( p_out != outPorts.end() ) {
         ${port.cpptype} *port = dynamic_cast< ${port.cpptype} * >(p_out->second);
         int idx = -1;
-        BULKIO::StreamSRI sri = createOutputSRI( i, idx );
+        std::string ext;
+        BULKIO::StreamSRI sri = createOutputSRI( i, idx, ext );
         if (idx == -1) idx = i;
         if(idx < (int)io_mapping.size()) io_mapping[idx].push_back(i);
         int mode = sri.mode;
         sid = sri.streamID;
-        _ostreams.push_back( new gr_ostream< ${port.cpptype} > ( port, gr_sptr, i, mode, sid ));
+        _ostreams.push_back( new gr_ostream< ${port.cpptype} > ( port, gr_sptr, i, mode, sid, ext ));
         LOG_DEBUG( ${className}, "ADDING OUTPUT MAP IDX:" << i << " SID:" << sid );
         _ostreams[i]->setSRI(sri, i );
 /*{% if not hasInput %}*/
@@ -400,7 +396,7 @@ BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx ) {
     return sri;
 }
 
-BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx, int32_t &in_idx)
+BULKIO::StreamSRI ${className}::createOutputSRI( int32_t oidx, int32_t &in_idx, std::string &ext)
 {
     return createOutputSRI( oidx );
 }
