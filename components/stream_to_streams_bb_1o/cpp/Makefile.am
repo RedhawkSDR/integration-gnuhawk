@@ -53,6 +53,6 @@ install-exec-hook:
 include $(srcdir)/Makefile.am.ide
 stream_to_streams_bb_1o_SOURCES = $(redhawk_SOURCES_auto)
 stream_to_streams_bb_1o_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-stream_to_streams_bb_1o_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+stream_to_streams_bb_1o_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_SYSTEM_LIB) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 stream_to_streams_bb_1o_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)
 

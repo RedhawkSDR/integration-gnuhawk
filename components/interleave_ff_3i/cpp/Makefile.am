@@ -53,5 +53,5 @@ distclean-local:
 include $(srcdir)/Makefile.am.ide
 interleave_ff_3i_SOURCES = $(redhawk_SOURCES_auto)
 interleave_ff_3i_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-interleave_ff_3i_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+interleave_ff_3i_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_SYSTEM_LIB) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 interleave_ff_3i_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)

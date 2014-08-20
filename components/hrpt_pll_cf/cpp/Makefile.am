@@ -53,6 +53,6 @@ install-exec-hook:
 include $(srcdir)/Makefile.am.ide
 hrpt_pll_cf_SOURCES = $(redhawk_SOURCES_auto)
 hrpt_pll_cf_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-hrpt_pll_cf_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+hrpt_pll_cf_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_SYSTEM_LIB) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 hrpt_pll_cf_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)
 

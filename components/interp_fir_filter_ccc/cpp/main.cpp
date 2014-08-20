@@ -22,7 +22,6 @@
 #include "ossie/ossieSupport.h"
 
 #include "interp_fir_filter_ccc.h"
-
 int main(int argc, char* argv[])
 {
     interp_fir_filter_ccc_i* interp_fir_filter_ccc_servant;

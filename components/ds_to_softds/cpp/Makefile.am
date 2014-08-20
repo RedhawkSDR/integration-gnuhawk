@@ -53,6 +53,6 @@ install-exec-hook:
 include $(srcdir)/Makefile.am.ide
 ds_to_softds_SOURCES = $(redhawk_SOURCES_auto)
 ds_to_softds_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-ds_to_softds_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+ds_to_softds_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_SYSTEM_LIB) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 ds_to_softds_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)
 

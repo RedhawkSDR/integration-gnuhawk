@@ -53,5 +53,5 @@ distclean-local:
 include $(srcdir)/Makefile.am.ide
 bytes_to_syms_SOURCES = $(redhawk_SOURCES_auto)
 bytes_to_syms_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-bytes_to_syms_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+bytes_to_syms_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_SYSTEM_LIB) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 bytes_to_syms_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)

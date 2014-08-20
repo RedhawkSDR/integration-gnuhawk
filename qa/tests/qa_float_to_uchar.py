@@ -21,7 +21,6 @@
 #
 
 from gnuradio import gr, gr_unittest
-import ctypes
 
 class test_float_to_uchar (gr_unittest.TestCase):
 

@@ -53,5 +53,5 @@ distclean-local:
 include $(srcdir)/Makefile.am.ide
 glfsr_source_b_SOURCES = $(redhawk_SOURCES_auto)
 glfsr_source_b_CXXFLAGS = -Wall $(GNUHAWK_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto)
-glfsr_source_b_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
+glfsr_source_b_LDADD = $(GNUHAWK_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_SYSTEM_LIB) $(BOOST_THREAD_LIB) $(INTERFACEDEPS_LIBS) $(redhawk_LDADD_auto)
 glfsr_source_b_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)

@@ -21,7 +21,6 @@
 #
 
 from gnuradio import gr, gr_unittest
-import ctypes
 
 class test_endian_swap (gr_unittest.TestCase):
 

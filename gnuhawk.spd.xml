@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
 <!--
 This file is protected by Copyright. Please refer to the COPYRIGHT file 
 distributed with this source distribution.
@@ -17,14 +18,12 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 this program.  If not, see http://www.gnu.org/licenses/.
 -->
-
-<!DOCTYPE softpkg PUBLIC '-//JTRS//DTD SCA V2.2.2 SPD//EN' 'softpkg.dtd'>
-<softpkg id="DCE:317c2b72-d125-4027-a056-054ce8c3480a" name="gnuhawk" type="sca_compliant">
+<softpkg version="1.10.0" id="DCE:317c2b72-d125-4027-a056-054ce8c3480a" name="gnuhawk" type="sca_compliant">
     <title/>
     <author>
-        <name></name>
-        <company></company>
-        <webpage></webpage>
+        <name/>
+        <company/>
+        <webpage/>
     </author>
     <description>GNUHAWK library
     </description> 

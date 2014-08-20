@@ -21,7 +21,6 @@
 #
 
 from gnuradio import gr, gr_unittest
-import ctypes
 
 class test_short_to_char (gr_unittest.TestCase):
 
